@@ -1,0 +1,127 @@
+/* === Import Font Inter === */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+/* Root Tokens: Color & Font */
+:root {
+  /* === Main Colors === */
+  --color-main-950: #440A06;
+  --color-main-900: #7E1B10;
+  --color-main-800: #9D1E0F;
+  --color-main-700: #C62208;
+  --color-main-600: #EF3407;
+  --color-main-500: #FE4E11;
+  --color-main-400: #FF773D;
+  --color-main-300: #FFA571;
+  --color-main-200: #FFCAA8;
+  --color-main-100: #FFE6D4;
+  --color-main-50:  #FFF4ED;
+
+  /* === Text Colors === */
+  --color-text-700: #151111;
+  --color-text-600: #2B2222;
+  --color-text-500: #3F3332;
+  --color-text-400: #544443;
+  --color-text-300: #7F7372;
+  --color-text-200: #D4D0D0;
+  --color-text-100: #EEECEC;
+
+  /* === Accent Colors === */
+  --color-yellow-200: #FFEC71;
+
+  /* === Font Family === */
+  --font-inter-regular: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-inter-bold: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Base */
+@layer base {
+  body {
+    font-family: var(--font-inter-regular);
+    font-weight: 400;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-inter-bold);
+    font-weight: 700;
+  }
+
+  a {
+    @apply text-[var(--color-main-600)] hover:underline;
+  }
+}
+
+/* Components */
+@layer components {
+  /* Base style */
+  .btn {
+    @apply inline-flex items-center justify-center;
+    height: 37px;
+    min-width: 102px;
+    padding: 0 14px;
+    border-radius: 24px;
+    font-family: var(--font-inter-regular);
+    font-size: 14px;
+    letter-spacing: 0.28px;
+    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+  }
+
+  /* NORMAL: */
+  .btn-details {
+    color: var(--color-main-100); 
+    background: linear-gradient(
+      180deg,
+      var(--color-main-200) 0%,
+      color-mix(in srgb, var(--color-main-600) 40%, transparent) 100%
+    );
+    box-shadow: none;
+  }
+
+  /* HOVER */
+  .btn-details:hover {
+    color: var(--color-main-300);
+    background: linear-gradient(180deg, #FFFFFF 46.42%, var(--color-main-200) 100%);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.09);
+  }
+  
+  .field {
+    @apply w-full rounded-[28px] border-[3px] px-5 py-3 text-[16px] outline-none transition;
+    border-color: var(--color-text-100);
+    color: var(--color-text-700);
+
+    /* background: white + gradation ke text-200 & text-300 (alpha 54%) */
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.54) 58.62%,
+        color-mix(in srgb, var(--color-text-200) 54%, transparent) 85%,
+        color-mix(in srgb, var(--color-text-300) 54%, transparent) 100%
+      ),
+      #FFF;
+  }
+
+  .field::placeholder {
+    color: var(--color-text-200);
+    opacity: 1;
+  }
+
+  /* Focus ring using main-500 */
+  .field:focus {
+    border-color: var(--color-main-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-main-500) 18%, transparent);
+  }
+
+  /* Modifiers */
+  .field--with-icon { padding-left: 42px; } /* kalau ada leading icon */
+  .field--error {
+    border-color: var(--color-red-200);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-red-200) 20%, transparent);
+  }
+}
+
+
+/* Utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
