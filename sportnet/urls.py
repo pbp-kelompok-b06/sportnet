@@ -29,4 +29,5 @@ urlpatterns = [
     path('organizer/', include('Organizer.urls')),
     path('profile/', include('Profile.urls')),
     path('review/', include('Reviews.urls')),
+    # ini komen
 ]
