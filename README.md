@@ -1,7 +1,7 @@
-<!-- # Proyek Tengah Semester B06 - PBP Gasal 2025/2026
+# Proyek Tengah Semester B06 - PBP Gasal 2025/2026
 - [Anggota Kelompok](#kelompok-b06---sportnet)
 - [Deskripsi Produk](#deskripsi-produk)
-- [Moduls](#moduls)
+- [Moduls](#)
 - [Dataset](#dataset)
 - [Role User](#role-user)
 - [PWS](#pws)
@@ -19,12 +19,12 @@
 SportNet adalah platform berbasis web yang dirancang untuk memudahkan para pecinta olahraga dalam menemukan berbagai **event olahraga terkini**, berinteraksi dengan komunitas yang memiliki minat serupa, dan ikut serta atau mendaftarkan dirinya dalam kegiatan olahraga bersama.
 
 Melalui SportNet, pengguna dapat dengan mudah menjelajahi berbagai event olahraga yang tersedia, yaitu:
-- Lari / Marathon
+- Running
 - Padel
-- Sepak Bola / Futsal / Mini Soccer
+- Football
 - Yoga
 - Pilates
-- Bulutangkis
+- Badminton
 - Fitness
 - Cycling
 - Poundfit
@@ -115,4 +115,4 @@ Link PWS: https://anya-aleena-sportnet.pbp.cs.ui.ac.id/
 ## 🎨 Design 🎨
 Designer: Azzahra Anjelika Borselano (2406419663)
 https://www.figma.com/design/PSHZuSgZNQKkklskbBGPu3/SportNet-Design?node-id=1-2&p=f&t=PahYwtHFeaDuIpm0-0
- -->
+ 

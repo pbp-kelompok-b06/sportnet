@@ -52,9 +52,9 @@ INSTALLED_APPS = [
     'Forum',
     'Profile',
     'Authenticate',
-    'Organizer',
     'Notification',
     'Homepage',
+    'Dashboard',
     'django.contrib.humanize',
     'corsheaders',
 ]
