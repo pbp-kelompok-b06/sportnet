@@ -23,7 +23,7 @@ urlpatterns = [
     # path('authenticate/', include('Authenticate.urls')),
     # path('booked-events/', include('BookedEvent.urls')),
     # path('bookmark/', include('Bookmark.urls')),
-    # path('event/', include("Event.urls")),
+    path('event/', include("Event.urls")),
     # path('forum/', include("Forum.urls")),
     # path('notification/', include('Notification.urls')),
     # path('organizer/', include('Organizer.urls')),
