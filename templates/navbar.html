@@ -1,23 +1,37 @@
-<nav class="bg-[#d6d1cf] flex justify-between items-center px-8 py-3">
-    <h1 class="text-2xl font-bold text-gray-800">Sport<span class="text-gray-700">Net</span></h1>
-    <div class="hidden md:flex items-center space-x-8">
-          <a href="/" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Home
-          </a>
-          <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Bookmarks
-          </a>
-          <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Profile
-          </a>
-        </div>
-    <div class="flex items-center gap-3">
-      <div class="w-6 h-6 rounded bg-gray-600">
-        Login
-      </div>
-      <div class="w-6 h-6 rounded bg-gray-400">
-        Register
-      </div>
+{% load static %} <nav class="w-full p-4 px-8 flex justify-between items-center bg-[var(--color-main-50)] shadow-sm">
+    <a href="/" class="text-2xl font-bold text-[var(--color-main-700)]">SportNet</a>
 
+    <div class="hidden md:flex items-center space-x-8">
+        <a href="/" class="text-[var(--color-text-500)] hover:text-[var(--color-main-600)] font-medium">Home</a>
+        
+        {% if user.is_authenticated %}
+            <a href="#" class="text-[var(--color-text-500)] hover:text-[var(--color-main-600)] font-medium">Bookmarks</a>
+            
+            {% if user.organizer_profile %}
+                <a href="#" class="text-[var(--color-text-500)] hover:text-[var(--color-main-600)] font-medium">Dashboard</a>
+            {% endif %}
+
+            <a href="#" class="text-[var(--color-text-500)] hover:text-[var(--color-main-600)] font-medium">Profile</a>
+        {% endif %}
     </div>
-  </nav>
+
+    <div class="flex items-center gap-4">
+        {% if user.is_authenticated %}
+            <a href="{% url 'Authenticate:logout' %}" class="btn bg-[var(--color-main-500)] text-white hover:bg-[var(--color-main-600)]">Logout</a>
+
+            <a href="#">
+                {% if user.organizer_profile and user.organizer_profile.profile_picture %}
+                    <img src="{{ user.organizer_profile.profile_picture.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-[var(--color-main-200)]">
+                
+                {% elif user.participant_profile and user.participant_profile.profile_picture %}
+                    <img src="{{ user.participant_profile.profile_picture.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-[var(--color-main-200)]">
+
+                {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-[var(--color-main-200)]">
+                {% endif %}
+            </a>
+        {% else %}
+            <a href="{% url 'Authenticate:login' %}" class="btn hover:bg-gray-200">Login</a>
+        {% endif %}
+    </div>
+</nav>
