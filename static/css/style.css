@@ -16,6 +16,9 @@
   --color-main-100: #FFE6D4;
   --color-main-50:  #FFF4ED;
 
+  --color-gradient1: linear-gradient(180deg, var(--color-main-300) 0%, var(--color-main-400) 100%);
+  --color-gradient2: linear-gradient(180deg, #FFFFFF 46.42%, var(--color-main-100) 100%);
+
   /* === Text Colors === */
   --color-text-700: #151111;
   --color-text-600: #2B2222;
@@ -58,66 +61,81 @@
     height: 37px;
     min-width: 102px;
     padding: 0 14px;
+    border: none;
     border-radius: 24px;
     font-family: var(--font-inter-regular);
     font-size: 14px;
     letter-spacing: 0.28px;
-    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+    transition: all 0.25s ease;
   }
 
   /* NORMAL: */
-  .btn-details {
-    color: var(--color-main-100); 
-    background: linear-gradient(
-      180deg,
-      var(--color-main-200) 0%,
-      color-mix(in srgb, var(--color-main-600) 40%, transparent) 100%
-    );
+  .btn-gradient {
+    color: var(--color-main-50);   /* text color */
+    background: var(--color-gradient1);
     box-shadow: none;
+    box-shadow: none;
+    outline: none;
   }
 
   /* HOVER */
-  .btn-details:hover {
-    color: var(--color-main-300);
-    background: linear-gradient(180deg, #FFFFFF 46.42%, var(--color-main-200) 100%);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.09);
+  .btn-gradient:hover {
+    color: var(--color-main-400);   /* text color */
+    background: var(--color-gradient2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.01);
+    outline: none;
   }
   
   .field {
-    @apply w-full rounded-[28px] border-[3px] px-5 py-3 text-[16px] outline-none transition;
-    border-color: var(--color-text-100);
-    color: var(--color-text-700);
-
-    /* background: white + gradation ke text-200 & text-300 (alpha 54%) */
+    display: block;
+    width: 100%;
+    height: 56px;                  
+    padding: 0 24px;               
+    border-radius: 28px;        
+    border: 3px solid #EFEDED;  
     background:
       linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.54) 58.62%,
-        color-mix(in srgb, var(--color-text-200) 54%, transparent) 85%,
-        color-mix(in srgb, var(--color-text-300) 54%, transparent) 100%
+        rgba(255, 255, 255) 60%,                    
+        color-mix(in srgb, var(--color-text-200) 10%, transparent) 95%,
+        color-mix(in srgb, var(--color-text-300) 5%, transparent) 100%
       ),
       #FFF;
+    color: var(--color-text-300);
+    font-family: var(--font-inter-regular);  
+    font-size: 16px;
+    letter-spacing: 0; 
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: all 0.25s ease;
+    background-clip: padding-box;
   }
 
+  /* Placeholder */
   .field::placeholder {
-    color: var(--color-text-200);
-    opacity: 1;
+    color: color-mix(in srgb, var(--color-text-200) 90%, transparent);
+    opacity: 1; 
   }
 
-  /* Focus ring using main-500 */
-  .field:focus {
-    border-color: var(--color-main-500);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-main-500) 18%, transparent);
+  /* Hover */
+  .field:hover {
+    box-shadow: 0 6px 14px rgba(0,0,0,0.01);
+    border-color: #EFEDED;
   }
 
-  /* Modifiers */
-  .field--with-icon { padding-left: 42px; } /* kalau ada leading icon */
+  /* Focus visible */
+  .field:focus-visible {
+    border-color: var(--color-main-200);
+  }
+
+  /* Error */
   .field--error {
     border-color: var(--color-red-200);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-red-200) 20%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-red-200) 35%, transparent);
   }
 }
-
 
 /* Utilities */
 @layer utilities {
