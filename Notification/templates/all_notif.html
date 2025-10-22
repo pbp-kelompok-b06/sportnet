@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if not notif %}
+<h2>No Notification</h2>
+{% else %}
+{% for notif in notif %}
+<h2>{{notif.title}}</h2>
+<p>{{notif.message}}</p>
+{% endfor %}
+{% endif %}
+{% endblock content %}
