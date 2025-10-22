@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if not events %}
+      <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No Event found</h3>
+      </div>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for event in events %}
+          {% include 'card_event.html' with events=event %}
+        {% endfor %}
+      </div>
+    {% endif %}
+{% endblock content %}
