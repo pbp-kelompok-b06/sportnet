@@ -1,4 +1,4 @@
-# Proyek Tengah Semester B06 - PBP Gasal 2025/2026
+<!-- # Proyek Tengah Semester B06 - PBP Gasal 2025/2026
 - [Anggota Kelompok](#kelompok-b06---sportnet)
 - [Deskripsi Produk](#deskripsi-produk)
 - [Moduls](#moduls)
@@ -115,4 +115,4 @@ Link PWS: https://anya-aleena-sportnet.pbp.cs.ui.ac.id/
 ## 🎨 Design 🎨
 Designer: Azzahra Anjelika Borselano (2406419663)
 https://www.figma.com/design/PSHZuSgZNQKkklskbBGPu3/SportNet-Design?node-id=1-2&p=f&t=PahYwtHFeaDuIpm0-0
-
+ -->
