@@ -4,5 +4,56 @@
 {% endblock meta %}
 
 {% block content %}
+{% include 'navbar.html' %}
+<div class="wbg-gradient-to-r from-white from-40% to-[var(--color-main-200)]">
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl flex bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
+            
+            <div class="hidden md:block md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1543351611-a3e147e0a234?q=80&w=1974&auto=format&fit=crop" 
+                     alt="Sports Equipment" 
+                     class="w-full h-full object-cover">
+            </div>
+
+            <div class="w-full md:w-1/2 p-12">
+                <h2 class="text-4xl font-bold text-[var(--color-text-700)]">Sign In</h2>
+                <p class="mt-2 mb-8 text-[var(--color-text-400)]">Welcome back to <span class="font-semibold text-[var(--color-main-500)]">SportNet</span></p>
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+
+                    <div class="mb-5">
+                        <input type="text" name="username" placeholder="Enter your username" class="field" required>
+                    </div>
+
+                    <div class="mb-8">
+                        <input type="password" name="password" placeholder="Enter your password" class="field" required>
+                    </div>
+
+                    {% if messages %}
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
+                            {% for message in messages %}
+                                <span class="block sm:inline">{{ message }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-details w-full h-12 text-lg">Sign In</button>
+                    </div>
+
+                </form>
+
+                <p class="text-sm text-center mt-6 text-[var(--color-text-400)]">
+                    Don't have an account? 
+                    <a href="{% url 'Authenticate:register_role_selection' %}" class="font-semibold text-[var(--color-main-600)] hover:underline">
+                        Register Now
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
