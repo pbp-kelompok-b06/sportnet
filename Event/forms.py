@@ -9,7 +9,6 @@ class EventForm(forms.ModelForm):
             "name",
             "description",
             "thumbnail",
-            "organizer",
             "start_time",
             "end_time",
             "location",
@@ -29,7 +28,7 @@ class EventForm(forms.ModelForm):
                 "placeholder": "Select end date and time"
             }),
         }
-        
+
     def clean_name(self):
         name = self.cleaned_data.get("name", "")
         return strip_tags(name)
