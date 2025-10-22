@@ -26,7 +26,6 @@ urlpatterns = [
     # path('event/', include("Event.urls")),
     # path('forum/', include("Forum.urls")),
     # path('notification/', include('Notification.urls')),
-    # path('organizer/', include('Organizer.urls')),
     # path('profile/', include('Profile.urls')),
     # path('review/', include('Reviews.urls')),
 ]
