@@ -15,10 +15,10 @@ def register_participant(request):
     if request.method == 'POST':
         form = ParticipantRegistrationForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data('username')
-            password = form.cleaned_data('password1')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
             if User.objects.filter(username=username).exists:
-                    messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
+                messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
             else:
                 user = User.objects.create_user(username=username, password=password)
                 participant = form.save(commit=False)
@@ -35,8 +35,8 @@ def register_organizer(request):
     if request.method == 'POST':
         form = OrganizerRegisterForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data('username')
-            password = form.cleaned_data('password1')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
 
             if User.objects.filter(username=username).exists:
                 messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")

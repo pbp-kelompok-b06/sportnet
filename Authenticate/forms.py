@@ -24,7 +24,7 @@ class ParticipantRegistrationForm(forms.ModelForm):
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
 
     class Meta:
-        model = Organizer
+        model = Participant
         fields = ['full_name', 'location', 'interests', 'bio', 'age']
 
     def clean(self):
