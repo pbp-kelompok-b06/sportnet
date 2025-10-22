@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'Authenticate',
     'Organizer',
     'Notification',
+    'Homepage',
     'django.contrib.humanize',
     'corsheaders',
 ]
