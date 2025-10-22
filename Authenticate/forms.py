@@ -9,7 +9,7 @@ class OrganizerRegisterForm(forms.ModelForm):
 
     class Meta:
         model = Organizer
-        fields = ['organizer_name', 'contact_email', 'contact_phone', 'bio', 'profile_picture', 'location']
+        fields = ['organizer_name', 'contact_email']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -25,7 +25,7 @@ class ParticipantRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Participant
-        fields = ['full_name', 'location', 'interests', 'bio', 'age']
+        fields = ['full_name', 'location', 'birth_date']
 
     def clean(self):
         cleaned_data = super().clean()
