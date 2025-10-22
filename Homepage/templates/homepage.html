@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+
+  <!-- Header Section -->
+  <header class="text-center my-8">
+    <h2 class="text-2xl font-bold">Hello, User!</h2>
+    <p class="text-gray-500 mb-6">Discover your next adventure here</p>
+    <div class="bg-gray-100 mx-auto rounded-full w-1/2 h-8"></div>
+  </header>
+
+  <!-- Event Grid -->
+  
+    {% if not events %}
+        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No Event found</h3>
+        </div>
+        {% else %}
+        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {% for event in events|slice:"0:4" %}
+            {% include 'card_event.html' with events=event %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    
+{% endblock content %}

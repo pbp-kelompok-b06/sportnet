@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'Organizer',
     'Notification',
     'Homepage',
+    'Dashboard',
     'django.contrib.humanize',
     'corsheaders',
 ]

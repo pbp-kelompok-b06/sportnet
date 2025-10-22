@@ -1,0 +1,40 @@
+
+  <article class="flex w-[500px] rounded-3xl overflow-hidden shadow-lg bg-white hover:shadow-xl hover:scale-105 transition-shadow-scale duration-300">
+    
+    <!-- Left Image -->
+    <div class="w-1/2">
+      <img 
+        src={{ event.image }} 
+        alt="Event Image" 
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <!-- Right Content -->
+    <div class="w-1/2 bg-gradient-to-br from-white to-gray-50 p-6 flex flex-col justify-between">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-1">{{event.name}}</h2>
+        <p class="text-gray-700 font-medium mb-2">{{event.date}}</p>
+        <p class="text-gray-500 font-semibold mb-4">{{event.location}}</p>
+        <p class="text-gray-500 text-sm leading-relaxed">
+          {{event.description}}
+        </p>
+      </div>
+
+      <!-- Bottom Buttons -->
+      <div class="flex items-center justify-between mt-6">
+        <a href="#" class="bg-gray-200 hover:bg-gray-300 transition px-5 py-2 rounded-full text-gray-600 font-medium flex items-center gap-1">
+          Details
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+
+        <button class="bg-gray-200 hover:bg-gray-300 transition p-3 rounded-full text-gray-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14l7-7 7 7V5z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </article>
