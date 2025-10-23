@@ -8,62 +8,88 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from .models import Organizer, Participant
-from .forms import OrganizerRegisterForm, ParticipantRegistrationForm
+from .forms import AuthStep1Form, ParticipantStep2Form, OrganizerStep2Form
 
 @csrf_exempt
-def register_participant(request):
+def register_participant_step1(request):
     if request.method == 'POST':
-        form = ParticipantRegistrationForm(request.POST)
+        form = AuthStep1Form(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            if User.objects.filter(username=username).exists:
+            if User.objects.filter(username=form.cleaned_data['username']).exists():
                 messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
-                return render(request, 'register_participant.html', {'form': form})
             else:
-                user = User.objects.create_user(username=username, password=password)
-                participant = form.save(commit=False)
-                participant.user = user
-                participant.save()
-                messages.success(request, "Akun berhasil dibuat! Silahkan login.")
-                return redirect('Authenticate:login')
-        else:
-            return render(request, 'register_participant.html', {'form': form})
+                request.session['participant_step1_data'] = form.cleaned_data
+                return redirect('Authenticate:register_participant_step2') # Arahkan ke URL step 2
     else:
-        form = ParticipantRegistrationForm()
-        return render(request, 'register_participant.html', {'form': form})
+        form = AuthStep1Form()
+    return render(request, 'register_participant_step1.html', {'form': form})
 
-@csrf_exempt
-def register_organizer(request):
+def register_participant_step2(request):
+    step1_data = request.session.get('participant_step1_data')
+    if not step1_data:
+        return redirect('Authenticate:register_participant_step1')
+
     if request.method == 'POST':
-        form = OrganizerRegisterForm(request.POST)
+        form = ParticipantStep2Form(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-
-            if User.objects.filter(username=username).exists():
-                messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
-                return render(request, 'register_organizer.html', {'form': form})
-            else:
-                user = User.objects.create_user(username=username, password=form.cleaned_data['password1'])
-                organizer = form.save(commit=False)
-                organizer.user = user
-                organizer.save()
-                messages.success(request, "Akun berhasil dibuat! Silahkan login.")
-                return redirect('Authenticate:login')
-        else:
-            form = OrganizerRegisterForm()
-        return render(request, 'register_organizer.html', {'form': form})
+            user = User.objects.create_user(
+                username=step1_data['username'],
+                password=step1_data['password_1'] # Gunakan 'password_1'
+            )
+            participant = form.save(commit=False)
+            participant.user = user
+            participant.save()
+            del request.session['participant_step1_data']
+            messages.success(request, "Akun berhasil dibuat! Silahkan login.")
+            return redirect('Authenticate:login')
     else:
-        form = OrganizerRegisterForm()
-        return render(request, 'register_organizer.html', {'form': form})
+        form = ParticipantStep2Form()
+    return render(request, 'register_participant_step2.html', {'form': form})
+
+
+# --- ALUR REGISTRASI ORGANIZER ---
+def register_organizer_step1(request):
+    if request.method == 'POST':
+        form = AuthStep1Form(request.POST) # Gunakan AuthStep1Form
+        if form.is_valid():
+            if User.objects.filter(username=form.cleaned_data['username']).exists():
+                messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
+            else:
+                request.session['organizer_step1_data'] = form.cleaned_data
+                return redirect('Authenticate:register_organizer_step2') # Arahkan ke URL step 2
+    else:
+        form = AuthStep1Form() # Gunakan AuthStep1Form
+    return render(request, 'register_organizer_step1.html', {'form': form})
+    
+def register_organizer_step2(request):
+    step1_data = request.session.get('organizer_step1_data')
+    if not step1_data:
+        return redirect('Authenticate:register_organizer_step1')
+
+    if request.method == 'POST':
+        form = OrganizerStep2Form(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=step1_data['username'],
+                password=step1_data['password_1'] # Gunakan 'password_1'
+            )
+            organizer = form.save(commit=False)
+            organizer.user = user
+            organizer.save()
+            del request.session['organizer_step1_data']
+            messages.success(request, "Akun berhasil dibuat! Silahkan login.")
+            return redirect('Authenticate:login')
+    else:
+        form = OrganizerStep2Form()
+    return render(request, 'register_organizer_step2.html', {'form': form})
 
 def register_role_selection(request):
     if request.method == 'POST':
         selected_role = request.POST.get('role')
         if(selected_role == 'participant'):
-            return redirect('Authenticate:register_participant')
+            return redirect('Authenticate:register_participant_step1')
         elif(selected_role == 'organizer'):
-            return redirect('Authenticate:register_organizer')
+            return redirect('Authenticate:register_organizer_step1')
         else:
             messages.error(request, "Silakan pilih role yang valid.")
     return render(request, 'register.html')

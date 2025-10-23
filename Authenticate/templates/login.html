@@ -6,9 +6,9 @@
 
 {% block content %}
 {% include 'navbar.html' %}
-<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)]">
+<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)] pt-20">
     <div class="flex-grow flex items-center justify-center p-4">
-        <div class="w-full max-w-2xl flex bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
+        <div class="w-full max-w-2xl flex bg-white/50 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
             
             <div class="hidden md:block md:w-2/5">
                 <img src="{% static 'images/Union.png' %}"
@@ -24,13 +24,13 @@
 
                     <div class="mb-4">
                         <input type="text" name="username" placeholder="Enter your username" 
-                            class="w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400" 
+                            class="w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-2 text-gray-800 placeholder:text-gray-[var(--color-text-200)] placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" 
                             required>
                     </div>
 
-                    <div class="mb-10">
-                        <input type="text" name="password" placeholder="Enter your password" 
-                            class="w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400" 
+                    <div class="mb-8">
+                        <input type="password" name="password" placeholder="Enter your password" 
+                            class="w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-2 text-gray-800 placeholder:text-gray-[var(--color-text-200)] placeholder:text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" 
                             required>
                     </div>
 
@@ -42,8 +42,8 @@
                         </div>
                     {% endif %}
 
-                    <div class="d-grid gap-2">
-                    <button type="submit" class="btn w-full h-12 text-lg 
+                    <div class="flex justify-center">
+                    <button type="submit" class="btn px-4 py-1 text-base 
                                                 bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
                                                 text-white border-none shadow-lg
                                                 hover:shadow-xl hover:-translate-y-0.5 

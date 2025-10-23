@@ -6,7 +6,7 @@
 
 {% block content %}
 {% include 'navbar.html' %}
-<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)]">
+<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)] pt-20">
     <div class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-2xl flex bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
             
@@ -19,7 +19,7 @@
                 <p class="mt-2 mb-10 text-[var(--color-text-400)] text-center">Choose your role to get started.</p>
 
                 <div class="space-y-4">
-                    <a href="{% url 'Authenticate:register_participant' %}" class="btn w-full h-12 text-lg flex items-center justify-center
+                    <a href="{% url 'Authenticate:register_participant_step1' %}" class="btn w-full h-12 text-lg flex items-center justify-center
                                  rounded-full border border-gray-300 bg-gray-50 text-gray-800
                                  hover:bg-gradient-to-b hover:from-[var(--color-main-300)] hover:to-[var(--color-main-400)]
                                  hover:text-white hover:shadow-lg hover:border-transparent hover:-translate-y-0.5
@@ -27,7 +27,7 @@
                     Register as Participant
                 </a>
 
-                    <a href="{% url 'Authenticate:register_organizer' %}" class="btn w-full h-12 text-lg flex items-center justify-center
+                    <a href="{% url 'Authenticate:register_organizer_step1' %}" class="btn w-full h-12 text-lg flex items-center justify-center
                                  rounded-full border border-gray-300 bg-gray-50 text-gray-800
                                  hover:bg-gradient-to-b hover:from-[var(--color-main-300)] hover:to-[var(--color-main-400)]
                                  hover:text-white hover:shadow-lg hover:border-transparent hover:-translate-y-0.5

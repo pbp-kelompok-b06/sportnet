@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Register Participant - Step 2</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)] pt-20">
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden p-12">
+
+            <div class="mb-12">
+                <div class="flex items-center">
+                    <div class="flex items-center text-green-600 relative">
+                        <div class="rounded-full h-8 w-8 flex items-center justify-center bg-green-500 text-white">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-green-600">Authentication</div>
+                    </div>
+                    <div class="flex-auto border-t-2 border-green-500"></div>
+                    <div class="flex items-center text-[var(--color-main-500)] relative">
+                        <div class="rounded-full h-8 w-8 flex items-center justify-center bg-[var(--color-main-500)] text-white font-bold">2</div>
+                        <div class="absolute top-0 -ml-16 text-center mt-16 w-32 text-xs font-medium uppercase text-[var(--color-main-500)]">Profile Details</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="text-3xl font-bold text-[var(--color-main-400)] text-center">Profile Details</h2>
+            <p class="mt-2 mb-8 text-[var(--color-text-400)] text-center">Complete your profile information.</p>
+
+            <form method="POST" action="{% url 'Authenticate:register_participant_step2' %}">
+                {% csrf_token %}
+
+                <div class="max-w-md mx-auto space-y-4">
+                    {{ form.full_name }}
+                    {{ form.location }}
+                    {{ form.birth_date }}
+                </div>
+
+                {% if messages %}
+                <div class="max-w-md mx-auto mt-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
+                    {% for message in messages %}
+                        <span>{{ message }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="flex justify-center mt-8">
+                    <button type="submit" class="btn px-8 py-2 text-lg 
+                                                 bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+                                                 text-white border-none shadow-lg
+                                                 hover:shadow-xl hover:-translate-y-0.5 
+                                                 transition-all duration-200 ease-in-out">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+
+            <p class="text-sm text-center mt-6 text-[var(--color-text-400)]">
+                Already have an account? 
+                <a href="{% url 'Authenticate:login' %}" class="font-semibold text-[var(--color-main-600)] hover:underline text-center">
+                    Sign In
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
