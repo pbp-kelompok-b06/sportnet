@@ -10,7 +10,7 @@ def serialize_event(card_event):
     event = card_event.parent_event
     
     date_str = event.start_time.strftime("%d %B %Y") if event.start_time else ""
-    price_str = f"Rp {int(event.price):,}".replace(",", ".") if event.price is not None else "Gratis"
+    price_str = f"Rp {int(event.fee):,}".replace(",", ".") if event.fee is not None else "Gratis"
     
     # NOTE: Ini adalah struktur data yang dikirim ke JavaScript.
     # JavaScript di homepage.html mengharapkan field seperti 'name', 'date', dll.
