@@ -28,11 +28,26 @@
     <form method="post" class="space-y-5">
   {% csrf_token %}
 
+  {% if form.non_field_errors %}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      {% for error in form.non_field_errors %}
+        <span class="block sm:inline">{{ error }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
     <!-- Event Name -->
     <div class="flex items-center gap-2">
         <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.name.id_for_label }}">Name</label>
         <div class="flex-1">
             {{ form.name }}
+            {% if form.name.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.name.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -41,6 +56,13 @@
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.description.id_for_label }}">Description</label>
         <div class="flex-1">
             {{ form.description }}
+            {% if form.description.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.description.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -49,6 +71,13 @@
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.thumbnail.id_for_label }}">Thumbnail</label>
         <div class="flex-1">
             {{ form.thumbnail }}
+            {% if form.thumbnail.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.thumbnail.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -60,6 +89,20 @@
                 <span class="text-black-500">–</span>
                 {{ form.end_time }}
         </div>
+         {% if form.start_time.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.start_time.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if form.end_time.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.end_time.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
     </div>
 
     <!-- Event Location -->
@@ -67,6 +110,13 @@
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.location.id_for_label }}">Location</label>
         <div class="flex-1">
             {{ form.location }}
+             {% if form.location.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.location.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -75,6 +125,13 @@
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.address.id_for_label }}">Address</label>
         <div class="flex-1">
             {{ form.address }}
+            {% if form.address.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.address.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -83,6 +140,13 @@
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.sports_category.id_for_label }}">Sports Category</label>
         <div class="flex-1">
             {{ form.sports_category }}
+            {% if form.sports_category.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.sports_category.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -91,6 +155,13 @@
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.activity_category.id_for_label }}">Activity Category</label>
         <div class="flex-1">
             {{ form.activity_category }}
+            {% if form.activity_category.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.activity_category.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
         </div>
     </div>
 
@@ -111,10 +182,15 @@
     <span>Paid</span>
     </label>
   </div>
+    {% if form.fee.errors %}
+      <div class="text-red-500 text-sm mt-1">
+        {% for error in form.fee.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% endif %}
 </div>
 
-
-  
     <!-- Submit -->
     <div class="flex justify-center pt-4">
         <button type="submit" class="btn w-full h-12 text-lg 

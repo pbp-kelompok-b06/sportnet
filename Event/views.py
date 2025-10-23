@@ -7,7 +7,7 @@ def create_event(request):
         if form.is_valid():
             form.save()
             # setelah berhasil simpan, balik lagi ke halaman create (atau ganti ke list/detail kalau sudah ada)
-            return redirect("Event:create_event")
+            return redirect("Homepage:show_main")
     else:
         form = EventForm()
 
