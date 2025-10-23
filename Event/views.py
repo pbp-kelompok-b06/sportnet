@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import EventForm
+from .models import Event
 
 def create_event(request):
     if request.method == "POST":
@@ -12,3 +13,7 @@ def create_event(request):
         form = EventForm()
 
     return render(request, "create_event.html", {"form": form})
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return render(request, "event_detail.html", {"event": event})

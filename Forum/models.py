@@ -1,6 +1,6 @@
 from django.db import models
-from events.models import Event 
-from authenticate.models import Profile
+from Event.models import Event 
+from Authenticate.models import Participant
 
 class ForumPost(models.Model):
     event = models.ForeignKey(
@@ -8,8 +8,8 @@ class ForumPost(models.Model):
         on_delete=models.CASCADE, 
         related_name='forum_posts'
     )
-    profile = models.ForeignKey(
-        Profile, 
+    participant = models.ForeignKey(
+        Participant, 
         on_delete=models.CASCADE, 
         related_name='forum_posts'
     )
@@ -27,4 +27,4 @@ class ForumPost(models.Model):
         ordering = ['created_at']
 
     def __str__(self):
-        return f'Post by {self.profile.nama} on {self.event.nama_kegiatan}'
+        return f'Post by {self.participant.full_name} on {self.event.name}'
