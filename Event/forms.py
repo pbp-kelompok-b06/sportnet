@@ -29,11 +29,11 @@ class EventForm(forms.ModelForm):
                 "class": "w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "start_time": forms.TextInput(attrs={
-                "class": "datetimepicker w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
+                "class": " w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
                 "placeholder": "Start"
             }),
             "end_time": forms.TextInput(attrs={
-                "class": "datetimepicker w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
+                "class": " w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
                 "placeholder": "End"
             }),
             "location": forms.TextInput(attrs={
