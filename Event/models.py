@@ -29,8 +29,7 @@ class Event(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
-    # TODO: uncomment
-    # organizer = models.ForeignKey('Authenticate.Organizer', on_delete=models.CASCADE, related_name="owned_events")
+    organizer = models.ForeignKey('Authenticate.Organizer', on_delete=models.CASCADE, related_name="owned_events", null=True)
 
     # Date Time
     start_time = models.DateTimeField()
@@ -50,13 +49,12 @@ class Event(models.Model):
 
     # Kapasitas
     capacity = models.PositiveSmallIntegerField(default=0)
-    # TODO: uncomment
-    # attendee = models.ManyToManyField('Authenticate.Participant', related_name="events_joined", blank=True)
+    attendee = models.ManyToManyField('Authenticate.Participant', related_name="events_joined", blank=True, null=True)
 
 
-    # @property
-    # def attendee_count(self):
-    #     return self.participants.count()
+    @property
+    def attendee_count(self):
+        return self.attendee.count()
     
 
     def __str__(self):

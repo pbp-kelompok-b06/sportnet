@@ -15,36 +15,47 @@
       <!-- Navigation Links (Desktop) -->
       <div class="hidden md:flex items-center space-x-8"
            style="color:var(--color-main-50); font-weight:500; font-family:var(--font-inter);">
-        <a href="/" class="hover:text-white  hover:font-bold transition-colors">Home</a>
-        <a href="{% url 'bookmarks' %}" class="hover:text-white hover:font-bold transition-colors">Bookmarks</a>
+        <a href="/" 
+            class="hover:text-white  hover:font-bold transition-colors">
+            Home
+        </a>
+        <a href="{% if user.is_authenticated %}{% url 'bookmarks:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
+            class="hover:text-white hover:font-bold transition-colors">
+            Bookmarks
+        </a>
+        {% if user.is_authenticated and user.organizer_profile %}
+            <a href="{% url 'dashboard:show' %}" class="hover:text-white hover:font-bold transition-colors">Dashboard</a>
+        {% endif %}
       </div>
 
       <!-- User Section (Desktop) -->
       <div class="hidden md:flex items-center space-x-4">
         
         {% if user.is_authenticated %}
-        <button
-          class="btn btn-gradient hover:bg-none hover:bg-[var(--color-main-700)] hover:text-[var(--color-main-50)] transition-colors">
-          Logout
-        </button>
+          <a href="{% url 'Authenticate:logout' %}"></a>
+            <button
+              class="btn btn-gradient hover:bg-none hover:bg-[var(--color-main-700)] hover:text-[var(--color-main-50)] transition-colors">
+              Logout
+            </button>
+          </a>
 
-      <!-- Profile (desktop) -->
-        <a href="{% url 'profile' %}">
-          <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
-            <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
-                alt="Profile" class="w-full h-full object-cover">
-          </div>
-        </a>
+        <!-- Profile (desktop) -->
+          <a href="{% url 'profile:show' %}">
+            <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
+              <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
+                  alt="Profile" class="w-full h-full object-cover">
+            </div>
+          </a>
 
         {% else %}
-          <a href="{% url 'login' %}">
+          <a href="{% url 'Authenticate:login' %}">
             <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
               <img src="{% static 'images/profile-default.jpg' %}"
                   alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all">
             </div>
           </a>
           
-          <a href="{% url 'login' %}" class="transition-colors text-[var(--color-main-50)] hover:text-[var(--color-main-100)]">
+          <a href="{% url 'Authenticate:login' %}" class="transition-colors text-[var(--color-main-50)] hover:text-[var(--color-main-100)]">
             Login</a>
 
         {% endif %}
@@ -55,14 +66,14 @@
 
         <!-- Profile (mobile) -->
         {% if user.is_authenticated %}
-          <a href="{% url 'profile' %}">
+          <a href="{% url 'profile:show' %}">
             <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
               <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
                   alt="Profile" class="w-full h-full object-cover">
             </div>
           </a>
         {% else %}
-          <a href="{% url 'login' %}">
+          <a href="{% url 'Authenticate:login' %}">
             <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
               <img src="{% static 'images/profile-default.jpg' %}"
                   alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all">
@@ -94,21 +105,25 @@
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Home
         </a>
-        <a href="{% url 'bookmarks' %}"
+        <a href="{% if user.is_authenticated %}{% url 'bookmarks:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Bookmarks
         </a>
+        {% if user.is_authenticated and user.organizer_profile %}
+            <a href="{% url 'dashboard:show' %}"
+              class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">Dashboard</a>
+        {% endif %}
       </div>
 
       <div class="border-t border-black/10 pt-4 space-y-3">
         {% if user.is_authenticated %}
-        <button
-          class="btn w-full bg-[var(--color-main-300)] text-[var(--color-main-50)] hover:bg-[var(--color-main-700)] hover:text-[var(--color-main-50)] transition-colors">
-          Logout
-        </button>
+        <a href="{% url 'Authenticate:logout' %}"
+            class="btn w-full bg-[var(--color-main-300)] text-[var(--color-main-50)] hover:bg-[var(--color-main-700)] hover:text-[var(--color-main-50)] transition-colors">
+            Logout
+        </a>
 
         {% else %}
-        <a href="{% url 'login' %}"
+        <a href="{% url 'Authenticate:login' %}"
            class="block font-medium py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Login
         </a>

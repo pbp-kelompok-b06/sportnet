@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block meta %}
+<title>Profile</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div>
+    <div class="mt-8 text-center">
+        <a href="{% url 'edit_profile' %}" class ="">Edit Profile</a>
+    </div>
+</div>
+
+{% endblock content %}
