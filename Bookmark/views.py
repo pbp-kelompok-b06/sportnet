@@ -1,4 +1,5 @@
 from django.shortcuts import render
 
-def show(request):
+# Create your views here.
+def show_bookmark(request):
     return render(request, 'bookmark.html')

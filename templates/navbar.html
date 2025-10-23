@@ -8,7 +8,9 @@
       <div class="flex items-center">
         <h1 class="text-xl tracking-tight"
             style="color:var(--color-main-50); font-family:var(--font-inter); font-weight:600">
-          SportNet
+          <a href="/">
+            SportNet
+          </a>
         </h1>
       </div>
 
@@ -19,13 +21,17 @@
             class="hover:text-white  hover:font-bold transition-colors">
             Home
         </a>
-        <a href="{% if user.is_authenticated %}{% url 'bookmark:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
+        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_main' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
             class="hover:text-white hover:font-bold transition-colors">
             Bookmarks
         </a>
         {% if user.is_authenticated and user.organizer_profile %}
             <a href="{% url 'dashboard:show' %}" class="hover:text-white hover:font-bold transition-colors">Dashboard</a>
         {% endif %}
+        <a href="{% if user.is_authenticated %}{% url 'Notification:show_all' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
+            class="hover:text-white hover:font-bold transition-colors">
+            Notifications
+        </a>
       </div>
 
       <!-- User Section (Desktop) -->
@@ -111,7 +117,7 @@
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Home
         </a>
-        <a href="{% if user.is_authenticated %}{% url 'bookmark:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
+        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_main' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Bookmarks
         </a>
@@ -119,6 +125,10 @@
             <a href="{% url 'dashboard:show' %}"
               class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">Dashboard</a>
         {% endif %}
+        <a href="{% if user.is_authenticated %}{% url 'Notification:show_all' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
+           class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
+          Notifications
+        </a>
       </div>
 
       <div class="border-t border-black/10 pt-4 space-y-3">
