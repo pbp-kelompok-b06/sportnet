@@ -28,7 +28,10 @@
         {% if user.is_authenticated and user.organizer_profile %}
             <a href="{% url 'dashboard:show' %}" class="hover:text-white hover:font-bold transition-colors">Dashboard</a>
         {% endif %}
-        <a>Notif</a>
+        <a href="{% if user.is_authenticated %}{% url 'Notification:show_all' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
+            class="hover:text-white hover:font-bold transition-colors">
+            Notifications
+        </a>
       </div>
 
       <!-- User Section (Desktop) -->
@@ -122,6 +125,10 @@
             <a href="{% url 'dashboard:show' %}"
               class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">Dashboard</a>
         {% endif %}
+        <a href="{% if user.is_authenticated %}{% url 'Notification:show_all' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
+           class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
+          Notifications
+        </a>
       </div>
 
       <div class="border-t border-black/10 pt-4 space-y-3">
