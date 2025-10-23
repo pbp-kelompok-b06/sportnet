@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="id">
@@ -14,18 +15,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   </head>
 
-  <body class="min-h-screen bg-[var(--color-main-50)] flex items-center justify-center font-[var(--font-inter-regular)]">
-    <div class="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl p-8 w-[600px]">
-      <h1 class="text-2xl font-[var(--font-inter-bold)] text-center mb-6 text-[var(--color-main-700)]">
-        Create Event
-      </h1>
+  {% block content %}
+<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)]">
+  <div class="flex-grow flex items-center justify-center p-4">
+    <div class="w-full max-w-3xl bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
+      <div class="w-full p-12">
+        <h2 class="text-4xl font-bold text-[var(--color-main-400)] text-center">Create Event</h2>
+        <p class="mt-2 mb-8      text-[var(--color-text-400)] text-center">
+          Host your own <span class="font-semibold text-[var(--color-main-400)]">SportNet</span> event!
+        </p>
 
     <form method="post" class="space-y-5">
   {% csrf_token %}
 
     <!-- Event Name -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36 " for="{{ form.name.id_for_label }}">Name</label>
+        <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.name.id_for_label }}">Name</label>
         <div class="flex-1">
             {{ form.name }}
         </div>
@@ -33,7 +38,7 @@
 
     <!-- Description -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36" for="{{ form.description.id_for_label }}">Description</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.description.id_for_label }}">Description</label>
         <div class="flex-1">
             {{ form.description }}
         </div>
@@ -41,7 +46,7 @@
 
     <!-- Thumbnail URL -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36" for="{{ form.thumbnail.id_for_label }}">Thumbnail</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.thumbnail.id_for_label }}">Thumbnail</label>
         <div class="flex-1">
             {{ form.thumbnail }}
         </div>
@@ -49,7 +54,7 @@
 
     <!-- Event Date -->
     <div class="flex items-center gap-3">       
-        <label class="field-label w-36" for="{{ form.start_time.id_for_label }}">Date & Time</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.start_time.id_for_label }}">Date & Time</label>
             <div class="flex items-center gap-2">
                 {{ form.start_time }}
                 <span class="text-black-500">–</span>
@@ -59,7 +64,7 @@
 
     <!-- Event Location -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36" for="{{ form.location.id_for_label }}">Location</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.location.id_for_label }}">Location</label>
         <div class="flex-1">
             {{ form.location }}
         </div>
@@ -67,7 +72,7 @@
 
     <!-- Address -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36" for="{{ form.address.id_for_label }}">Address</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.address.id_for_label }}">Address</label>
         <div class="flex-1">
             {{ form.address }}
         </div>
@@ -75,7 +80,7 @@
 
     <!-- Sports Category -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36" for="{{ form.sports_category.id_for_label }}">Sports Category</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.sports_category.id_for_label }}">Sports Category</label>
         <div class="flex-1">
             {{ form.sports_category }}
         </div>
@@ -83,24 +88,21 @@
 
     <!-- Acticity Category -->
     <div class="flex items-center gap-2">
-        <label class="field-label w-36" for="{{ form.activity_category.id_for_label }}">Activity Category</label>
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.activity_category.id_for_label }}">Activity Category</label>
         <div class="flex-1">
             {{ form.activity_category }}
         </div>
     </div>
 
-    <!-- Price & Currency -->
+    <!--  Fee -->
     <div class="flex items-center gap-3">
-        <label class="field-label w-36" for="{{ form.price.id_for_label }}">
-            Price
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.fee.id_for_label }}">
+            Fee
     </label>
 
-    <div class="flex items-center gap-2">
-        <div class="w-[30px]">
-            {{ form.currency }}
-        </div>
+    <div  id="fee-fields" class="flex items-center gap-2">
         <div class="w-[150px]">
-            {{ form.price }}
+            {{ form.fee }}
         </div>
 
     <!-- Paid checkbox -->
@@ -115,12 +117,19 @@
   
     <!-- Submit -->
     <div class="flex justify-center pt-4">
-    <button type="submit" class="btn btn-details appearance-none">
-        Save Event →
-    </button>
+        <button type="submit" class="btn w-full h-12 text-lg 
+                                                    bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+                                                    text-white border-none shadow-lg
+                                                    hover:shadow-xl hover:-translate-y-0.5 
+                                                    transition-all duration-200 ease-in-out">
+            Save Event →
+        </button>
     </div>
     </form>
-        </div>
+       </div>
+    </div>
+  </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
@@ -131,34 +140,25 @@
       });
     </script>
 
-    <script>
-    const paidCheck = document.getElementById('paid-check');
-    const priceInput = document.getElementById('id_price');
-    const currencyInput = document.getElementById('id_currency');
+<script>
+  const paid = document.getElementById('paid-check');
+  const fee = document.getElementById('id_fee');
 
-    // awalnya nonaktif
-    priceInput.disabled = true;
-    currencyInput.disabled = true;
-    priceInput.classList.add('opacity-40');
-    currencyInput.classList.add('opacity-40');
+  function togglePaid(on){
+    fee.disabled = !on;
+    fee.classList.toggle('opacity-40', !on);
+    fee.classList.toggle('cursor-not-allowed', !on);
 
-    paidCheck.addEventListener('change', () => {
-        const enabled = paidCheck.checked;
-        priceInput.disabled = !enabled;
-        currencyInput.disabled = !enabled;
+    if (on) {
+      fee.focus();
+    } else {
+      fee.value = '';
+    }
+  }
 
-        // kasih efek abu-abu saat nonaktif
-        if (enabled) {
-        currencyInput.value = 'IDR';
-        priceInput.classList.remove('opacity-40');
-        currencyInput.classList.remove('opacity-40');
-        } else {
-        priceInput.value = '';
-        currencyInput.value = '';
-        priceInput.classList.add('opacity-40');
-        currencyInput.classList.add('opacity-40');
-        }
-    });
-    </script>
+  togglePaid(paid.checked);
+  paid.addEventListener('change', () => togglePaid(paid.checked));
+</script>
+{% endblock content %}
   </body>
 </html> 

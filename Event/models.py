@@ -43,9 +43,8 @@ class Event(models.Model):
     sports_category = models.CharField(max_length=20, choices=SPORTS_CATEGORY_CHOICES)
     activity_category = models.CharField(max_length=20, choices=ACTIVITY_CATEGORY_CHOICES)
     
-    # Price
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)])
-    currency = models.CharField(max_length=3, blank=True, null=True)
+    # Fee
+    fee = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True, validators=[MinValueValidator(0)])
 
     # Kapasitas
     capacity = models.PositiveSmallIntegerField(default=0)
