@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block meta %}
 <title>Bookmarks</title>
 {% endblock meta %}
-{% load static %}
-{% block content %}
-{% load humanize %}
-{% include 'templates/navbar.html' %}
 
-<body>
-    <h1>
-        yhaha masi kosong
-    </h1>
-</body>
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="h-16 md:h-19"></div> 
+<section class="text-center py-10">
+    <h1 class="text-2xl font-bold text-gray-800">Yhaha masi kosong</h1>
+</section>
+{% endblock content %}

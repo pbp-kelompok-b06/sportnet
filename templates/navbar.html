@@ -21,7 +21,7 @@
             class="hover:text-white  hover:font-bold transition-colors">
             Home
         </a>
-        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_main' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
+        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_bookmark' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
             class="hover:text-white hover:font-bold transition-colors">
             Bookmarks
         </a>
@@ -117,7 +117,7 @@
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Home
         </a>
-        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_main' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
+        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_bookmark' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Bookmarks
         </a>

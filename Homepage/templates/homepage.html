@@ -21,7 +21,13 @@
     
     <div id="loading-spinner" class="text-center text-gray-500 my-10">Memuat event...</div>
     <div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-    </div>
+        {% for event in events %}
+            {% include 'card_event.html' %}
+        {% empty %}
+            <p class="col-span-full text-center text-gray-500">Tidak ada event ditemukan</p>
+        {% endfor %}
+        </div>
+
     <div id="no-events" class="hidden bg-white rounded-lg border border-gray-200 p-12 text-center max-w-5xl mx-auto my-10">
         <h3 class="text-lg font-medium text-gray-900 mb-2">Tidak ada Event ditemukan</h3>
     </div>
@@ -30,6 +36,7 @@
 {% endblock content %}
 
 {% block scripts %}
+{#
 <script>
 function createEventCard(event) {
     // Data aman
@@ -101,66 +108,6 @@ function createEventCard(event) {
         </article>
     `;
 }
-
-// 🔁 Event listener tetap sama
-document.addEventListener('DOMContentLoaded', function() {
-    const eventGrid = document.getElementById('event-grid');
-    const loadingSpinner = document.getElementById('loading-spinner');
-    const noEventsMessage = document.getElementById('no-events');
-    const jsonUrl = "{% url 'Homepage:get_event_data_json' %}"; 
-
-    fetch(jsonUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
-            return response.json();
-        })
-        .then(events => {
-            if (events.length > 0) {
-                const eventsToShow = events.slice(0, 6);
-                eventGrid.innerHTML = eventsToShow.map(createEventCard).join('');
-
-                // Toggle state bookmark: attach listener on button, change only SVG attributes
-                 document.querySelectorAll('.bookmark-toggle').forEach(btn => {
-                     btn.addEventListener('click', function(e) {
-                         e.preventDefault();
-                         const svg = this.querySelector('svg.lid-toggle');
-                         if (!svg) return;
-                         const currentlyBookmarked = svg.getAttribute('data-bookmarked') === 'true';
- 
-                        if (currentlyBookmarked) {
-                            svg.setAttribute('fill', '#FFE6D4');
-                            svg.setAttribute('data-bookmarked', 'false');
-                            svg.setAttribute('stroke', '#FFE6D4'); // kembali ke abu
-                            svg.setAttribute('stroke-width', '2');
-                            // optional small shrink animation
-                            svg.style.transform = 'scale(1)';
-                            this.setAttribute('aria-pressed', 'false');
-                        } else {
-                            svg.setAttribute('fill', '#FF3B3B');
-                            svg.setAttribute('data-bookmarked', 'true');
-                            svg.setAttribute('stroke', '#FF3B3B'); // stroke ikut warna bookmarked
-                            svg.setAttribute('stroke-width', '2.2');
-                            svg.style.transform = 'scale(1.02)';
-                            this.setAttribute('aria-pressed', 'true');
-                        }
- 
-                         const eventId = this.getAttribute('data-event-id');
-                         console.log(`Bookmark toggled for Event ID: ${eventId} -> ${!currentlyBookmarked}`);
-                         // TODO: kirim status ke backend jika perlu
-                     });
-                 });
-            } else {
-                noEventsMessage.classList.remove('hidden');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching event data:', error);
-            eventGrid.innerHTML = `<div class="col-span-2 text-center text-red-500">Gagal memuat event. Silakan coba lagi nanti.</div>`;
-        })
-        .finally(() => {
-            loadingSpinner.classList.add('hidden');
-        });
-});
 </script>
-
+#}
 {% endblock scripts %}
