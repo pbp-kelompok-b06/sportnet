@@ -5,7 +5,7 @@
         <a href="/" class="text-2xl font-bold text-[var(--color-main-50)]">SportNet</a>
     </h1>
 
-    <div class="hidden md:flex items-center space-x-8">
+    <div class="hidden md:flex items-center space-x-8 transition-all">
         <a href="/" class="font-medium text-xl text-[var(--color-main-50)] hover:font-bold hover:text-[var(--color-main-50)] transition-all">Home</a>
         
         <a href="{% if user.is_authenticated %}{% url 'bookmarks:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" class="font-medium text-xl text-[var(--color-main-50)] hover:font-bold hover:text-[var(--color-main-50)] transition-all">Bookmarks</a>

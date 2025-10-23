@@ -1,26 +1,159 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
 {% include 'navbar.html' %}
+<div class="container mx-auto px-4 bg-gradient-to-t to-white from-[#FFE6D4] min-h-screen pb-10 from-10% to-50%">
 
-  <!-- Header Section -->
-  <header class="text-center my-8">
-    <h2 class="text-2xl font-bold">Hello, User!</h2>
-    <p class="text-gray-500 mb-6">Discover your next adventure here</p>
-    <div class="bg-gray-100 mx-auto rounded-full w-1/2 h-8"></div>
-  </header>
-
-  <!-- Event Grid -->
-  
-    {% if not events %}
-        <div class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No Event found</h3>
-        </div>
-        {% else %}
-        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-            {% for event in events|slice:"0:4" %}
-            {% include 'card_event.html' with events=event %}
-            {% endfor %}
-        </div>
-        {% endif %}
+    <header class="text-center my-8">
+        <h2 class="text-2xl font-bold">Hello, User!</h2>
+        <p class="text-gray-500 mb-6">Discover your next adventure here</p>
+        <div class="bg-gray-100 mx-auto rounded-full w-1/2 h-8"></div>
+    </header>
     
+    <div id="loading-spinner" class="text-center text-gray-500 my-10">Memuat event...</div>
+    <div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+    </div>
+    <div id="no-events" class="hidden bg-white rounded-lg border border-gray-200 p-12 text-center max-w-5xl mx-auto my-10">
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Tidak ada Event ditemukan</h3>
+    </div>
+</div>
+
 {% endblock content %}
+
+{% block scripts %}
+<script>
+function createEventCard(event) {
+    // Data aman
+    const parent = event && (event.parent_event ?? event) || {};
+    const name = parent.name ?? 'Untitled Event';
+    const thumbnail = parent.image ?? '/static/images/default-thumb.jpg';
+    const startTime = parent.start_time ?? parent.date ?? '';
+    const location = parent.location ?? 'Lokasi tidak tersedia';
+    const description = parent.description ?? parent.short_description ?? '';
+    const shortDescription = description
+        ? (description.length > 100 ? description.substring(0, 100) + '...' : description)
+        : 'Deskripsi tidak tersedia.';
+
+    // Tombol bookmark (default belum aktif)
+    const isBookmarked = false;
+    const bookmarkBaseClass = "bg-gradient-to-t to-[#FFCAA8] from-[#FFA571] p-3 rounded-full text-white shadow-md transition-all duration-300 hover:from-orange-200 hover:to-orange-300 active:scale-90";
+    const eventId = parent.id ?? parent.pk ?? event.id ?? '';
+    const bookmarkButtonId = `bookmark-${eventId}`;
+
+    return `
+        <article class="flex w-[500px] rounded-3xl overflow-hidden shadow-lg bg-gradient-to-t from-white to-[#FFE6D4] hover:shadow-xl hover:scale-105 transition-shadow-scale duration-300">
+            
+            <div class="w-1/2">
+                <img 
+                    src="${thumbnail}" 
+                    alt="Event Image" 
+                    class="w-full h-full object-cover"
+                />
+            </div>
+
+            <div class="w-1/2 bg-gradient-to-t to-white from-[#FFE6D4] from-10% to-50% p-6 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-1">${name}</h2>
+                    <p class="text-gray-700 font-medium mb-2">${startTime}</p>
+                    <p class="text-gray-500 font-semibold mb-4">${location}</p>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        ${shortDescription} 
+                    </p>
+                </div>
+
+                <div class="flex items-center justify-between mt-6">
+                    <!-- Tombol Details -->
+                    <a href="#" 
+                       class="px-6 py-2 rounded-full font-medium flex items-center gap-2 
+                              bg-gradient-to-b to-[#FFF4ED] from-white text-[#FFCAA8] 
+                              shadow-md transition-all duration-300 
+                              hover:to-[#FFA571] hover:from-[#FFCAA8] hover:text-[#FFF4ED] hover:shadow-lg transition-all">
+                        Details
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+
+                    <!-- Tombol Bookmark -->
+                    <button 
+                        id="${bookmarkButtonId}" 
+                        class="${bookmarkBaseClass} bookmark-toggle transition-all" 
+                        data-event-id="${eventId}"
+                        aria-pressed="${isBookmarked ? 'true' : 'false'}"
+                    >
+                        <!-- SVG hanya akan diubah (fill/data-bookmarked) -->
+                        <svg class="w-5 h-5 lid-toggle" data-bookmarked="${isBookmarked ? 'true' : 'false'}" viewBox="0 0 24 24"
+                             stroke="${isBookmarked ? '#FF3B3B' : '#FFE6D4'}" stroke-width="2" fill="${isBookmarked ? '#FF3B3B' : '#FFE6D4'}"
+                             style="transition: fill .18s ease, stroke .18s ease, transform .12s ease;" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 5v14l7-7 7 7V5z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+// 🔁 Event listener tetap sama
+document.addEventListener('DOMContentLoaded', function() {
+    const eventGrid = document.getElementById('event-grid');
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const noEventsMessage = document.getElementById('no-events');
+    const jsonUrl = "{% url 'Homepage:get_event_data_json' %}"; 
+
+    fetch(jsonUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok: ' + response.statusText);
+            return response.json();
+        })
+        .then(events => {
+            if (events.length > 0) {
+                const eventsToShow = events.slice(0, 6);
+                eventGrid.innerHTML = eventsToShow.map(createEventCard).join('');
+
+                // Toggle state bookmark: attach listener on button, change only SVG attributes
+                 document.querySelectorAll('.bookmark-toggle').forEach(btn => {
+                     btn.addEventListener('click', function(e) {
+                         e.preventDefault();
+                         const svg = this.querySelector('svg.lid-toggle');
+                         if (!svg) return;
+                         const currentlyBookmarked = svg.getAttribute('data-bookmarked') === 'true';
+ 
+                        if (currentlyBookmarked) {
+                            svg.setAttribute('fill', '#FFE6D4');
+                            svg.setAttribute('data-bookmarked', 'false');
+                            svg.setAttribute('stroke', '#FFE6D4'); // kembali ke abu
+                            svg.setAttribute('stroke-width', '2');
+                            // optional small shrink animation
+                            svg.style.transform = 'scale(1)';
+                            this.setAttribute('aria-pressed', 'false');
+                        } else {
+                            svg.setAttribute('fill', '#FF3B3B');
+                            svg.setAttribute('data-bookmarked', 'true');
+                            svg.setAttribute('stroke', '#FF3B3B'); // stroke ikut warna bookmarked
+                            svg.setAttribute('stroke-width', '2.2');
+                            svg.style.transform = 'scale(1.02)';
+                            this.setAttribute('aria-pressed', 'true');
+                        }
+ 
+                         const eventId = this.getAttribute('data-event-id');
+                         console.log(`Bookmark toggled for Event ID: ${eventId} -> ${!currentlyBookmarked}`);
+                         // TODO: kirim status ke backend jika perlu
+                     });
+                 });
+            } else {
+                noEventsMessage.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching event data:', error);
+            eventGrid.innerHTML = `<div class="col-span-2 text-center text-red-500">Gagal memuat event. Silakan coba lagi nanti.</div>`;
+        })
+        .finally(() => {
+            loadingSpinner.classList.add('hidden');
+        });
+});
+</script>
+
+{% endblock scripts %}
