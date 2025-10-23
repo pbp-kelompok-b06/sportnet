@@ -1,0 +1,44 @@
+{% load static %}
+
+<article class="card border rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 bg-white">
+  <div class="card__thumb relative">
+    {% if event.thumbnail %}
+      <img src="{{ event.thumbnail }}" alt="{{ event.name }}" class="w-full h-56 object-cover">
+    {% else %}
+      <div class="w-full h-56 bg-gray-200 flex items-center justify-center text-gray-400 italic">
+        No Image Available
+      </div>
+    {% endif %}
+
+    {% if event.sports_category %}
+      <span class="absolute top-3 left-3 bg-orange-500 text-white text-xs px-3 py-1 rounded-full">
+        {{ event.get_sports_category_display }}
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="p-4 flex flex-col justify-between h-full">
+    <div>
+      <h3 class="text-lg font-bold text-gray-800 mb-2">{{ event.name }}</h3>
+      <p class="text-sm text-gray-500 mb-1">
+        📍 {{ event.location }}
+      </p>
+      <p class="text-sm text-gray-500 mb-2">
+        🗓️ {{ event.start_time|date:"M j, Y - H:i" }}
+        {% if event.end_time %}–{{ event.end_time|date:"H:i" }}{% endif %}
+      </p>
+      <p class="text-gray-700 text-sm line-clamp-3">
+        {{ event.description|truncatechars:120 }}
+      </p>
+    </div>
+
+    <div class="flex justify-between items-center mt-4">
+      <a href="#" class="text-orange-500 hover:text-orange-600 font-semibold">Details →</a>
+      <button class="bookmark-toggle p-2 bg-orange-100 rounded-full hover:bg-orange-200 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14l7-7 7 7V5z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</article>

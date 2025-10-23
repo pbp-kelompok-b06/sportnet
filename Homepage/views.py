@@ -25,22 +25,15 @@ def serialize_event(card_event):
         'category': event.sports_category
     }
 
-# Tampilan utama kini hanya merender template.
 def show_main(request):
-
-    # NOTE: Kode ini hanya untuk demonstrasi membuat dummy event.
-    # Sebaiknya, Anda memiliki cara untuk membuat Event nyata (misal, dari form).
-    # get_or_create mencegah duplikat setiap kali halaman di-refresh.
-    
     events = Event.objects.all()
     for event in events:
         CardEvent.objects.get_or_create(parent_event=event)
-        
-    # Membuat CardEvent yang terhubung dengan dummy_event di atas.
-    # Ini juga menggunakan get_or_create untuk menghindari duplikat.
-    # CardEvent.objects.get_or_create(parent_event=dummy_event)
-
-    return render(request, 'homepage.html')
+    
+    context = {
+        'events': events,
+    }
+    return render(request, 'homepage.html', context)
 
 # Tampilan baru untuk menyediakan data event dalam JSON
 def get_event_data_json(request):
