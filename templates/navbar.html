@@ -19,7 +19,7 @@
             class="hover:text-white  hover:font-bold transition-colors">
             Home
         </a>
-        <a href="{% if user.is_authenticated %}{% url 'bookmarks:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
+        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_main' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
             class="hover:text-white hover:font-bold transition-colors">
             Bookmarks
         </a>
@@ -40,7 +40,7 @@
           </a>
 
         <!-- Profile (desktop) -->
-          <a href="{% url 'profile:show' %}">
+          <a href="{% url 'Profile:show_main' %}">
             <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
               <img
                 src="{% if user.is_authenticated and user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
@@ -69,7 +69,7 @@
 
         <!-- Profile (mobile) -->
         {% if user.is_authenticated %}
-          <a href="{% url 'profile:show' %}">
+          <a href="{% url 'Profile:show_main' %}">
             <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
               <img
                 src="{% if user.is_authenticated and user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
@@ -111,7 +111,7 @@
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Home
         </a>
-        <a href="{% if user.is_authenticated %}{% url 'bookmarks:show' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
+        <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_main' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
           Bookmarks
         </a>
