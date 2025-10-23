@@ -1,23 +1,130 @@
-<nav class="bg-[#d6d1cf] flex justify-between items-center px-8 py-3">
-    <h1 class="text-2xl font-bold text-gray-800">Sport<span class="text-gray-700">Net</span></h1>
-    <div class="hidden md:flex items-center space-x-8">
-          <a href="/" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Home
-          </a>
-          <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Bookmarks
-          </a>
-          <a href="#" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Profile
-          </a>
-        </div>
-    <div class="flex items-center gap-3">
-      <div class="w-6 h-6 rounded bg-gray-600">
-        Login
-      </div>
-      <div class="w-6 h-6 rounded bg-gray-400">
-        Register
+{% load static %}
+<nav class="fixed top-0 left-0 w-full z-50"
+     style="background: var(--color-gradient1);">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <div class="flex items-center">
+        <h1 class="text-xl tracking-tight"
+            style="color:var(--color-main-50); font-family:var(--font-inter); font-weight:600">
+          SportNet
+        </h1>
       </div>
 
+      <!-- Navigation Links (Desktop) -->
+      <div class="hidden md:flex items-center space-x-8"
+           style="color:var(--color-main-50); font-weight:500; font-family:var(--font-inter);">
+        <a href="/" class="hover:text-white  hover:font-bold transition-colors">Home</a>
+        <a href="{% url 'bookmarks' %}" class="hover:text-white hover:font-bold transition-colors">Bookmarks</a>
+      </div>
+
+      <!-- User Section (Desktop) -->
+      <div class="hidden md:flex items-center space-x-4">
+        
+        {% if user.is_authenticated %}
+        <button
+          class="btn btn-gradient hover:bg-none hover:bg-[var(--color-main-700)] hover:text-[var(--color-main-50)] transition-colors">
+          Logout
+        </button>
+
+      <!-- Profile (desktop) -->
+        <a href="{% url 'profile' %}">
+          <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
+            <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
+                alt="Profile" class="w-full h-full object-cover">
+          </div>
+        </a>
+
+        {% else %}
+          <a href="{% url 'login' %}">
+            <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
+              <img src="{% static 'images/profile-default.jpg' %}"
+                  alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all">
+            </div>
+          </a>
+          
+          <a href="{% url 'login' %}" class="transition-colors text-[var(--color-main-50)] hover:text-[var(--color-main-100)]">
+            Login</a>
+
+        {% endif %}
+      </div>
+
+      <!-- User Section (Mobile): profile + hamburger -->
+      <div class="md:hidden flex items-center gap-3">
+
+        <!-- Profile (mobile) -->
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' %}">
+            <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
+              <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
+                  alt="Profile" class="w-full h-full object-cover">
+            </div>
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}">
+            <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
+              <img src="{% static 'images/profile-default.jpg' %}"
+                  alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all">
+            </div>
+          </a>
+        {% endif %}
+
+        <button id="mobileBtn" class="p-2 transition-colors"
+                style="color:var(--color-main-50);" aria-expanded="false">
+          <span class="sr-only">Open menu</span>
+          <div class="w-6 h-6 flex flex-col justify-center items-center">
+            <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
+            <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"></span>
+            <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
+          </div>
+        </button>
+      </div>
     </div>
-  </nav>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu"
+       class="hidden md:hidden absolute left-0 top-16 w-full z-40 bg-white border-t border-black/10">
+    <div class="px-6 py-4 space-y-4">
+
+      <!-- Mobile Navigation Links -->
+      <div class="space-y-1" style="font-family:var(--font-inter); font-weight:500;">
+        <a href="/"
+           class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
+          Home
+        </a>
+        <a href="{% url 'bookmarks' %}"
+           class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
+          Bookmarks
+        </a>
+      </div>
+
+      <div class="border-t border-black/10 pt-4 space-y-3">
+        {% if user.is_authenticated %}
+        <button
+          class="btn w-full bg-[var(--color-main-300)] text-[var(--color-main-50)] hover:bg-[var(--color-main-700)] hover:text-[var(--color-main-50)] transition-colors">
+          Logout
+        </button>
+
+        {% else %}
+        <a href="{% url 'login' %}"
+           class="block font-medium py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)]">
+          Login
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById("mobileBtn");
+    const menu = document.getElementById("mobileMenu");
+
+    btn?.addEventListener("click", () => {
+      const opened = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!opened));
+      menu.classList.toggle("hidden", opened);
+    });
+  </script>
+</nav>

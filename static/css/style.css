@@ -32,20 +32,19 @@
   --color-yellow-200: #FFEC71;
 
   /* === Font Family === */
-  --font-inter-regular: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-inter-bold: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Base */
 @layer base {
   body {
-    font-family: var(--font-inter-regular);
+    font-family: var(--font-inter);
     font-weight: 400;
   }
 
   h1, h2, h3 {
-    font-family: var(--font-inter-bold);
-    font-weight: 700;
+    font-family: var(--font-inter);
+    font-weight: 600;
   }
 
   a {
@@ -63,7 +62,8 @@
     padding: 0 14px;
     border: none;
     border-radius: 24px;
-    font-family: var(--font-inter-regular);
+    font-family: var(--font-inter);
+    font-weight: 500;
     font-size: 14px;
     letter-spacing: 0.28px;
     transition: all 0.25s ease;
@@ -71,8 +71,8 @@
 
   /* NORMAL: */
   .btn-gradient {
-    color: var(--color-main-50);   /* text color */
-    background: var(--color-gradient1);
+    color: var(--color-main-300);   /* text color */
+    background: var(--color-gradient2);
     box-shadow: none;
     box-shadow: none;
     outline: none;
@@ -80,8 +80,8 @@
 
   /* HOVER */
   .btn-gradient:hover {
-    color: var(--color-main-400);   /* text color */
-    background: var(--color-gradient2);
+    color: var(--color-main-50);   /* text color */
+    background: var(--color-gradient1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.01);
     outline: none;
   }
