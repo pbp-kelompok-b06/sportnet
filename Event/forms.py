@@ -15,44 +15,44 @@ class EventForm(forms.ModelForm):
             "address",
             "sports_category",
             "activity_category",
-            "price",
-            "currency",
+            "fee",
+    
         ]
         widgets = {
             "name": forms.TextInput(attrs={
-                "class": "field",
+                "class": "w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "description": forms.Textarea(attrs={
-                "class": "field h-[100px]",
+                "class": " h-[100px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "thumbnail": forms.URLInput(attrs={
-                "class": "field",
+                "class": "w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "start_time": forms.TextInput(attrs={
-                "class": "field datetimepicker w-[150px]",
+                "class": "datetimepicker w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
                 "placeholder": "Start"
             }),
             "end_time": forms.TextInput(attrs={
-                "class": "field datetimepicker w-[150px]",
+                "class": "datetimepicker w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
                 "placeholder": "End"
             }),
             "location": forms.TextInput(attrs={
-                "class": "field",
+                "class": "w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "address": forms.Textarea(attrs={
-                "class": "field h-[100px]",
+                "class": "h-[100px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "sports_category": forms.Select(attrs={
-                "class": "field w-[140px]",
+                "class": " w-[180px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "activity_category": forms.Select(attrs={
-                "class": "field w-[140px]",
+                "class": "w-[180px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
-            "price": forms.NumberInput(attrs={
-                "class": "field w-[150px]",
+            "fee": forms.NumberInput(attrs={
+                "class": "w-[150px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "currency": forms.TextInput(attrs={
-                "class": "field w-[30px]",
+                "class": "w-[50px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
         }
 
