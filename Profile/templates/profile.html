@@ -1,14 +1,133 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block meta %}
-<title>Profile</title>
+    <title>
+        {% if participant %}
+            {{ participant.full_name }}
+        {% elif organizer %}
+            {{ organizer.organizer_name }}
+        {% endif %}
+        's Profile
+    </title>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
-<div>
-    <div class="mt-8 text-center">
-        <a href="{% url 'Profile:edit_profile' %}" class ="">Edit Profile</a>
+
+<div class="w-full min-h-screen bg-gradient-to-br from-[var(--color-main-50)] to-[var(--color-main-200)] pt-20 pb-20">
+    <div class="container mx-auto px-4 max-w-4xl">
+        
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden relative">
+            
+            <div class="h-40 bg-gradient-to-r from-[var(--color-main-300)] to-[var(--color-main-500)] relative">
+                <div class="absolute inset-0 bg-black opacity-10"></div>
+            </div>
+
+            <div class="absolute top-24 left-1/2 -translate-x-1/2 w-full px-6 mb-12">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white bg-white shadow-lg">
+                        <img class="w-full h-full object-cover"
+                             src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% elif organizer.profile_picture %}{{ organizer.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
+                             alt="Profile Picture">
+                    </div>
+                    <div class="mt-4">
+                        <h2 class="text-3xl font-bold text-[var(--color-text-700)]">
+                            {% if participant %}{{ participant.full_name }}{% elif organizer %}{{ organizer.organizer_name }}{% endif %}
+                        </h2>
+                        <p class="text-md text-[var(--color-text-400)]">@{{ profile_user.username }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if user == profile_user %}
+                <div class="absolute top-4 right-4">
+                    <a href="{% url 'profile:edit_profile' %}" class="btn p-2 rounded-full bg-white/30 text-white hover:bg-white/50 backdrop-blur-sm transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"></path></svg>
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="px-6 sm:px-10 pb-10 pt-40"> <div>
+                    {% if participant %}
+                        <h3 class="text-xl font-bold text-[var(--color-text-600)] mb-4">About Me</h3>
+                        <p class="text-[var(--color-text-500)] mb-8">{{ participant.about|default:"No bio provided." }}</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <div>
+                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Location</h4>
+                                <p class="text-lg text-[var(--color-text-700)]">{{ participant.location|default:"-" }}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Birth Date</h4>
+                                <p class="text-lg text-[var(--color-text-700)]">{{ participant.birth_date|date:"F d, Y"|default:"-" }}</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Interests</h4>
+                                <p class="text-lg text-[var(--color-text-700)]">{{ participant.interests|default:"-" }}</p>
+                            </div>
+                        </div>
+
+                    {% elif organizer %}
+                    
+                    <h3 class="text-xl font-bold text-[var(--color-text-600)] mb-2">About Organizer</h3>
+                    <p class="text-[var(--color-text-500)] mb-8">{{ organizer.about|default:"No bio provided." }}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <div>
+                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Contact Email</h4>
+                                <p class="text-lg text-[var(--color-text-700)]">{{ organizer.contact_email|default:"-" }}</p>
+                            </div>
+                            <div>
+                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Contact Phone</h4>
+                                <p class="text-lg text-[var(--color-text-700)]">{{ organizer.contact_phone|default:"-" }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12">
+            <h2 class="text-3xl font-bold text-[var(--color-text-700)] mb-6">Booked Events</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden group transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="h-40 bg-gray-200 animate-pulse relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Upcoming</span>
+                    </div>
+                    <div class="p-5">
+                        <div class="h-4 bg-gray-300 rounded w-3/4 animate-pulse mb-3"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/2 animate-pulse mb-4"></div>
+                        <div class="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
+                        <div class="h-3 bg-gray-200 rounded w-5/6 animate-pulse mt-2"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden group transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="h-40 bg-gray-200 animate-pulse relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        <span class="absolute top-3 right-3 bg-gray-500 text-white text-xs font-bold px-2 py-1 rounded-full">Past</span>
+                    </div>
+                    <div class="p-5">
+                        <div class="h-4 bg-gray-300 rounded w-3/4 animate-pulse mb-3"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/2 animate-pulse mb-4"></div>
+                        <div class="h-3 bg-gray-200 rounded w-full animate-pulse"></div>
+                        <div class="h-3 bg-gray-200 rounded w-5/6 animate-pulse mt-2"></div>
+                    </div>
+                </div>
+
+                <div class="hidden lg:block bg-white rounded-xl shadow-lg overflow-hidden group transform hover:-translate-y-2 transition-all duration-300">
+                    <div class="h-40 bg-gray-200 animate-pulse relative"></div>
+                    <div class="p-5">
+                        <div class="h-4 bg-gray-300 rounded w-3/4 animate-pulse mb-3"></div>
+                        <div class="h-3 bg-gray-200 rounded w-1/2 animate-pulse mb-4"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
-
 {% endblock content %}

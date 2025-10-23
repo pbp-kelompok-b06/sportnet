@@ -1,10 +1,149 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block meta %}
-<title>Edit Profile</title>
+    <title>Edit Profile</title>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
 
+<div class="w-full min-h-screen bg-gradient-to-br from-[var(--color-main-50)] to-[var(--color-main-200)] pt-20 pb-20">
+    <div class="container mx-auto px-4 max-w-4xl">
+        
+        <form method="POST" enctype="multipart/form-data" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl p-6 sm:p-10 space-y-8">
+            {% csrf_token %}
 
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-main-500)] to-[var(--color-main-400)]">Edit Profile</h1>
+                <p class="text-[var(--color-text-400)] mt-2">Keep your profile information up to date.</p>
+            </div>
+
+            <div class="flex flex-col items-center space-y-4 pt-4">
+                <div class="relative group">
+                    <img id="profile_picture_preview" class="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg" 
+                         src="{% if form.instance.profile_picture %}{{ form.instance.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}" 
+                         alt="Profile Picture Preview">
+                    <label for="id_profile_picture" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </label>
+                    <div class="hidden">{{ form.profile_picture }}</div>
+                </div>
+                
+                {% if form.instance.profile_picture %}
+                    <button type="button" id="delete-picture-btn" class="text-sm text-red-500 hover:text-red-700 hover:underline transition-colors">
+                        Delete Picture
+                    </button>
+                {% endif %}
+            </div>
+
+            <div class="border-t border-gray-200 pt-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                    
+                    {% if form.full_name %}
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        {{ form.full_name }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if form.organizer_name %}
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Organizer Name</label>
+                    <div class="relative">
+                        
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        {{ form.organizer_name }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if form.contact_email %}
+                    <div><label class="block text-sm font-bold text-gray-700 mb-1">Organizer Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 10.884l7.997-5H2.003zM10 12.884L2.003 7.884v8.232l5.085-3.41L10 14.884l2.912-1.18 5.088 3.41V7.884L10 12.884z"></path></svg>
+                        </div>
+                        {{ form.contact_email }}
+                    </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if form.contact_phone %}
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                            </svg>
+                        </div>
+                        {{ form.contact_phone }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if form.location %}
+                        <div class="relative"> ... {{ form.location }} </div>
+                    {% endif %}
+                    {% if form.birth_date %}
+                        <div class="relative"> ... {{ form.birth_date }} </div>
+                    {% endif %}
+                    {% if form.interests %}
+                        <div class="md:col-span-2 relative"> ... {{ form.interests }} </div>
+                    {% endif %}
+                    {% if form.about %}
+                        <div class="md:col-span-2"> {{ form.about }} </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="flex justify-end border-t border-gray-200 pt-6">
+                <button type="submit" class="btn px-8 py-2 text-lg 
+                                             bg-gradient-to-r from-[var(--color-main-400)] to-[var(--color-main-500)] 
+                                             text-white border-none shadow-lg
+                                             hover:shadow-xl hover:-translate-y-1 
+                                             transition-all duration-300 ease-in-out transform">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+        
+        <form id="delete-picture-form" method="POST" action="{% url 'profile:delete_Profilepict' %}" class="hidden">
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
 {% endblock content %}
+
+{% block scripts %}
+<script>
+    // Live preview untuk gambar
+    const profilePictureInput = document.getElementById('id_profile_picture');
+    const profilePicturePreview = document.getElementById('profile_picture_preview');
+    if (profilePictureInput) {
+        profilePictureInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePicturePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Fungsi untuk tombol delete
+    const deleteBtn = document.getElementById('delete-picture-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete your profile picture?')) {
+                document.getElementById('delete-picture-form').submit();
+            }
+        });
+    }
+</script>
+{% endblock scripts %}
