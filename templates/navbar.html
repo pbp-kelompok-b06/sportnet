@@ -42,15 +42,18 @@
         <!-- Profile (desktop) -->
           <a href="{% url 'profile:show' %}">
             <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
-              <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
-                  alt="Profile" class="w-full h-full object-cover">
+              <img
+                src="{% if user.is_authenticated and user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
+                alt="Profile"
+                class="w-full h-full object-cover"
+              />
             </div>
           </a>
 
         {% else %}
           <a href="{% url 'Authenticate:login' %}">
             <div class="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
-              <img src="{% static 'images/profile-default.jpg' %}"
+              <img src="{% static 'images/profile-default.png' %}"
                   alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all">
             </div>
           </a>
@@ -68,14 +71,17 @@
         {% if user.is_authenticated %}
           <a href="{% url 'profile:show' %}">
             <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
-              <img src="{{ user.profile.profile_picture.url|default_if_none:static('images/profile-default.jpg') }}"
-                  alt="Profile" class="w-full h-full object-cover">
+              <img
+                src="{% if user.is_authenticated and user.profile.profile_picture %}{{ user.profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
+                alt="Profile"
+                class="w-full h-full object-cover"
+              />
             </div>
           </a>
         {% else %}
           <a href="{% url 'Authenticate:login' %}">
             <div class="w-8 h-8 rounded-full overflow-hidden cursor-pointer">
-              <img src="{% static 'images/profile-default.jpg' %}"
+              <img src="{% static 'images/profile-default.png' %}"
                   alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-all">
             </div>
           </a>
