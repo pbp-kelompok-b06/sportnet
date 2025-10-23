@@ -19,6 +19,7 @@ def register_participant(request):
             password = form.cleaned_data['password1']
             if User.objects.filter(username=username).exists:
                 messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
+                return render(request, 'register_participant.html', {'form': form})
             else:
                 user = User.objects.create_user(username=username, password=password)
                 participant = form.save(commit=False)
@@ -27,7 +28,9 @@ def register_participant(request):
                 messages.success(request, "Akun berhasil dibuat! Silahkan login.")
                 return redirect('Authenticate:login')
         else:
-            form = ParticipantRegistrationForm()
+            return render(request, 'register_participant.html', {'form': form})
+    else:
+        form = ParticipantRegistrationForm()
         return render(request, 'register_participant.html', {'form': form})
 
 @csrf_exempt
@@ -36,12 +39,12 @@ def register_organizer(request):
         form = OrganizerRegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
 
-            if User.objects.filter(username=username).exists:
+            if User.objects.filter(username=username).exists():
                 messages.error(request, "Username sudah ada. Silahkan gunakan username lain.")
+                return render(request, 'register_organizer.html', {'form': form})
             else:
-                user = User.objects.create_user(username=username, password=password)
+                user = User.objects.create_user(username=username, password=form.cleaned_data['password1'])
                 organizer = form.save(commit=False)
                 organizer.user = user
                 organizer.save()
@@ -49,6 +52,9 @@ def register_organizer(request):
                 return redirect('Authenticate:login')
         else:
             form = OrganizerRegisterForm()
+        return render(request, 'register_organizer.html', {'form': form})
+    else:
+        form = OrganizerRegisterForm()
         return render(request, 'register_organizer.html', {'form': form})
 
 def register_role_selection(request):

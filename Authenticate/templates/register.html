@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)]">
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl flex bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
+            
+            <div class="hidden md:block md:w-2/5">
+                <img src="{% static 'images/Union.png' %}"
+                     alt="Sports Equipment" 
+                     class="w-full h-full object-cover"></div>
+
+            <div class="w-full md:w-3/5 p-12 flex flex-col justify-center"> <h2 class="text-4xl font-bold text-[var(--color-main-400)] text-center">Join Us!</h2>
+                <p class="mt-2 mb-10 text-[var(--color-text-400)] text-center">Choose your role to get started.</p>
+
+                <div class="space-y-4">
+                    <a href="{% url 'Authenticate:register_participant' %}" class="btn w-full h-12 text-lg flex items-center justify-center
+                                 rounded-full border border-gray-300 bg-gray-50 text-gray-800
+                                 hover:bg-gradient-to-b hover:from-[var(--color-main-300)] hover:to-[var(--color-main-400)]
+                                 hover:text-white hover:shadow-lg hover:border-transparent hover:-translate-y-0.5
+                                 transition-all duration-300 ease-out">
+                    Register as Participant
+                </a>
+
+                    <a href="{% url 'Authenticate:register_organizer' %}" class="btn w-full h-12 text-lg flex items-center justify-center
+                                 rounded-full border border-gray-300 bg-gray-50 text-gray-800
+                                 hover:bg-gradient-to-b hover:from-[var(--color-main-300)] hover:to-[var(--color-main-400)]
+                                 hover:text-white hover:shadow-lg hover:border-transparent hover:-translate-y-0.5
+                                 transition-all duration-300 ease-out">
+                    Register as Organizer
+                </a>
+                </div>
+
+                <p class="text-sm text-center mt-20 text-[var(--color-text-400)]">
+                    Already have an account? 
+                    <a href="{% url 'Authenticate:login' %}" class="font-semibold text-[var(--color-main-600)] hover:underline text-center">
+                        Sign In
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

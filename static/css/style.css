@@ -65,23 +65,26 @@
     transition: background .2s ease, color .2s ease, box-shadow .2s ease;
   }
 
-  /* NORMAL: */
   .btn-details {
-    color: var(--color-main-100); 
-    background: linear-gradient(
-      180deg,
-      var(--color-main-200) 0%,
-      color-mix(in srgb, var(--color-main-600) 40%, transparent) 100%
-    );
-    box-shadow: none;
-  }
+  color: white; /* Warna teks putih */
+  background: linear-gradient(180deg, var(--color-main-300) 0%, var(--color-main-400) 100%); /* Gradasi oranye */
+  border: none; /* Hilangkan border standar */
+  
+  /* Bayangan di bawah tombol untuk efek 3D */
+  box-shadow: 0 5px 15px color-mix(in srgb, var(--color-main-500) 30%, transparent);
 
-  /* HOVER */
-  .btn-details:hover {
-    color: var(--color-main-300);
-    background: linear-gradient(180deg, #FFFFFF 46.42%, var(--color-main-200) 100%);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.09);
-  }
+  /* Bayangan pada teks agar terlihat lebih lembut */
+  text-shadow: 0 1px 2px color-mix(in srgb, var(--color-main-950) 25%, transparent);
+  
+  transition: all 0.2s ease-in-out; /* Transisi untuk hover */
+}
+
+/* Ganti juga efek hover-nya */
+.btn-details:hover {
+  /* Sedikit menaikkan tombol dan mengurangi bayangan saat di-hover */
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px color-mix(in srgb, var(--color-main-500) 35%, transparent);
+}
   
   .field {
     @apply w-full rounded-[28px] border-[3px] px-5 py-3 text-[16px] outline-none transition;
