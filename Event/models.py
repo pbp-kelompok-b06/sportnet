@@ -45,11 +45,11 @@ class Event(models.Model):
     
     # Price
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)])
-    currency = models.CharField(max_length=3, default="IDR", blank=True, null=True)
+    currency = models.CharField(max_length=3, blank=True, null=True)
 
     # Kapasitas
     capacity = models.PositiveSmallIntegerField(default=0)
-    attendee = models.ManyToManyField('Authenticate.Participant', related_name="events_joined", blank=True, null=True)
+    attendee = models.ManyToManyField('Authenticate.Participant', related_name="events_joined", blank=True)
 
 
     @property

@@ -1,26 +1,164 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Create Event</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-</head>
-<body>
-  <h1>Create Event</h1>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create Event</title>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Simpan</button>
-  </form>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script>
-    flatpickr(".datetimepicker", {
-      enableTime: true,
-      dateFormat: "d-m-Y H:i",
-      time_24hr: true
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Flatpickr (datepicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  </head>
+
+  <body class="min-h-screen bg-[var(--color-main-50)] flex items-center justify-center font-[var(--font-inter-regular)]">
+    <div class="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl p-8 w-[600px]">
+      <h1 class="text-2xl font-[var(--font-inter-bold)] text-center mb-6 text-[var(--color-main-700)]">
+        Create Event
+      </h1>
+
+    <form method="post" class="space-y-5">
+  {% csrf_token %}
+
+    <!-- Event Name -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36 " for="{{ form.name.id_for_label }}">Name</label>
+        <div class="flex-1">
+            {{ form.name }}
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36" for="{{ form.description.id_for_label }}">Description</label>
+        <div class="flex-1">
+            {{ form.description }}
+        </div>
+    </div>
+
+    <!-- Thumbnail URL -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36" for="{{ form.thumbnail.id_for_label }}">Thumbnail</label>
+        <div class="flex-1">
+            {{ form.thumbnail }}
+        </div>
+    </div>
+
+    <!-- Event Date -->
+    <div class="flex items-center gap-3">       
+        <label class="field-label w-36" for="{{ form.start_time.id_for_label }}">Date & Time</label>
+            <div class="flex items-center gap-2">
+                {{ form.start_time }}
+                <span class="text-black-500">–</span>
+                {{ form.end_time }}
+        </div>
+    </div>
+
+    <!-- Event Location -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36" for="{{ form.location.id_for_label }}">Location</label>
+        <div class="flex-1">
+            {{ form.location }}
+        </div>
+    </div>
+
+    <!-- Address -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36" for="{{ form.address.id_for_label }}">Address</label>
+        <div class="flex-1">
+            {{ form.address }}
+        </div>
+    </div>
+
+    <!-- Sports Category -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36" for="{{ form.sports_category.id_for_label }}">Sports Category</label>
+        <div class="flex-1">
+            {{ form.sports_category }}
+        </div>
+    </div>
+
+    <!-- Acticity Category -->
+    <div class="flex items-center gap-2">
+        <label class="field-label w-36" for="{{ form.activity_category.id_for_label }}">Activity Category</label>
+        <div class="flex-1">
+            {{ form.activity_category }}
+        </div>
+    </div>
+
+    <!-- Price & Currency -->
+    <div class="flex items-center gap-3">
+        <label class="field-label w-36" for="{{ form.price.id_for_label }}">
+            Price
+    </label>
+
+    <div class="flex items-center gap-2">
+        <div class="w-[30px]">
+            {{ form.currency }}
+        </div>
+        <div class="w-[150px]">
+            {{ form.price }}
+        </div>
+
+    <!-- Paid checkbox -->
+    <label class="flex items-center gap-2 ml-2 text-[var(--color-text-600)]">
+    <input type="checkbox" id="paid-check" class="w-4 h-4 accent-[var(--color-main-600)]">
+    <span>Paid</span>
+    </label>
+  </div>
+</div>
+
+
+  
+    <!-- Submit -->
+    <div class="flex justify-center pt-4">
+    <button type="submit" class="btn btn-details appearance-none">
+        Save Event →
+    </button>
+    </div>
+    </form>
+        </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+      flatpickr(".datetimepicker", {
+        enableTime: true,
+        dateFormat: "d-m-Y | H:i",
+        time_24hr: true
+      });
+    </script>
+
+    <script>
+    const paidCheck = document.getElementById('paid-check');
+    const priceInput = document.getElementById('id_price');
+    const currencyInput = document.getElementById('id_currency');
+
+    // awalnya nonaktif
+    priceInput.disabled = true;
+    currencyInput.disabled = true;
+    priceInput.classList.add('opacity-40');
+    currencyInput.classList.add('opacity-40');
+
+    paidCheck.addEventListener('change', () => {
+        const enabled = paidCheck.checked;
+        priceInput.disabled = !enabled;
+        currencyInput.disabled = !enabled;
+
+        // kasih efek abu-abu saat nonaktif
+        if (enabled) {
+        currencyInput.value = 'IDR';
+        priceInput.classList.remove('opacity-40');
+        currencyInput.classList.remove('opacity-40');
+        } else {
+        priceInput.value = '';
+        currencyInput.value = '';
+        priceInput.classList.add('opacity-40');
+        currencyInput.classList.add('opacity-40');
+        }
     });
-  </script>
-</body>
-</html>
+    </script>
+  </body>
+</html> 

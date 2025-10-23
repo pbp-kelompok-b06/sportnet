@@ -19,13 +19,40 @@ class EventForm(forms.ModelForm):
             "currency",
         ]
         widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "field",
+            }),
+            "description": forms.Textarea(attrs={
+                "class": "field h-[100px]",
+            }),
+            "thumbnail": forms.URLInput(attrs={
+                "class": "field",
+            }),
             "start_time": forms.TextInput(attrs={
-                "class": "datetimepicker",
-                "placeholder": "Select start date and time"
+                "class": "field datetimepicker w-[150px]",
+                "placeholder": "Start"
             }),
             "end_time": forms.TextInput(attrs={
-                "class": "datetimepicker",
-                "placeholder": "Select end date and time"
+                "class": "field datetimepicker w-[150px]",
+                "placeholder": "End"
+            }),
+            "location": forms.TextInput(attrs={
+                "class": "field",
+            }),
+            "address": forms.Textarea(attrs={
+                "class": "field h-[100px]",
+            }),
+            "sports_category": forms.Select(attrs={
+                "class": "field w-[140px]",
+            }),
+            "activity_category": forms.Select(attrs={
+                "class": "field w-[140px]",
+            }),
+            "price": forms.NumberInput(attrs={
+                "class": "field w-[150px]",
+            }),
+            "currency": forms.TextInput(attrs={
+                "class": "field w-[30px]",
             }),
         }
 
