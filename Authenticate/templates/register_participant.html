@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)]">
+    <div class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-3xl flex bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
+            
+            <div class="hidden md:block md:w-2/5">
+                <img src="{% static 'images/Union.png' %}"
+                     alt="Sports Equipment" 
+                     class="w-full h-full object-cover"></div>
+
+            <div class="w-full md:w-3/5 p-12">
+                <h2 class="text-4xl font-bold text-[var(--color-main-400)] text-center">Join Us</h2>
+                <p class="mt-2 mb-8 text-[var(--color-text-400)] text-center">Create your SportNet Acoount</p>
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        {{ form.username }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form.password1 }}
+                    </div>
+
+                    <div class="mb-10">
+                        {{ form.password2 }}
+                    </div>
+
+
+                    {% if messages %}
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
+                            {% for message in messages %}
+                                <span class="block sm:inline">{{ message }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2">
+                    <button type="submit" class="btn w-full h-12 text-lg 
+                                                bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+                                                text-white border-none shadow-lg
+                                                hover:shadow-xl hover:-translate-y-0.5 
+                                                transition-all duration-200 ease-in-out">
+                        Register
+                    </button>
+                </div>
+
+                </form>
+
+                <p class="text-sm text-center mt-6 text-[var(--color-text-400)]">
+                    Don't have an account? 
+                    <a href="{% url 'Authenticate:login' %}" class="font-semibold text-[var(--color-main-600)] hover:underline text-center">
+                        Sign In
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
