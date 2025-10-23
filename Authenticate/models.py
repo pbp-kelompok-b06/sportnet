@@ -5,7 +5,7 @@ class Organizer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='organizer_profile')
     organizer_name = models.CharField(max_length=100)
     contact_email = models.CharField(max_length=50,blank=True, null=True)
-    contact_phone = models.CharField(max_length=15,blank=True,null=True)
+    contact_phone = models.CharField(max_length=20,blank=True,null=True)
     about = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     username = models.CharField(max_length=255)
