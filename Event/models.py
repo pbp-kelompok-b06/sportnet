@@ -52,6 +52,9 @@ class Event(models.Model):
 
 
     @property
+    def nama_kegiatan(self):
+        return self.name
+
     def attendee_count(self):
         return self.attendee.count()
     

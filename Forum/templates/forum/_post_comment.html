@@ -1,0 +1,28 @@
+<div class="post">
+    <p>
+        <img src="{{ post.profile.foto_profil.url }}" alt="foto" width="30" height="30">
+        <strong>{{ post.profile.nama }}</strong> 
+        <small>({{ post.created_at|timesince }} lalu)</small>
+    </p>
+    <p>{{ post.content }}</p>
+    
+    <a href="javascript:void(0);" onclick="toggleReply({{ post.id }})">Reply</a>
+
+    <div id="reply-form-{{ post.id }}" class="reply-form" style="display:none;">
+        <form method="POST" action="{% url 'forum:forum_page' event.id %}">
+            {% csrf_token %}
+            
+            <input type="hidden" name="parent_id" value="{{ post.id }}">
+            
+            {{ form }} 
+            
+            <button type="submit">Kirim Balasan</button>
+        </form>
+    </div>
+
+    <div class="replies">
+        {% for reply in post.replies.all %}
+            {% include "forum/_post_comment.html" with post=reply form=form %}
+        {% endfor %}
+    </div>
+</div>

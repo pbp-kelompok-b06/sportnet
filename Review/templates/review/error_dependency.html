@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Error Proses Review</h2>
+    <p>Gagal memproses review Anda.</p>
+    <p><strong>Error:</strong> {{ error }}</p>
+    <p>Ini kemungkinan terjadi karena app 'events' atau 'authenticate' belum siap.</p>
+{% endblock %}

@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
-from events.models import Event
-from authenticate.models import Profile
+from Event.models import Event
+from Authenticate.models import Participant
 
 
 # Import model & form HANYA untuk Forum
@@ -18,10 +18,10 @@ def forum_page_view(request, event_id):
     Juga menangani pengiriman pesan baru (POST).
     """
     
-    # ambil data Event dan Profile user
+    # ambil data Event dan Participant user
     try:
         event = get_object_or_404(Event, id=event_id)
-        profile = get_object_or_404(Profile, user=request.user) 
+        participant = get_object_or_404(Participant, user=request.user)
     except Exception as e:
         return render(request, 'forum/error_dependency.html', {'error': str(e)})
 

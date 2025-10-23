@@ -1,0 +1,49 @@
+{% extends 'base.html' %} 
+{% block content %}
+<style>
+    /* (Anda bisa taruh CSS di file statis, ini hanya contoh cepat) */
+    .chat-container { max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
+    .post { margin-bottom: 10px; }
+    .replies { margin-left: 30px; border-left: 2px solid #eee; padding-left: 10px; }
+    .reply-form { display: none; margin-left: 30px; }
+</style>
+
+<div class="forum-page">
+    <a href="{% url 'event_detail' event.id %}">
+        &larr; Kembali ke Event
+    </a>
+    
+    <h1>Forum Diskusi: {{ event.name }}</h1>
+
+
+    <div class="chat-container">
+        {% for post in posts %}
+            {% include "forum/_post_comment.html" with post=post form=form %}
+        {% empty %}
+            <p>Belum ada diskusi. Jadilah yang pertama!</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <h3>Tinggalkan Pesan Baru</h3>
+    <form method="POST" action="{% url 'forum:forum_page' event.id %}">
+        {% csrf_token %}
+        
+        {{ form.as_p }} 
+        
+        <button type="submit">Kirim</button>
+    </form>
+</div>
+
+<script>
+    function toggleReply(id) {
+        var form = document.getElementById('reply-form-' + id);
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}
