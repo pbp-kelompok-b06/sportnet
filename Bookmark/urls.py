@@ -1,9 +1,8 @@
 from django.urls import path
-from Bookmark.views import show_main
+from Bookmark.views import show_bookmark
 
-app_name = 'Bookmark'
+app_name = "Bookmark"
 
 urlpatterns = [
-    path('', show_main, name='show_main'),
-
+    path("", show_bookmark, name='show_bookmark'),
 ]
