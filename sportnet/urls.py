@@ -27,5 +27,5 @@ urlpatterns = [
     path('forum/', include("Forum.urls")),
     # path('notification/', include('Notification.urls')),
     path('profile/', include('Profile.urls')),
-    path('review/', include('Reviews.urls')),
+    path('review/', include('Review.urls')),
 ]
