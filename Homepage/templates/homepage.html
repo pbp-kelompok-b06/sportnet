@@ -3,13 +3,21 @@
 
 {% block content %}
 {% include 'navbar.html' %}
-<div class="container mx-auto px-4 bg-gradient-to-t to-white from-[#FFE6D4] min-h-screen pb-10 from-10% to-50%">
+<!-- spacer supaya header tidak tertutup navbar (sesuaikan tinggi jika navbar lebih tinggi/rendah) -->
+<div class="h-16 md:h-19"></div>
+<header class="text-center mb-8 bg-[url('{% static 'images/banner.jpg' %}')] bg-no-repeat bg-center bg-cover bg-fill py-10 px-4">
+  {% if request.user.is_authenticated %}
+    <h2 class="text-2xl font-bold">Hello, {{request.user.username}}</h2>
+  {% else %}
+  <div>
+    <h2 class="text-2xl font-bold text-white">Welcome to SportNet.</h2>
+  </div>
+  {% endif %}
+    <p class="text-gray-500 mb-6 text-white font-extralight">Discover your next adventure here</p>
+    <div class="bg-gray-100 mx-auto rounded-full w-1/2 h-8"></div>
+</header>
+<div class="container mx-auto px-4 bg-gradient-to-t to-white from-[#FFE6D4] bg-fixed bg-center bg-no-repeat min-h-screen min-w-full pb-10 from-10% to-50%">
 
-    <header class="text-center my-8">
-        <h2 class="text-2xl font-bold">Hello, User!</h2>
-        <p class="text-gray-500 mb-6">Discover your next adventure here</p>
-        <div class="bg-gray-100 mx-auto rounded-full w-1/2 h-8"></div>
-    </header>
     
     <div id="loading-spinner" class="text-center text-gray-500 my-10">Memuat event...</div>
     <div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
@@ -37,14 +45,14 @@ function createEventCard(event) {
 
     // Tombol bookmark (default belum aktif)
     const isBookmarked = false;
-    const bookmarkBaseClass = "bg-gradient-to-t to-[#FFCAA8] from-[#FFA571] p-3 rounded-full text-white shadow-md transition-all duration-300 hover:from-orange-200 hover:to-orange-300 active:scale-90";
+    const bookmarkBaseClass = "p-2 sm:p-3 rounded-full text-white shadow-md transition-all duration-300 hover:from-orange-200 hover:to-orange-300 active:scale-90";
     const eventId = parent.id ?? parent.pk ?? event.id ?? '';
     const bookmarkButtonId = `bookmark-${eventId}`;
 
     return `
-        <article class="flex w-[500px] rounded-3xl overflow-hidden shadow-lg bg-gradient-to-t from-white to-[#FFE6D4] hover:shadow-xl hover:scale-105 transition-shadow-scale duration-300">
+        <article class="w-full flex flex-col md:flex-row rounded-3xl overflow-hidden shadow-lg bg-gradient-to-t from-white to-[#FFE6D4] hover:shadow-xl hover:scale-105 transition-transform duration-300">
             
-            <div class="w-1/2">
+            <div class="w-full md:w-1/2 h-48 md:h-auto">
                 <img 
                     src="${thumbnail}" 
                     alt="Event Image" 
@@ -52,23 +60,22 @@ function createEventCard(event) {
                 />
             </div>
 
-            <div class="w-1/2 bg-gradient-to-t to-white from-[#FFE6D4] from-10% to-50% p-6 flex flex-col justify-between">
+            <div class="w-full md:w-1/2 p-4 sm:p-6 bg-gradient-to-t to-white from-[#FFE6D4] flex flex-col justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800 mb-1">${name}</h2>
-                    <p class="text-gray-700 font-medium mb-2">${startTime}</p>
-                    <p class="text-gray-500 font-semibold mb-4">${location}</p>
+                    <h2 class="text-lg sm:text-2xl font-bold text-gray-800 mb-1">${name}</h2>
+                    <p class="text-sm sm:text-base text-gray-700 font-medium mb-1">${startTime}</p>
+                    <p class="text-sm text-gray-500 font-semibold mb-3">${location}</p>
                     <p class="text-gray-500 text-sm leading-relaxed">
                         ${shortDescription} 
                     </p>
                 </div>
 
-                <div class="flex items-center justify-between mt-6">
+                <div class="flex items-center justify-between mt-4">
                     <!-- Tombol Details -->
                     <a href="#" 
-                       class="px-6 py-2 rounded-full font-medium flex items-center gap-2 
+                       class="px-4 py-2 rounded-full font-medium flex items-center gap-2 
                               bg-gradient-to-b to-[#FFF4ED] from-white text-[#FFCAA8] 
-                              shadow-md transition-all duration-300 
-                              hover:to-[#FFA571] hover:from-[#FFCAA8] hover:text-[#FFF4ED] hover:shadow-lg transition-all">
+                              shadow-md transition-all duration-300 hover:to-[#FFA571] hover:from-[#FFCAA8] hover:text-[#FFF4ED] hover:shadow-lg">
                         Details
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -78,7 +85,7 @@ function createEventCard(event) {
                     <!-- Tombol Bookmark -->
                     <button 
                         id="${bookmarkButtonId}" 
-                        class="${bookmarkBaseClass} bookmark-toggle transition-all" 
+                        class="${bookmarkBaseClass} bookmark-toggle bg-gradient-to-t to-[#FFCAA8] from-[#FFA571]" 
                         data-event-id="${eventId}"
                         aria-pressed="${isBookmarked ? 'true' : 'false'}"
                     >
