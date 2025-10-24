@@ -8,6 +8,7 @@ from .forms import EventForm
 from .models import Event
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.http import HttpResponseForbidden
 
 
 # Ambil model Organizer dari app Authenticate tanpa hard import

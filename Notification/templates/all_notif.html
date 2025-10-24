@@ -12,7 +12,7 @@
 <section class="text-center py-10">
     <div class="max-w-3xl mx-auto px-4">
         <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">Notifikasi Saya</h1>
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">My Notifications</h1>
             <div>
                 <button id="mark-all-btn" class="text-sm text-white bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 px-3 py-1 rounded">Tandai semua dibaca</button>
             </div>
@@ -29,7 +29,7 @@
                                 <h2 class="text-lg font-bold text-gray-800 {% if not notifs.is_read %}text-blue-700{% endif %}">
                                     {{ notifs.title }}
                                     {% if not notifs.is_read %}
-                                        <span class="inline-block align-middle ml-2 px-2 py-0.5 text-xs bg-blue-200 text-blue-800 rounded">Baru</span>
+                                        <span class="inline-block align-middle ml-2 px-2 py-0.5 text-xs bg-blue-200 text-blue-800 rounded">New</span>
                                     {% endif %}
                                 </h2>
                                 <p class="text-sm text-gray-600 mt-1">{{ notifs.message }}</p>
@@ -37,14 +37,14 @@
                             <div class="text-right text-xs text-gray-500">
                                 {{ notifs.timestamp|date:"d M Y, H:i" }}
                                 {% if not notifs.is_read %}
-                                    <button data-notif-id="{{ notifs.id }}" class="mark-read-btn ml-3 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded">Tandai dibaca</button>
+                                    <button data-notif-id="{{ notifs.id }}" class="mark-read-btn ml-3 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded">Mark As Read</button>
                                 {% endif %}
                             </div>
                         </div>
 
                         <div class="mt-3">
                             {% if notifs.event %}
-                                <a href="{% url 'Event:event_detail' notifs.event.id %}" class="text-sm text-blue-600 hover:underline">Lihat event: {{ notifs.event.name }}</a>
+                                <a href="{% url 'Event:event_detail' notifs.event.id %}" class="text-sm text-blue-600 hover:underline">Visit event: {{ notifs.event.name }}</a>
                             {% endif %}
                         </div>
                     </div>
@@ -53,7 +53,7 @@
             </ul>
         {% else %}
             <div class="py-12">
-                <p class="text-gray-600">Belum ada notifikasi.</p>
+                <p class="text-gray-600">No Notifications yet.</p>
             </div>
         {% endif %}
     </div>

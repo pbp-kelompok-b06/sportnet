@@ -32,7 +32,7 @@ async function markAsRead(notifId, btn) {
     if (!res.ok) {
       const txt = await res.text();
       console.error('Mark read failed:', res.status, txt);
-      showToast('Gagal menandai notifikasi', 'error');
+      showToast('Failed to read notifications', 'error');
       return;
     }
     const data = await res.json();
@@ -46,11 +46,11 @@ async function markAsRead(notifId, btn) {
         if (badge) badge.remove();
         btn.remove();
       }
-      showToast('Notifikasi ditandai dibaca', 'success');
+      showToast('Notifications marked as read', 'success');
     }
   } catch (err) {
     console.error('Error marking notification read', err);
-    showToast('Terjadi kesalahan', 'error');
+    showToast('Error ocurred while marking notification read', 'error');
   }
 }
 
@@ -66,7 +66,7 @@ async function markAllAsRead(btn) {
     if (!res.ok) {
       const txt = await res.text();
       console.error('Mark all failed:', res.status, txt);
-      showToast('Gagal menandai semua notifikasi', 'error');
+      showToast('Failed to mark all notifications as read', 'error');
       return;
     }
     const data = await res.json();
@@ -83,11 +83,11 @@ async function markAllAsRead(btn) {
           if (btn) btn.remove();
         }
       });
-      showToast(`${data.updated} notifikasi ditandai dibaca`, 'success');
+      showToast(`${data.updated} marked as read`, 'success');
     }
   } catch (err) {
     console.error('Error marking all notifications read', err);
-    showToast('Terjadi kesalahan', 'error');
+    showToast('Error ocurred', 'error');
   }
 }
 
