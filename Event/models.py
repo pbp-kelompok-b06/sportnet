@@ -1,3 +1,4 @@
+import uuid
 from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator
@@ -26,6 +27,7 @@ class Event(models.Model):
         ('workshop', 'Workshop'),
     ]
     # Identitas
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
