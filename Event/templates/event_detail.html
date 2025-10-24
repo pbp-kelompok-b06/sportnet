@@ -2,5 +2,177 @@
 {% load static %}
 
 {% block content %}
-{% include 'navbar.html' %}   
+{% include 'navbar.html' %}  
+<div class="h-16 md:h-19"></div>
+
+<div class="min-h-screen bg-gradient-to-b from-[#FFF8F5] to-[#FFE9E0] py-10 px-4">
+  <div class="max-w-5xl mx-auto bg-white rounded-[2rem] shadow-lg p-8">
+    
+    <!-- Organizer -->
+    <div class="flex items-center mb-6">
+      {% if event.organizer.profile_picture %}
+        <img src="{{ event.organizer.profile_picture.url }}" alt="Organizer" class="w-10 h-10 rounded-full mr-3">
+      {% endif %}
+      <p class="text-gray-600 text-sm">
+        Organized by: <span class="font-semibold text-orange-500">{{ event.organizer.user.username }}</span>
+      </p>
+    </div>
+
+    <!-- Main content grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Left side: image -->
+      <div>
+        {% if event.thumbnail %}
+          <img src="{{ event.thumbnail.url }}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
+        {% else %}
+          <img src="{% static 'images/default_event.jpg' %}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
+        {% endif %}
+      </div>
+
+      <!-- Right side: info -->
+      <div class="flex flex-col justify-between">
+        <div>
+          <!-- Categories -->
+          <div class="flex gap-2 mb-3">
+            <span class="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full">
+              {{ event.get_sports_category_display }}
+            </span>
+            <span class="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full">
+              {{ event.get_activity_category_display }}
+            </span>
+          </div>
+
+          <!-- Event name and fee -->
+          <div class="flex justify-between items-center mb-2">
+            <h1 class="text-2xl font-bold text-orange-700">{{ event.name }}</h1>
+            <p class="font-semibold text-orange-600">
+              {% if event.fee %}
+                IDR {{ event.fee|floatformat:0 }}K
+              {% else %}
+                Free
+              {% endif %}
+            </p>
+          </div>
+
+        <!-- Time and location -->
+        {% if event.end_time %}
+        {% if event.start_time.date == event.end_time.date %}
+            <!-- Hari sama -->
+            <p class="text-gray-500 text-sm mb-2">
+            {{ event.start_time|date:"d M Y" }} • {{ event.start_time|time:"H:i" }} - {{ event.end_time|time:"H:i" }}
+            </p>
+        {% else %}
+            <!-- Hari beda -->
+            <p class="text-gray-500 text-sm mb-2">
+            {{ event.start_time|date:"d M Y" }} - {{ event.end_time|date:"d M Y" }} •
+            {{ event.start_time|time:"H:i" }} - {{ event.end_time|time:"H:i" }}
+            </p>
+        {% endif %}
+        {% else %}
+        <!-- Tidak ada end_time -->
+        <p class="text-gray-500 text-sm mb-2">
+            {{ event.start_time|date:"d M Y" }} • {{ event.start_time|time:"H:i" }}
+        </p>
+        {% endif %}
+          <p class="font-semibold text-gray-700">Location</p>
+          <p class="text-gray-500 text-sm mb-4">{{ event.location }}</p>
+
+          <!-- Description -->
+          <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ event.description }}</p>
+        </div>
+
+       
+        <!-- Buttons -->
+        <div class="flex gap-4 items-center justify-end">
+    
+          <button type="button" id="bookEventBtn" class="btn px-8 h-11 text-base 
+                        bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+                        text-white font-semibold border-none shadow-lg
+                        hover:shadow-xl hover:-translate-y-0.5 
+                        transition-all duration-200 ease-in-out">
+            Book Event
+          </button>
+
+           <!-- Bookmark toggle -->
+          <button type="button"
+                  id="bookmarkBtn"
+                  data-bookmarked="{{ is_bookmarked|yesno:'true,false' }}"
+                  aria-label="Bookmark event"
+                  aria-pressed="{% if is_bookmarked %}true{% else %}false{% endif %}"
+                  class="bookmark-btn w-11 h-11 rounded-full grid place-items-center
+               bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+               hover:shadow-xl hover:-translate-y-0.5 shadow-lg
+               transition-all duration-200 ease-in-out">
+            <!-- Background pakai state via class; isi SVG di-toggle via JS -->
+            <svg viewBox="0 0 24 24" class="w-6 h-6"
+                stroke=white stroke-width="2"
+                fill="{% if is_bookmarked %}currentColor{% else %}none{% endif %}">
+              <!-- Heroicons bookmark shape -->
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6 4a2 2 0 0 0-2 2v14l8-4 8 4V6a2 2 0 0 0-2-2H6z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <hr class="my-8 border-orange-100">
+
+    <!-- Forum & Review -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
+        <h2 class="text-orange-600 font-semibold text-lg mb-3">Forum</h2>
+        <button href="{{ forum_url|default:'#' }}"
+          class="btn px-8 h-11 text-base 
+          bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+          text-white font-semibold border-none shadow-lg
+          hover:shadow-xl hover:-translate-y-0.5 
+          transition-all duration-200 ease-in-out">
+          Go to Forum
+      </button>
+      </div>
+
+      <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
+        <h2 class="text-orange-600 font-semibold text-lg mb-3">Review</h2>
+        <button href="{{ review_url|default:'#' }}"
+           class="btn px-8 h-11 text-base 
+                        bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+                        text-white font-semibold border-none shadow-lg
+                        hover:shadow-xl hover:-translate-y-0.5 
+                        transition-all duration-200 ease-in-out">
+          Go to Review
+      </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+  (function () {
+    const btn = document.getElementById('bookmarkBtn');
+    if (!btn) return;
+    const svg = btn.querySelector('svg');
+
+    // Ambil nilai awal dari atribut data-bookmarked
+    let isBookmarked = btn.dataset.bookmarked === "true";
+
+    function render() {
+      btn.classList.toggle('is-active', isBookmarked);
+      btn.setAttribute('aria-pressed', isBookmarked ? 'true' : 'false');
+      svg.setAttribute('fill', isBookmarked ? 'white' : 'none');
+    }
+    render();
+
+    // Toggle UI saat diklik
+    btn.addEventListener('click', async () => {
+      isBookmarked = !isBookmarked;
+      render();
+
+      // nanti di sini kamu sambungkan ke backend toggle bookmark
+    });
+  })();
+</script>
+
+
 {% endblock content %}
