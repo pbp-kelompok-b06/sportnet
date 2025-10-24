@@ -1,0 +1,5 @@
+<div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+  {% for event in events %}
+    {% include 'card_event.html' with event=event %}
+  {% endfor %}
+</div>
