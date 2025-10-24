@@ -97,7 +97,7 @@
   /* NORMAL: */
   .btn-gradient {
     color: var(--color-main-50)  !important;   /* text color */
-    background: var(--color-gradient1);
+    background: var(--color-gradient1) !important;
     box-shadow: none;
     box-shadow: none;
     outline: none;

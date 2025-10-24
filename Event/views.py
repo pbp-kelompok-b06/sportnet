@@ -9,6 +9,7 @@ from .models import Event
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
+from Bookmark.models import Bookmark
 
 
 # Ambil model Organizer dari app Authenticate tanpa hard import
@@ -56,6 +57,15 @@ def create_event(request):
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
+    is_bookmarked = False
+
+    is_bookmarked = False
+
+    # kalau user login, cek apakah event ini udah di-bookmark user
+    if request.user.is_authenticated:
+        is_bookmarked = Bookmark.objects.filter(user=request.user, event=event).exists()
+
+
     is_participant = False
     if request.user.is_authenticated:
         is_participant = Participant.objects.filter(user=request.user).exists()
@@ -86,7 +96,7 @@ def event_detail(request, event_id):
         else:
             # contoh 125500 -> 125.5K
             formatted_fee = f"{ribu:.1f}K"
-    return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,"is_participant": is_participant,})
+    return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,"is_participant": is_participant, "is_bookmarked": is_bookmarked,})
 
 
 Participant = apps.get_model('Authenticate', 'Participant')
