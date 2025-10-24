@@ -76,7 +76,7 @@
 
   /* NORMAL: */
   .btn-gradient {
-    color: var(--color-main-300);   /* text color */
+    color: var(--color-main-300)  !important;   /* text color */
     background: var(--color-gradient2);
     box-shadow: none;
     box-shadow: none;
@@ -85,7 +85,7 @@
 
   /* HOVER */
   .btn-gradient:hover {
-    color: var(--color-main-50);   /* text color */
+    color: var(--color-main-50) !important;   /* text color */
     background: var(--color-gradient1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.01);
     outline: none;
@@ -140,6 +140,115 @@
     border-color: var(--color-red-200);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-red-200) 35%, transparent);
   }
+
+  .page-container {
+    background-color: #fff; /* Putih untuk seluruh container event */
+  }
+
+  .event-card {
+    background: var(--color-gradient2);
+    position: relative;
+    overflow: hidden;
+    border-radius: 32px;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.04);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .event-card:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+  }
+
+  .event-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
+    transform: skewX(-20deg);
+  }
+
+  .event-info {
+    background: var(--color-gradient2);
+  }
+
+  /* === BOOKMARK BUTTON === */
+  .bookmark-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+    overflow: visible; 
+  }
+
+  /* Lingkaran gradient */
+  .bookmark-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: var(--color-gradient2);
+    box-shadow: inset 0 3px 6px rgba(255, 180, 150, 0.25),
+                0 3px 6px rgba(0, 0, 0, 0.05);
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .bookmark-btn:hover .bookmark-bg {
+    background: var(--color-gradient1); 
+  }
+
+  /* Ikon bookmark */
+  .bookmark-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px; 
+    height: 14x;
+    object-fit: contain;
+    z-index: 1;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    bottom: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-text-300);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 999;
+  }
+
+  .group:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  /* === STATE: Bookmarked (aktif, nanti dari JS) === */
+  .bookmark-btn.active .bookmark-bg {
+    background: var(--color-gradient1);
+  }
+
+  .bookmark-btn.active .bookmark-icon {
+    content: url("/static/icons/bookmark-toggle.png");
+  }
+
 }
 
 /* Utilities */
