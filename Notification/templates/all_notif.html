@@ -16,11 +16,17 @@
         {% if notif and notif.count > 0 %}
             <ul class="space-y-4">
                 {% for notifs in notif %}
-                <li class="bg-white shadow-sm rounded-lg p-4 flex items-start space-x-4 {% if notifs.is_read %}opacity-70{% else %}border-l-4 border-blue-500{% endif %}">
+                <li class="shadow-sm rounded-lg p-4 flex items-start space-x-4
+                    {% if notifs.is_read %}bg-white opacity-70{% else %}bg-blue-50 border-l-4 border-blue-500{% endif %}">
                     <div class="flex-1">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h2 class="text-lg font-semibold text-gray-800">{{ notifs.title }}</h2>
+                                <h2 class="text-lg font-bold text-gray-800 {% if not notifs.is_read %}text-blue-700{% endif %}">
+                                    {{ notifs.title }}
+                                    {% if not notifs.is_read %}
+                                        <span class="inline-block align-middle ml-2 px-2 py-0.5 text-xs bg-blue-200 text-blue-800 rounded">Baru</span>
+                                    {% endif %}
+                                </h2>
                                 <p class="text-sm text-gray-600 mt-1">{{ notifs.message }}</p>
                             </div>
                             <div class="text-right text-xs text-gray-500">
