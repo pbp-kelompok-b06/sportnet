@@ -1,22 +1,22 @@
 from django.utils.translation import gettext as _
 
 # Event Join Notifications
-EVENT_JOIN_TITLE = _("Berhasil Bergabung dengan Event")
-EVENT_JOIN_MESSAGE = _("Anda telah berhasil bergabung dengan event {event_name}")
+EVENT_JOIN_TITLE = _("Event Joined Successfully")
+EVENT_JOIN_MESSAGE = _("You have joined the event {event_name}!")
 
 # Event Cancellation Notifications
-EVENT_CANCELLED_TITLE = _("Event Dibatalkan")
-EVENT_CANCELLED_MESSAGE = _("Event {event_name} telah dibatalkan oleh penyelenggara")
+EVENT_CANCELLED_TITLE = _("Event Cancelled")
+EVENT_CANCELLED_MESSAGE = _("Event {event_name} has been cancelled by the organizer. We apologize for the inconvenience.")
 
 # H-1 Reminder Notifications
-EVENT_REMINDER_TITLE = _("Pengingat Event Besok")
-EVENT_REMINDER_MESSAGE = _("Event {event_name} akan berlangsung besok pada {event_time}")
+EVENT_REMINDER_TITLE = _("Event Reminder: {event_name} Tomorrow")
+EVENT_REMINDER_MESSAGE = _("Event {event_name} will be happening tomorrow at {event_time}")
 
 # Read Status Messages
-MARK_AS_READ_SUCCESS = _("Notifikasi telah ditandai sebagai dibaca")
-MARK_ALL_READ_SUCCESS = _("Semua notifikasi telah ditandai sebagai dibaca")
+MARK_AS_READ_SUCCESS = _("Notification marked as read")
+MARK_ALL_READ_SUCCESS = _("All notifications marked as read")
 
 # Error Messages
-ERROR_NO_PARTICIPANT_PROFILE = _("Pengguna tidak memiliki profil peserta")
-ERROR_FORBIDDEN = _("Anda tidak memiliki akses ke notifikasi ini")
-ERROR_EVENT_NOT_FOUND = _("Event tidak ditemukan")
+ERROR_NO_PARTICIPANT_PROFILE = _("You do not have a participant profile")
+ERROR_FORBIDDEN = _("You do not have permission to perform this action")
+ERROR_EVENT_NOT_FOUND = _("Event not found")
