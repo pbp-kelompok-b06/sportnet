@@ -34,11 +34,23 @@
       <a href="#" class="btn btn-gradient flex items-center gap-2 shadow-[0_3px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.06)]">
         Details →
       </a>
-      <button class="bookmark-btn group relative" aria-label="Bookmark event">
+      
+      <button 
+        class="bookmark-btn group relative {% if event.id in bookmarked_ids %}active{% endif %}"
+        data-event-id="{{ event.id }}"
+        aria-label="Bookmark event"
+      >
         <div class="bookmark-bg"></div>
-        <img src="{% static 'icons/bookmark-default.png' %}" alt="Bookmark icon" class="bookmark-icon" />
+
+        {% if event.id in bookmarked_ids %}
+          <img src="{% static 'icons/bookmark-toggle.png' %}" alt="Bookmarked" class="bookmark-icon" />
+        {% else %}
+          <img src="{% static 'icons/bookmark-default.png' %}" alt="Bookmark icon" class="bookmark-icon" />
+        {% endif %}
+
         <span class="tooltip">Bookmark event</span>
       </button>
+
     </div>
   </div>
 

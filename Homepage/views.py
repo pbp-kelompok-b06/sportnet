@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from Homepage.models import CardEvent
 from Event.models import Event
 from datetime import datetime
+from Bookmark.models import Bookmark
 
 # Fungsi pembantu untuk membuat objek event menjadi format dictionary yang rapi
 def serialize_event(card_event):
@@ -27,7 +28,15 @@ def serialize_event(card_event):
 
 def show_main(request):
     events = Event.objects.all().order_by('-start_time')
-    context = {'events': events}
+
+    bookmarked_ids = []
+    if request.user.is_authenticated:
+        bookmarked_ids = list(
+            Bookmark.objects.filter(user=request.user)
+            .values_list("event_id", flat=True)
+        )
+
+    context = {'events': events, 'bookmarked_ids': bookmarked_ids}
     return render(request, 'homepage.html', context)
 
 # Tampilan baru untuk menyediakan data event dalam JSON
@@ -37,5 +46,5 @@ def get_event_data_json(request):
     
     # Menggunakan serialize_event untuk memformat data sebelum dikirim sebagai JSON
     event_list = [serialize_event(event) for event in events]
-    
+
     return JsonResponse(event_list, safe=False)
