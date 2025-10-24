@@ -6,21 +6,35 @@
 
 <div class="h-16"></div>
 
-<header class="text-center mb-8">
-  <h2 class="text-2xl font-bold text-[var(--color-text-700)]">My Bookmarked Events</h2>
-</header>
+<div class="max-w-5xl mx-auto px-4 py-12">
 
-<div class="container mx-auto px-4 min-h-screen pb-10 bg-white">
-  {% if events %}
-    <div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-      {% for event in events %}
-        {% include 'card_event.html' with event=event %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="rounded-lg border border-gray-200 p-12 text-center max-w-5xl mx-auto my-10">
-      <h3 class="text-lg font-medium text-gray-900 mb-2">You have no bookmarks.</h3>
-    </div>
-  {% endif %}
-</div>
-{% endblock content %}
+    <header class="pb-4 border-b border-gray-200">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900">
+            My Bookmarked Events
+        </h2>
+    </header>
+
+    {% if events %}
+        <div id="event-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for event in events %}
+                {% include 'card_event.html' with event=event %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center bg-white shadow-sm rounded-xl border border-gray-100 p-12 mt-10">
+            
+            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 11.186 0Z" />
+                </svg>
+            </div>
+            
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Bookmarks Yet</h3>
+            <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                It looks like you haven't bookmarked any events. Start exploring to find events you'll love!
+            </p>
+            
+        </div>
+    {% endif %}
+
+</div> {% endblock content %}
