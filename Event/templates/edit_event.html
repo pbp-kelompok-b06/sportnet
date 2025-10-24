@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edit Event</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  </head>
+
+  {% block content %}
+  {% include 'navbar.html' %}
+  <div class="h-16 md:h-19"></div>
+
+  <div class="w-full min-h-screen bg-gradient-to-b from-[var(--color-main-50)] to-[var(--color-main-200)]">
+    <div class="flex-grow flex items-center justify-center p-4">
+      <div class="w-full max-w-4xl bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden">
+        <div class="w-full p-12">
+          <h2 class="text-4xl font-bold text-[var(--color-main-400)] text-center">Edit Event</h2>
+          
+
+          <form method="post" class="space-y-5">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                {% for error in form.non_field_errors %}
+                  <span class="block sm:inline">{{ error }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <!-- Event Name -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.name.id_for_label }}">Name</label>
+              <div class="flex-1">
+                {{ form.name }}
+                {% if form.name.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.name.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.description.id_for_label }}">Description</label>
+              <div class="flex-1">
+                {{ form.description }}
+                {% if form.description.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.description.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Thumbnail URL -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.thumbnail.id_for_label }}">Thumbnail</label>
+              <div class="flex-1">
+                {{ form.thumbnail }}
+                {% if form.thumbnail.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.thumbnail.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+
+                {# preview gambar kalau sudah ada thumbnail #}
+                {% if form.instance.thumbnail %}
+                  <div class="mt-3">
+                    <p class="text-xs text-[var(--color-text-400)] mb-1">Current preview:</p>
+                    <img src="{{ form.instance.thumbnail }}" alt="Thumbnail Preview"
+                         class="rounded-xl w-full max-h-60 object-cover border shadow">
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Event Date & Time -->
+            <div class="flex items-center gap-3">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.start_time.id_for_label }}">Date & Time</label>
+              <div class="flex items-center gap-2 flex-wrap">
+                {{ form.start_time }}
+                <span class="text-black-500">–</span>
+                {{ form.end_time }}
+              </div>
+
+              {% if form.start_time.errors %}
+                <div class="text-red-500 text-sm mt-1">
+                  {% for error in form.start_time.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+              {% if form.end_time.errors %}
+                <div class="text-red-500 text-sm mt-1">
+                  {% for error in form.end_time.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Location (short) -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.location.id_for_label }}">Location</label>
+              <div class="flex-1">
+                {{ form.location }}
+                {% if form.location.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.location.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Address (detail) -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.address.id_for_label }}">Address</label>
+              <div class="flex-1">
+                {{ form.address }}
+                {% if form.address.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.address.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Sports Category -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.sports_category.id_for_label }}">Sports Category</label>
+              <div class="flex-1">
+                {{ form.sports_category }}
+                {% if form.sports_category.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.sports_category.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Activity Category -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.activity_category.id_for_label }}">Activity Category</label>
+              <div class="flex-1">
+                {{ form.activity_category }}
+                {% if form.activity_category.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.activity_category.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Capacity -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.capacity.id_for_label }}">Capacity</label>
+              <div class="flex-1">
+                {{ form.capacity }}
+                {% if form.capacity.errors %}
+                  <div class="text-red-500 text-sm mt-1">
+                    {% for error in form.capacity.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Fee + Paid toggle -->
+            <div class="flex items-center gap-2">
+              <label class="w-40 text-[var(--color-text-400)] text-left" for="{{ form.fee.id_for_label }}">Fee</label>
+
+              <div id="fee-fields" class="flex-1 flex items-center gap-3">
+                <div class="w-[180px]">
+                  {{ form.fee }}
+                </div>
+
+                <label class="flex items-center gap-2 ml-2 text-[var(--color-text-600)]">
+                  {# checkbox manual buat enable/disable fee #}
+                  <input
+                    type="checkbox"
+                    id="paid-check"
+                    class="w-4 h-4 accent-[var(--color-main-600)]">
+                  <span>Paid</span>
+                </label>
+              </div>
+
+              {% if form.fee.errors %}
+                <div class="text-red-500 text-sm mt-1">
+                  {% for error in form.fee.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Submit -->
+            <div class="flex justify-center pt-4">
+              <button
+                type="submit"
+                class="btn w-full h-12 text-lg
+                       bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)]
+                       text-white border-none shadow-lg
+                       hover:shadow-xl hover:-translate-y-0.5
+                       transition-all duration-200 ease-in-out">
+                Save Changes
+              </button>
+            </div>
+
+            <!-- optional: tombol balik -->
+            <div class="flex justify-center">
+              <a href="{% url 'dashboard:show' %}"
+                 class="text-sm text-[var(--color-text-400)] hover:text-[var(--color-main-500)] underline">
+                ← Back to Dashboard
+              </a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  {% if form.instance.fee %}
+  <script>
+    const paid = document.getElementById('paid-check');
+    feeInput = document.getElementById('id_fee');
+
+    function togglePaid(on){
+      feeInput.disabled = !on;
+      feeInput.classList.toggle('opacity-50', !on);
+      feeInput.classList.toggle('cursor-not-allowed', !on);
+    }
+
+    paid.checked = true;
+    togglePaid(true);
+
+    paid.addEventListener('change', () => {
+      togglePaid(paid.checked);
+      if (!paid.checked){
+        feeInput.value = '';
+      }
+    });
+  </script>
+{% else %}
+  <script>
+    const paid = document.getElementById('paid-check');
+    const feeInput = document.getElementById('id_fee');
+
+    function togglePaid(on){
+      feeInput.disabled = !on;
+      feeInput.classList.toggle('opacity-50', !on);
+      feeInput.classList.toggle('cursor-not-allowed', !on);
+    }
+
+    paid.checked = false;
+    togglePaid(false);
+
+    paid.addEventListener('change', () => {
+      togglePaid(paid.checked);
+      if (!paid.checked){
+        feeInput.value = '';
+      }
+    });
+  </script>
+{% endif %}
+
+
+  {% endblock content %}
+</html>
