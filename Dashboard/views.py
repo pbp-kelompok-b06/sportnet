@@ -29,9 +29,9 @@ def get_organizer_events_json(request):
             'activity_category' : event.activity_category,
             'fee' : str(event.fee) if event.fee is not None else 'Free',
             'capacity' : event.capacity,
-            'attendee_count' : event.attendee_count,
+            'attendee_count' : event.attendee_count(),
         })
-
+    print(event_list)
     return JsonResponse({'events' : event_list})
 
 @login_required(login_url='authenticate/')
