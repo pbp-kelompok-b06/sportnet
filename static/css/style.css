@@ -3,6 +3,18 @@
 
 /* Root Tokens: Color & Font */
 :root {
+  /* === Gradients === */
+  --gradient-orange-soft: linear-gradient(
+    180deg,
+    var(--color-main-50) 0%,
+    var(--color-main-100) 100%
+  );
+  --gradient-orange-dark: linear-gradient(
+    180deg,
+    var(--color-main-100) 0%,
+    var(--color-main-200) 100%
+  );
+
   /* === Main Colors === */
   --color-main-950: #440A06;
   --color-main-900: #7E1B10;
@@ -38,6 +50,12 @@
 
   /* === Accent Colors === */
   --color-yellow-200: #FFEC71;
+
+  /* === Buttons (global tokens) === */
+  --btn-bg: var(--color-main-600);
+  --btn-bg-hover: var(--color-main-700);
+  --btn-text: var(--color-main-50);
+  --btn-border: #E6E6E6;
 
   /* === Font Family === */
   --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -136,6 +154,35 @@
     border-color: var(--color-main-200);
   }
 
+  /* Primary / Secondary button styles using global tokens */
+  .btn-primary {
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: 24px;
+    padding: 0 16px;
+    height: 40px;
+  }
+
+  .btn-primary:hover {
+    background: var(--btn-bg-hover);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--color-text-700);
+    border: 1px solid var(--btn-border);
+    border-radius: 24px;
+    padding: 0 14px;
+    height: 40px;
+  }
+
+  .search-input {
+    border-radius: 9999px; /* fully rounded */
+    padding-left: 16px;
+    padding-right: 16px;
+    height: 44px;
+  }
+
   /* Error */
   .field--error {
     border-color: var(--color-red-200);
@@ -143,7 +190,15 @@
   }
 
   .page-container {
-    background-color: #fff; /* Putih untuk seluruh container event */
+    background: var(--gradient-orange-soft);
+    min-height: calc(100vh - 4rem);
+  }
+  
+  .search-bar-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   }
 
   .event-card {

@@ -7,17 +7,39 @@
 <!-- Spacer agar header tidak tertutup navbar -->
 <div class="h-16 md:h-19"></div>
 
-<header class="text-center mb-8 bg-[url('{% static 'images/banner.jpg' %}')] bg-no-repeat bg-center bg-cover py-10 px-4">
+<header class="text-center bg-[url('{% static 'images/banner.jpg' %}')] bg-no-repeat bg-center bg-cover py-10 px-4">
   {% if request.user.is_authenticated %}
     <h2 class="text-2xl font-bold text-white">Hello, {{ request.user.username }}</h2>
   {% else %}
     <h2 class="text-2xl font-bold text-white">Welcome to SportNet</h2>
   {% endif %}
   <p class="text-gray-500 mb-6 text-white font-extralight">Discover your next adventure here</p>
-  <div class="bg-gray-100 mx-auto rounded-full w-1/2 h-8"></div>
 </header>
 
 <div class="page-container container mx-auto px-4 bg-fixed bg-center bg-no-repeat min-h-screen min-w-full pb-10">
+  <!-- Search and filter bar -->
+  <div class="max-w-5xl pt-4 mx-auto mb-6">
+    <form method="get" class="flex flex-col md:flex-row items-stretch gap-3">
+      <input type="text" name="q" placeholder="Cari event, lokasi, deskripsi..." value="{{ filter_q|default:'' }}" class="flex-1 px-4 py-2 rounded-3xl border border-gray-200" />
+
+      <select name="category" class="px-3 py-2 rounded-3xl border border-gray-200">
+        <option value="">Semua Kategori</option>
+        {% for code, label in categories %}
+          <option value="{{ code }}" {% if filter_category == code %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+
+      <label class="flex items-center gap-2 px-3 py-2 rounded-3xl border border-gray-200 bg-white">
+        <input type="checkbox" name="free" value="1" class="h-4 w-4" {% if filter_free == '1' %}checked{% endif %} />
+        <span class="text-sm">Gratis</span>
+      </label>
+
+      <div class="flex items-center gap-2">
+        <button type="submit" class="px-4 py-2 bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-white rounded-3xl">Cari</button>
+        <a href="{% url 'Homepage:show_main' %}" class="px-4 py-2 bg-white hover:bg-gray-200 border border-gray-200 rounded-3xl">Reset</a>
+      </div>
+    </form>
+  </div>
 
   {% if events %}
     <div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
