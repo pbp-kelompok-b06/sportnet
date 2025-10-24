@@ -1,8 +1,10 @@
 from django.urls import path
-from . import views 
+from Dashboard.views import * 
 
 app_name = 'dashboard'
 
 urlpatterns = [
-    path('', views.show, name='show'), 
+    path('', show, name='show'), 
+    path('get-events/', get_organizer_events_json, name='get_organizer_events_json'),
+    path('delete-event/<int:event_id>/', delete_event, name='delete_event'),
 ]
