@@ -11,7 +11,12 @@
 <div class="h-16 md:h-19"></div> 
 <section class="text-center py-10">
     <div class="max-w-3xl mx-auto px-4">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Notifikasi Saya</h1>
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Notifikasi Saya</h1>
+            <div>
+                <button id="mark-all-btn" class="text-sm text-white bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 px-3 py-1 rounded">Tandai semua dibaca</button>
+            </div>
+        </div>
 
         {% if notif and notif.count > 0 %}
             <ul class="space-y-4">
@@ -31,6 +36,9 @@
                             </div>
                             <div class="text-right text-xs text-gray-500">
                                 {{ notifs.timestamp|date:"d M Y, H:i" }}
+                                {% if not notifs.is_read %}
+                                    <button data-notif-id="{{ notifs.id }}" class="mark-read-btn ml-3 text-xs text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded">Tandai dibaca</button>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -49,5 +57,17 @@
             </div>
         {% endif %}
     </div>
-</section>
+    </section>
+
+    <script src="{% static 'js/notification.js' %}"></script>
 {% endblock content %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    // Check for new notifications on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkNewNotifications();
+    });
+</script>
+{% endblock scripts %}
