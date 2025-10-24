@@ -44,6 +44,25 @@ def delete_event(request, event_id):
         event = get_object_or_404(Event, id=event_id)
 
         if event.organizer == request.user.organizer_profile:
+            # Notify all attendees before deleting the event
+            try:
+                from Notification.models import Notifications as Notif
+                attendees = list(event.attendee.all())
+                for participant in attendees:
+                    try:
+                        Notif.objects.create(
+                            user=participant,
+                            title=f"Event dibatalkan: {event.name}",
+                            message=f"Mohon maaf, event '{event.name}' telah dibatalkan oleh penyelenggara.",
+                            event=event
+                        )
+                    except Exception:
+                        # ignore individual failures
+                        pass
+            except Exception:
+                # Notification app missing or other error; continue with deletion
+                pass
+
             event.delete()
             return JsonResponse({'status': 'success', 'message': 'Event berhasil dihapus.'})
         else:

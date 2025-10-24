@@ -25,8 +25,7 @@ def organizer_required(view_func):
         if not is_organizer(request.user):
             # Pilih salah satu:
             # 1) arahkan ke halaman "jadi organizer"
-            messages.error(request, "Kamu belum terdaftar sebagai Organizer.")
-            return redirect('Authenticate:be_organizer')  # ganti ke url kamu sendiri
+            return redirect('Homepage:show_main')
             # 2) atau balikin 403:
             # from django.http import HttpResponseForbidden
             # return HttpResponseForbidden("Kamu bukan Organizer.")
@@ -125,6 +124,19 @@ def join_event(request, event_id):
 
     # tambahin ke attendee
     event.attendee.add(participant)
+
+    # create a notification for the participant to confirm join
+    try:
+        from Notification.models import Notifications as Notif
+        Notif.objects.create(
+            user=participant,
+            title=f"Berhasil bergabung: {event.name}",
+            message=f"Kamu telah berhasil mendaftar dan bergabung di event '{event.name}'. Lihat detail acara untuk informasi lebih lanjut.",
+            event=event
+        )
+    except Exception:
+        # if Notification app not available or any error, ignore to not block join
+        pass
 
     return JsonResponse({
         "ok": True,

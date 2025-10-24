@@ -23,7 +23,7 @@
       <!-- Left side: image -->
       <div>
         {% if event.thumbnail %}
-          <img src="{{ event.thumbnail.url }}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
+          <img src="{{ event.thumbnail }}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
         {% else %}
           <img src="{% static 'images/default_event.jpg' %}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
         {% endif %}
@@ -88,7 +88,7 @@
     <div class="flex items-center gap-3">
       <!-- Foto attendee -->
       {% for participant in event.attendee.all|slice:":5" %}
-        <img src="{{ participant.profile_picture.url|default:'{% static "images/default_profile.jpg" %}' }}" 
+        <img src="{{ participant.profile_picture|default:'{% static "images/default_profile.jpg" %}' }}" 
              alt="{{ participant.user.username }}" 
              class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
       {% endfor %}
