@@ -87,48 +87,153 @@
             </div>
         </div>
 
-        {% if participant %}
-        <div class="mt-12">
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold text-[var(--color-text-700)] mb-6">Upcoming Events</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for event in upcoming_events %}
-                        <article class="bg-white rounded-xl shadow-lg overflow-hidden group transform hover:-translate-y-2 transition-all duration-300">
-                            <div class="relative">
-                                <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" class="h-40 w-full object-cover">
-                                <span class="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Upcoming</span>
+    {% if participant %}
+        <div class="mt-12 space-y-16">
+            <!-- Upcoming Events -->
+            <section>
+                <h2 class="text-2xl font-bold text-[var(--color-text-700)] mb-2">Upcoming Events</h2>
+                {% if upcoming_events %}
+                    <div class="relative">
+                        <div class="swiper upcoming-events-slider px-6">
+                            <div class="swiper-wrapper py-4">
+                                {% for event in upcoming_events %}
+                                <div class="swiper-slide h-auto pb-8">
+                                    <article class="bg-white rounded-2xl shadow-md overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col border border-gray-100">
+                                        <div class="relative">
+                                            <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" 
+                                                class="h-44 w-full object-cover">
+                                            <span class="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-semibold px-2 py-1 rounded-full shadow">
+                                                Upcoming
+                                            </span>
+                                        </div>
+                                        <div class="p-5 flex-grow">
+                                            <h3 class="font-bold text-lg text-gray-800 mb-1">{{ event.name }}</h3>
+                                            <p class="text-sm text-gray-500">{{ event.start_time|date:"D, d M Y" }}</p>
+                                        </div>
+                                    </article>
+                                </div>
+                                {% endfor %}
                             </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg">{{ event.name }}</h3>
-                                <p class="text-sm text-gray-500">{{ event.start_time|date:"D, d M Y" }}</p>
-                            </div>
-                        </article>
-                    {% empty %}
-                        <p class="text-gray-500 md:col-span-3">No upcoming events booked.</p>
-                    {% endfor %}
-                </div>
-            </div>
+                            <div class="swiper-pagination mt-4"></div>
+                        </div>
 
-            <div>
-                <h2 class="text-3xl font-bold text-[var(--color-text-700)] mb-6">Past Events</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for event in past_events %}
-                        <article class="bg-white rounded-xl shadow-lg overflow-hidden opacity-70"> <div class="relative">
-                                <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" class="h-40 w-full object-cover">
-                                <span class="absolute top-3 right-3 bg-gray-500 text-white text-xs font-bold px-2 py-1 rounded-full">Past</span>
+                    <button
+                    class="swiper-button-prev-past absolute top-1/2 -left-5 md:-left-6 z-10 -translate-y-1/2
+                            bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
+                            text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    </button>
+
+                    <button
+                    class="swiper-button-next-past absolute top-1/2 -right-5 md:-right-6 z-10 -translate-y-1/2
+                            bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
+                            text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    </button>
+                    </div>
+                {% else %}
+                    <div class="bg-white/60 rounded-xl p-8 text-center text-gray-500 border border-gray-100">
+                        <p>No upcoming events booked yet.</p>
+                    </div>
+                {% endif %}
+            </section>
+
+            <!-- Past Events -->
+            <section>
+                <h2 class="text-2xl font-bold text-[var(--color-text-700)] mb-2">Past Events</h2>
+                {% if past_events %}
+                    <div class="relative">
+                        <div class="swiper past-events-slider px-6">
+                            <div class="swiper-wrapper py-4">
+                                {% for event in past_events %}
+                                <div class="swiper-slide h-auto pb-8">
+                                    <article class="bg-white rounded-2xl shadow-md overflow-hidden opacity-85 h-full flex flex-col border border-gray-100">
+                                        <div class="relative">
+                                            <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" 
+                                                class="h-44 w-full object-cover grayscale">
+                                            <span class="absolute top-3 right-3 bg-gray-500 text-white text-[10px] font-semibold px-2 py-1 rounded-full shadow">
+                                                Past
+                                            </span>
+                                        </div>
+                                        <div class="p-5 flex-grow">
+                                            <h3 class="font-bold text-lg text-gray-800 mb-1">{{ event.name }}</h3>
+                                            <p class="text-sm text-gray-500">{{ event.start_time|date:"D, d M Y" }}</p>
+                                        </div>
+                                    </article>
+                                </div>
+                                {% endfor %}
                             </div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg">{{ event.name }}</h3>
-                                <p class="text-sm text-gray-500">{{ event.start_time|date:"D, d M Y" }}</p>
-                            </div>
-                        </article>
-                    {% empty %}
-                        <p class="text-gray-500 md:col-span-3">No past events found.</p>
-                    {% endfor %}
-                </div>
-            </div>
+                            <div class="swiper-pagination mt-4"></div>
+                        </div>
+
+                        <button
+                        class="swiper-button-prev-past absolute top-1/2 -right-5 md:-left-6 z-10 -translate-y-1/2
+                                bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
+                                text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                        </button>
+                        <button
+                        class="swiper-button-next-past absolute top-1/2 -right-5 md:-right-6 z-10 -translate-y-1/2
+                                bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
+                                text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                        </button>
+
+                    </div>
+                {% else %}
+                    <div class="bg-white/60 rounded-xl p-8 text-center text-gray-500 border border-gray-100">
+                        <p>No past events found.</p>
+                    </div>
+                {% endif %}
+            </section>
         </div>
-        {% endif %}
+    {% endif %}
     </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inisialisasi Slider Upcoming Events
+        const upcomingSwiper = new Swiper('.upcoming-events-slider', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 16,
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: {
+                nextEl: '.swiper-button-next-past',
+                prevEl: '.swiper-button-prev-past',
+            },
+            breakpoints: {
+                768: { slidesPerView: 2, spaceBetween: 24 },
+                1024: { slidesPerView: 3, spaceBetween: 24 }
+            },
+        });
+
+        // Inisialisasi Slider Past Events
+        const pastSwiper = new Swiper('.past-events-slider', {
+            loop: true,
+            slidesPerView: 1,
+            spaceBetween: 16,
+            pagination: { el: '.swiper-pagination', clickable: true },
+            navigation: {
+                nextEl: '.swiper-button-next-past', // Gunakan kelas unik
+                prevEl: '.swiper-button-prev-past', // Gunakan kelas unik
+            },
+            breakpoints: {
+                768: { slidesPerView: 2, spaceBetween: 24 },
+                1024: { slidesPerView: 3, spaceBetween: 24 }
+            },
+        });
+    });
+</script>
+{% endblock scripts %}
