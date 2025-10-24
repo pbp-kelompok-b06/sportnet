@@ -130,8 +130,8 @@ def join_event(request, event_id):
         from Notification.models import Notifications as Notif
         Notif.objects.create(
             user=participant,
-            title=f"Berhasil bergabung: {event.name}",
-            message=f"Kamu telah berhasil mendaftar dan bergabung di event '{event.name}'. Lihat detail acara untuk informasi lebih lanjut.",
+            title=f"Successfully Joined: {event.name}",
+            message=f"You have successfully joined the event'{event.name}'. See event details for more information.",
             event=event
         )
     except Exception:
