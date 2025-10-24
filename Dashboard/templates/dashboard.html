@@ -5,7 +5,6 @@
 <title>Organizer Dashboard</title>
 {% endblock meta %}
 
-{% load static %}
 {% block content %}
 {% include 'navbar.html' %}
 
@@ -87,66 +86,15 @@
       <h2 class="text-3xl font-bold text-slate-800">My Events</h2>
     </div>
 
+    <!-- Event Container -->
     <div id="event-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {% for event in events %}
-      <article class="event-card flex flex-col transition-all duration-300 hover:shadow-xl relative">
-
-        <!-- Image -->
-        <div class="w-full h-48 relative rounded-t-2xl overflow-hidden">
-          {% if event.thumbnail %}
-          <img src="{{ event.thumbnail }}" alt="{{ event.name }}" class="object-cover w-full h-full">
-          {% else %}
-          <img src="{% static 'images/thumbnail-default.jpg' %}" alt="No Image" class="object-cover w-full h-full opacity-80">
-          {% endif %}
-
-          {% if event.sports_category %}
-          <span
-            class="absolute top-3 left-3 text-white text-xs px-3 py-1 rounded-full bg-[var(--color-main-400)] shadow-md">
-            {{ event.get_sports_category_display }}
-          </span>
-          {% endif %}
-          {% if event.activity_category %}
-          <span
-            class="absolute top-10 left-3 text-[var(--color-main-400)] text-xs px-3 py-1 rounded-full bg-[var(--color-main-50)] shadow-md">
-            {{ event.get_activity_category_display }}
-          </span>
-          {% endif %}
-        </div>
-
-        <!-- Info -->
-        <div class="p-6 flex flex-col justify-between flex-1">
-          <div>
-            <h3 class="text-lg font-bold text-[var(--color-text-500)] mb-1">{{ event.name }}</h3>
-            <p class="text-sm text-[var(--color-text-400)] mb-1">{{ event.start_time|date:"M j, Y" }} • {{ event.start_time|date:"H:i" }}</p>
-            <p class="text-sm text-[var(--color-text-400)] mb-3">{{ event.location }}</p>
-            <p class="text-[var(--color-text-300)] text-sm leading-snug mb-4 line-clamp-3">{{ event.description|truncatechars:100 }}</p>
-          </div>
-
-          <!-- Buttons -->
-          <div class="flex justify-between items-center mt-4">
-            <a href="{% url 'Event:event_detail' event.id %}" 
-               class="btn btn-gradient flex items-center gap-2">
-               Details →
-            </a>
-            <button data-id="{{ event.id }}" 
-                    class="btn bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
-                    onclick="openDeleteModal('{{ event.id }}')">
-              Delete
-            </button>
-          </div>
-        </div>
-
-      </article>
-      {% empty %}
-      <p class="text-slate-500 col-span-full text-center">No events found.</p>
-      {% endfor %}
+      <p id="loading-text" class="text-slate-500 col-span-full text-center">Loading events...</p>
     </div>
 
   </div>
 </div>
 
 {% endblock %}
-
 
 {% block scripts %}
 <script>
@@ -158,7 +106,6 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
-/* === MODAL HANDLER === */
 window.showDeleteModal = function (eventId) {
   eventToDelete = eventId;
   document.getElementById("deleteModal").classList.remove("hidden");
@@ -174,7 +121,6 @@ document.getElementById("deleteModal").addEventListener("click", (e) => {
   if (e.target === e.currentTarget) hideDeleteModal();
 });
 
-/* === DELETE EVENT === */
 document.getElementById("confirmDelete").addEventListener("click", async function () {
   if (!eventToDelete) return;
 
@@ -195,27 +141,7 @@ document.getElementById("confirmDelete").addEventListener("click", async functio
 
     if (res.ok && data.status === "success") {
       console.log("✅ Event deleted:", eventToDelete);
-
-      // cari kartu di DOM
-      const card = document.querySelector(`.event-card[data-event-id="${eventToDelete}"]`);
-      if (card) {
-        card.classList.add("opacity-0", "transition", "duration-300");
-        setTimeout(() => {
-          card.remove();
-
-          // kalau kosong, munculkan pesan
-          if (document.querySelectorAll(".event-card").length === 0) {
-            document.getElementById("event-container").innerHTML = `
-              <p class="text-gray-500 col-span-full text-center py-10">
-                You have not created any events yet. Click "Create Event" to get started!
-              </p>`;
-          }
-        }, 300);
-      }
-
-      // 🟢 Setelah hapus dari DOM, refetch data biar stat update
       await fetchAndDisplayEvents();
-
     } else {
       alert(data.message || "Failed to delete event");
     }
@@ -228,7 +154,6 @@ document.getElementById("confirmDelete").addEventListener("click", async functio
   }
 });
 
-/* === FETCH EVENTS === */
 async function fetchAndDisplayEvents() {
   const container = document.getElementById("event-container");
   const loadingText = document.getElementById("loading-text");
@@ -242,11 +167,18 @@ async function fetchAndDisplayEvents() {
     if (!data.events || data.events.length === 0) {
       container.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">
         You have not created any events yet. Click "Create Event" to get started!</p>`;
+      document.getElementById("total-events-stat").textContent = "0";
+      document.getElementById("total-attendees-stat").textContent = "0";
       return;
     }
 
     container.innerHTML = "";
+
+    let totalEvents = data.events.length;
+    let totalAttendees = 0;
+
     data.events.forEach((event) => {
+      totalAttendees += event.attendee_count || 0;
       const card = document.createElement("article");
       card.className = "event-card bg-white rounded-xl shadow-md overflow-hidden transition-all";
       card.dataset.eventId = event.id;
@@ -255,9 +187,13 @@ async function fetchAndDisplayEvents() {
         <div class="relative">
           <img src="${event.thumbnail || '{% static "images/default-thumbnail.png" %}'}"
                alt="${event.name}" class="w-full h-48 object-cover">
-          <span class="absolute top-3 right-3 bg-white/90 text-orange-600 text-xs px-3 py-1 rounded-full font-medium">
+          <span class="absolute top-3 left-3 bg-[var(--color-main-400)] text-white text-xs px-3 py-1 rounded-full font-medium shadow-md">
             ${event.sports_category}
           </span>
+          ${event.activity_category ? 
+            `<span class='absolute top-10 left-3 text-[var(--color-main-400)] bg-[var(--color-main-50)] text-xs px-3 py-1 rounded-full font-medium shadow-md'>
+              ${event.activity_category}
+            </span>` : ""}
         </div>
         <div class="p-5 flex flex-col justify-between">
           <div>
@@ -266,16 +202,20 @@ async function fetchAndDisplayEvents() {
             <p class="text-sm text-gray-400">${event.start_time}</p>
             <p class="text-sm text-gray-600 mt-2">${event.attendee_count}/${event.capacity} attendees</p>
           </div>
-          <div class="flex justify-end gap-4 mt-4 pt-3 border-t border-gray-200">
-            <a href="${event.edit_url}" class="text-sm font-semibold text-orange-500 hover:text-orange-600">Edit</a>
-            <button onclick="showDeleteModal('${event.id}')" 
-                    class="text-sm font-semibold text-red-600 hover:text-red-700">
-              Delete
-            </button>
+          <div class="flex justify-between mt-4 pt-3 border-t border-gray-200">
+            <a href="/event/${event.id}/" class="btn btn-gradient flex items-center gap-2">Details →</a>
+            <div class="flex gap-2">
+              <a href="/event/${event.id}/edit/" class="btn bg-[var(--color-main-100)] text-[var(--color-main-700)] hover:bg-[var(--color-main-500)] hover:text-white transition-colors">Edit</a>
+              <button onclick="showDeleteModal('${event.id}')" class="btn bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors">Delete</button>
+            </div>
           </div>
         </div>`;
       container.appendChild(card);
     });
+
+    document.getElementById("total-events-stat").textContent = totalEvents;
+    document.getElementById("total-attendees-stat").textContent = totalAttendees;
+
   } catch (error) {
     console.error("Failed to fetch events:", error);
     container.innerHTML = `<p class="text-red-500 col-span-full text-center py-10">
