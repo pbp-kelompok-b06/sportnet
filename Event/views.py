@@ -44,7 +44,6 @@ def create_event(request):
             event.organizer = organizer
             print(request.POST)
             event.save()
-            messages.success(request, "Event created 🎉")
            
             return redirect("dashboard:show")
     else:
@@ -53,4 +52,70 @@ def create_event(request):
 
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-    return render(request, "event_detail.html", {"event": event})
+
+    # --- format fee jadi "K" ---
+    fee_val = event.fee if event.fee is not None else 0
+
+    try:
+        fee_val = int(fee_val)
+    except (TypeError, ValueError):
+        fee_val = 0
+
+    # fee udah divalidasi kelipatan 100 dan max 9,999,999 (info dari kamu)
+    # aturan:
+    # 125000  -> 125K
+    # 125500  -> 125.5K
+    fee_val = int(event.fee or 0)   
+    fee_val = round(fee_val / 100) * 100
+
+    if fee_val < 1000:
+        formatted_fee = str(fee_val)
+    else:
+        ribu = fee_val / 1000  # float
+
+        if fee_val % 1000 == 0:
+            # contoh 125000 -> 125.0 -> 125K
+            formatted_fee = f"{int(ribu)}K"
+        else:
+            # contoh 125500 -> 125.5K
+            formatted_fee = f"{ribu:.1f}K"
+    return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,})
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.apps import apps
+
+Participant = apps.get_model('Authenticate', 'Participant')
+
+@login_required(login_url='Authenticate:login')
+@require_POST
+def join_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    # cek user-nya participant atau bukan
+    try:
+        participant = Participant.objects.get(user=request.user)
+    except Participant.DoesNotExist:
+        return JsonResponse({
+            "ok": False,
+            "error": "Kamu bukan participant."
+        }, status=403)
+
+    # kalau udah join sebelumnya
+    if event.attendee.filter(id=participant.id).exists():
+        return JsonResponse({
+            "ok": False,
+            "error": "Kamu sudah join event ini."
+        }, status=400)
+
+    # tambahin ke attendee
+    event.attendee.add(participant)
+
+    return JsonResponse({
+        "ok": True,
+        "joined_count": event.attendee.count(),
+        "capacity": event.capacity,
+    })
+
+

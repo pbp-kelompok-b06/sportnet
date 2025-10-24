@@ -16,6 +16,8 @@
         {% block content %}{% endblock %}
     </main>
 
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+    <script src="{% static 'js/card_event.js' %}"></script>
+    {% endblock scripts %}
     </body>
 </html>
