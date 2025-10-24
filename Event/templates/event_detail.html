@@ -47,7 +47,7 @@
             <h1 class="text-2xl font-bold text-orange-700">{{ event.name }}</h1>
             <p class="font-semibold text-orange-600">
               {% if event.fee %}
-                IDR {{ event.fee|floatformat:0 }}K
+                IDR {{ formatted_fee }}
               {% else %}
                 Free
               {% endif %}
@@ -55,35 +55,32 @@
           </div>
 
         <!-- Time and location -->
-        {% if event.end_time %}
-        {% if event.start_time.date == event.end_time.date %}
-            <!-- Hari sama -->
-            <p class="text-gray-500 text-sm mb-2">
-            {{ event.start_time|date:"d M Y" }} • {{ event.start_time|time:"H:i" }} - {{ event.end_time|time:"H:i" }}
-            </p>
-        {% else %}
-            <!-- Hari beda -->
-            <p class="text-gray-500 text-sm mb-2">
-            {{ event.start_time|date:"d M Y" }} - {{ event.end_time|date:"d M Y" }} •
-            {{ event.start_time|time:"H:i" }} - {{ event.end_time|time:"H:i" }}
-            </p>
-        {% endif %}
-        {% else %}
-        <!-- Tidak ada end_time -->
-        <p class="text-gray-500 text-sm mb-2">
-            {{ event.start_time|date:"d M Y" }} • {{ event.start_time|time:"H:i" }}
-        </p>
-        {% endif %}
-          <p class="font-semibold text-gray-700">Location</p>
+        <div class="text-gray-600 text-sm mt-1">
+            {% if not event.end_time %}
+                {{ event.start_time|date:"d M Y • H:i" }}
+            {% elif event.start_time|date:"Y-m-d H:i" == event.end_time|date:"Y-m-d H:i" %}
+                {{ event.start_time|date:"d M Y • H:i" }}
+            {% elif event.start_time|date:"Y-m-d" == event.end_time|date:"Y-m-d" %}
+                {# sama hari, jam beda → "24 Oct 2025, 10:00 - 12:00" #}
+                {{ event.start_time|date:"d M Y • H:i" }} - {{ event.end_time|date:"H:i" }}
+            {% else %}
+                {# beda hari → full rentang tanggal #}
+                {{ event.start_time|date:"d M Y • H:i" }} - {{ event.end_time|date:"d M Y, H:i" }}
+            {% endif %}
+        </div>
+
+          <p class="font-semibold text-gray-700 mt-4">Location</p>
           <p class="text-gray-500 text-sm mb-4">{{ event.location }}</p>
 
           <!-- Description -->
-          <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ event.description }}</p>
+          <div class="max-h-48 overflow-y-auto whitespace-pre-line text-gray-700 mt-6">
+            {{ event.description }}
+          </div>
         </div>
 
        
         <!-- Buttons -->
-        <div class="flex gap-4 items-center justify-end">
+        <div class="flex gap-4 items-center justify-end mt-6">
     
           <button type="button" id="bookEventBtn" class="btn px-8 h-11 text-base 
                         bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
