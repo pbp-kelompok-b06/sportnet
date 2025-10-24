@@ -28,13 +28,16 @@ class EventForm(forms.ModelForm):
             "thumbnail": forms.URLInput(attrs={
                 "class": "w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
-            "start_time": forms.TextInput(attrs={
-                "class": " w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
-                "placeholder": "Start"
+            "start_time": forms.DateTimeInput(attrs={
+                "class": " w-[300px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
+                "placeholder": "Start",
+                "type": "datetime-local"
             }),
-            "end_time": forms.TextInput(attrs={
-                "class": " w-[200px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
-                "placeholder": "End"
+            "end_time": forms.DateTimeInput(attrs={
+                "class": " w-[300px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
+                "placeholder": "End",
+                "type": "datetime-local" 
+                
             }),
             "location": forms.TextInput(attrs={
                 "class": "w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
