@@ -145,6 +145,7 @@
            <!-- Bookmark toggle -->
           <button type="button"
                   id="bookmarkBtn"
+                  data-event-id="{{ event.id }}"
                   data-bookmarked="{{ is_bookmarked|yesno:'true,false' }}"
                   aria-label="Bookmark event"
                   aria-pressed="{% if is_bookmarked %}true{% else %}false{% endif %}"
@@ -252,6 +253,7 @@
     if (!bookBtn || !modal) return;
 
     const eventId = bookBtn.dataset.eventId;
+    console.log("Event ID:", eventId);
     const csrftoken = document.cookie
       .split('; ')
       .find(row => row.startsWith('csrftoken='))
