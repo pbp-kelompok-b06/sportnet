@@ -18,11 +18,14 @@
 
   --color-gradient1: linear-gradient(
         180deg,
-        var(--color-main-200) 0%,
-        color-mix(in srgb, var(--color-main-300) 90%, transparent) 70%,
-        color-mix(in srgb, var(--color-main-400) 70%, transparent) 100%
+        var(--color-main-400) 60%,
+        #ff951b 100%
       );
-  --color-gradient2: linear-gradient(180deg, #FFFFFF 46.42%, var(--color-main-100) 100%);
+  --color-gradient2: linear-gradient(
+        180deg, 
+        #FFFFFF 60%, 
+        var(--color-main-50) 100%
+      );
 
   /* === Text Colors === */
   --color-text-700: #151111;
@@ -52,16 +55,15 @@
     font-weight: 600;
   }
 
-  a {
-    @apply text-[var(--color-main-600)] hover:underline;
-  }
 }
 
 /* Components */
 @layer components {
   /* Base style */
   .btn {
-    @apply inline-flex items-center justify-center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     height: 37px;
     min-width: 102px;
     padding: 0 14px;
@@ -76,8 +78,8 @@
 
   /* NORMAL: */
   .btn-gradient {
-    color: var(--color-main-300)  !important;   /* text color */
-    background: var(--color-gradient2);
+    color: var(--color-main-50)  !important;   /* text color */
+    background: var(--color-gradient1);
     box-shadow: none;
     box-shadow: none;
     outline: none;
@@ -85,8 +87,7 @@
 
   /* HOVER */
   .btn-gradient:hover {
-    color: var(--color-main-50) !important;   /* text color */
-    background: var(--color-gradient1);
+    color: var(--color-main-300) !important;   /* text color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.01);
     outline: none;
   }
@@ -150,12 +151,12 @@
     position: relative;
     overflow: hidden;
     border-radius: 32px;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.04);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
     transition: box-shadow 0.3s ease;
   }
 
   .event-card:hover {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
   }
 
   .event-card::before {
@@ -194,7 +195,7 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: var(--color-gradient2);
+    background: var(--color-gradient1);
     box-shadow: inset 0 3px 6px rgba(255, 180, 150, 0.25),
                 0 3px 6px rgba(0, 0, 0, 0.05);
     transition: background 0.25s ease, box-shadow 0.25s ease;
@@ -242,7 +243,7 @@
 
   /* === STATE: Bookmarked === */
   .bookmark-btn.active .bookmark-bg {
-    background: var(--color-gradient2);
+    background: var(--color-gradient1);
   }
 
   .bookmark-btn.active .bookmark-icon {

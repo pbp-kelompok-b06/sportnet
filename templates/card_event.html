@@ -11,8 +11,14 @@
     {% endif %}
 
     {% if event.sports_category %}
-      <span class="absolute top-3 left-3 text-white text-xs px-3 py-1 rounded-full shadow-[0_3px_8px_rgba(0,0,0,0.04)] bg-[var(--color-main-200)]">
+      <span class="absolute top-3 left-3 text-white text-xs px-3 py-1 rounded-full shadow-[0_3px_8px_rgba(0,0,0,0.04)] bg-[var(--color-main-400)]">
         {{ event.get_sports_category_display }}
+      </span>
+    {% endif %}
+
+    {% if event.activity_category %}
+      <span class="absolute top-10 left-3 text-[var(--color-main-400)] text-xs px-3 py-1 rounded-full shadow-[0_3px_8px_rgba(0,0,0,0.04)] bg-[var(--color-main-50)]">
+        {{ event.get_activity_category_display }}
       </span>
     {% endif %}
   </div>
@@ -31,7 +37,7 @@
     </div>
 
     <div class="flex justify-between items-center">
-      <a href={% url 'Event:event_detail' event.id %} class="btn btn-gradient flex items-center gap-2 shadow-[0_3px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.06)]">
+      <a href="{% url 'Event:event_detail' event.id %}" class="btn btn-gradient flex items-center gap-2 shadow-[0_3px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.06)]">
         Details →
       </a>
       

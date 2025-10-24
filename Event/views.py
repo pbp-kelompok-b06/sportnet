@@ -25,8 +25,7 @@ def organizer_required(view_func):
         if not is_organizer(request.user):
             # Pilih salah satu:
             # 1) arahkan ke halaman "jadi organizer"
-            messages.error(request, "Kamu belum terdaftar sebagai Organizer.")
-            return redirect('Authenticate:be_organizer')  # ganti ke url kamu sendiri
+            return redirect('Homepage:show_main')
             # 2) atau balikin 403:
             # from django.http import HttpResponseForbidden
             # return HttpResponseForbidden("Kamu bukan Organizer.")
@@ -42,6 +41,7 @@ def create_event(request):
             organizer = Organizer.objects.get(user=request.user)
             event = form.save(commit=False)
             event.organizer = organizer
+            print(request.POST)
             event.save()
            
             return redirect("dashboard:show")
