@@ -111,6 +111,19 @@ def join_event(request, event_id):
     # tambahin ke attendee
     event.attendee.add(participant)
 
+    # create a notification for the participant to confirm join
+    try:
+        from Notification.models import Notifications as Notif
+        Notif.objects.create(
+            user=participant,
+            title=f"Berhasil bergabung: {event.name}",
+            message=f"Kamu telah berhasil mendaftar dan bergabung di event '{event.name}'. Lihat detail acara untuk informasi lebih lanjut.",
+            event=event
+        )
+    except Exception:
+        # if Notification app not available or any error, ignore to not block join
+        pass
+
     return JsonResponse({
         "ok": True,
         "joined_count": event.attendee.count(),
