@@ -12,6 +12,7 @@ from Profile.forms import ProfileFormOrganizer, ProfileFormParticipant
 from django.views.decorators.csrf import csrf_exempt
 import base64
 from django.core.files.base import ContentFile
+from django.utils import timezone
 
 @login_required(login_url='/authenticate')
 @csrf_exempt
@@ -23,9 +24,25 @@ def profile_view(request, username=None):
             return redirect('Authenticate:login')
         profile_user = request.user
     
+    context = {}
+    booked_events = None
+
     try:
         participant_profile = Participant.objects.get(user=profile_user)
-        context = {'profile_user': profile_user, 'participant': participant_profile}
+        all_booked_events = participant_profile.events_joined.order_by('start_time')
+        
+        now = timezone.now()
+        
+
+        upcoming_events = all_booked_events.filter(start_time__gte=now)
+        past_events = all_booked_events.filter(start_time__lt=now).order_by('-start_time') # Urutkan dari yang terbaru
+        
+        context = {
+            'profile_user': profile_user, 
+            'participant': participant_profile, 
+            'upcoming_events': upcoming_events,
+            'past_events': past_events,
+        }
     except Participant.DoesNotExist:
         try:
             organizer_profile = Organizer.objects.get(user=profile_user)
