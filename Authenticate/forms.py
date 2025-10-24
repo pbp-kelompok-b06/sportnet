@@ -4,7 +4,7 @@ from django import forms
 from .models import Organizer, Participant
 
 default_attrs = {
-    'class': 'w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm',
+    'class': 'w-full rounded-full border border-gray-300 bg-gray-50 pl-12 pr-6 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm',
 }
 
 class AuthStep1Form(forms.Form):
