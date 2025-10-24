@@ -72,17 +72,51 @@
           <p class="font-semibold text-gray-700 mt-4">Location</p>
           <p class="text-gray-500 text-sm mb-4">{{ event.location }}</p>
 
+          
+
           <!-- Description -->
           <div class="max-h-48 overflow-y-auto whitespace-pre-line text-gray-700 mt-6">
             {{ event.description }}
           </div>
         </div>
 
+        <!-- Attendees Section -->
+<div class="mt-5">
+  <h2 class="text-orange-600 font-semibold text-lg mb-2">Attendees</h2>
+
+  {% if event.attendee.count > 0 %}
+    <div class="flex items-center gap-3">
+      <!-- Foto attendee -->
+      {% for participant in event.attendee.all|slice:":5" %}
+        <img src="{{ participant.profile_picture.url|default:'{% static "images/default_profile.jpg" %}' }}" 
+             alt="{{ participant.user.username }}" 
+             class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
+      {% endfor %}
+
+      <!-- Counter -->
+      <span class="text-gray-600 text-sm font-medium ml-2" data-attendee-counter>
+        {{ event.attendee.count }}/{{ event.capacity }}
+      </span>
+    </div>
+  {% else %}
+    <!-- Belum ada yang ikut -->
+    <div class="flex items-center gap-2">
+      <div class="w-12 h-12 rounded-full border-2 border-dashed border-gray-400 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+      </div>
+      <p class="text-gray-500 text-sm">Belum ada yang join</p>
+    </div>
+  {% endif %}
+</div>
+
+
        
         <!-- Buttons -->
         <div class="flex gap-4 items-center justify-end mt-6">
     
-          <button type="button" id="bookEventBtn" class="btn px-8 h-11 text-base 
+          <button type="button" id="bookEventBtn" data-event-id="{{ event.id }}" class="btn px-8 h-11 text-base 
                         bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
                         text-white font-semibold border-none shadow-lg
                         hover:shadow-xl hover:-translate-y-0.5 
@@ -145,31 +179,121 @@
 
   </div>
 </div>
+
+<!-- Join Confirmation Modal -->
+<div id="joinModal"
+     class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-2xl shadow-lg p-6 w-80 text-center">
+    <h3 class="text-lg font-semibold text-orange-600 mb-4">Join this event?</h3>
+    <div id="joinEventInfo" class="text-gray-600 text-sm space-y-1 mb-4">
+      <!-- info event dimasukin lewat JS -->
+    </div>
+    <div class="flex justify-center gap-4">
+      <button id="confirmJoinBtn"
+              class="bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)]
+                     text-white px-5 py-2 rounded-lg shadow hover:shadow-lg hover:-translate-y-0.5 
+                     transition-all duration-200 ease-in-out">
+        Yes
+      </button>
+      <button id="cancelJoinBtn"
+              class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300 transition">
+        No
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
+  // ==== BOOKMARK TOGGLE ====
   (function () {
     const btn = document.getElementById('bookmarkBtn');
     if (!btn) return;
     const svg = btn.querySelector('svg');
-
-    // Ambil nilai awal dari atribut data-bookmarked
     let isBookmarked = btn.dataset.bookmarked === "true";
-
-    function render() {
+    function renderBookmark() {
       btn.classList.toggle('is-active', isBookmarked);
       btn.setAttribute('aria-pressed', isBookmarked ? 'true' : 'false');
       svg.setAttribute('fill', isBookmarked ? 'white' : 'none');
     }
-    render();
-
-    // Toggle UI saat diklik
+    renderBookmark();
     btn.addEventListener('click', async () => {
       isBookmarked = !isBookmarked;
-      render();
+      renderBookmark();
+    });
+  })();
 
-      // nanti di sini kamu sambungkan ke backend toggle bookmark
+  // ==== JOIN EVENT ====
+  (function () {
+    const bookBtn = document.getElementById('bookEventBtn');
+    const modal = document.getElementById('joinModal');
+    const infoBox = document.getElementById('joinEventInfo');
+    const confirmBtn = document.getElementById('confirmJoinBtn');
+    const cancelBtn = document.getElementById('cancelJoinBtn');
+    if (!bookBtn || !modal) return;
+
+    const eventId = bookBtn.dataset.eventId;
+    const csrftoken = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('csrftoken='))
+      ?.split('=')[1];
+
+    // ambil data event dari template
+    const eventName = "{{ event.name|escapejs }}";
+    const eventLoc = "{{ event.location|escapejs }}";
+    const eventTime = `{% if not event.end_time %}
+      {{ event.start_time|date:"l, d M Y • H:i" }}
+      {% elif event.start_time|date:"Y-m-d" == event.end_time|date:"Y-m-d" %}
+      {{ event.start_time|date:"l, d M Y • H:i" }} - {{ event.end_time|date:"H:i" }}
+      {% else %}
+      {{ event.start_time|date:"l, d M Y • H:i" }} - {{ event.end_time|date:"d M Y, H:i" }}
+      {% endif %}`.trim();
+    const eventFee = `{% if event.fee %}IDR {{ formatted_fee }}{% else %}Free{% endif %}`;
+
+    // klik tombol → buka modal
+    bookBtn.addEventListener('click', () => {
+      infoBox.innerHTML = `
+        <p><span class="font-medium text-gray-700">Event:</span> ${eventName}</p>
+        <p><span class="font-medium text-gray-700">Location:</span> ${eventLoc}</p>
+        <p><span class="font-medium text-gray-700">Time:</span> ${eventTime}</p>
+        <p><span class="font-medium text-gray-700">Fee:</span> ${eventFee}</p>
+      `;
+      modal.classList.remove('hidden');
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch(`/event/${eventId}/join/`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": csrftoken,
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        });
+        const data = await res.json();
+        if (!data.ok) {
+          alert(data.error || "Gagal join event.");
+          modal.classList.add('hidden');
+          return;
+        }
+        const counterEl = document.querySelector('[data-attendee-counter]');
+        if (counterEl) {
+          counterEl.textContent = `${data.joined_count}/${data.capacity}`;
+        }
+        alert("Kamu berhasil join event 🎉");
+      } catch (err) {
+        console.error(err);
+        alert("Terjadi error. Coba lagi ya.");
+      } finally {
+        modal.classList.add('hidden');
+      }
     });
   })();
 </script>
+
 
 
 {% endblock content %}
