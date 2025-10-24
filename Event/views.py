@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
-from Authenticate.models import Organizer
+from Authenticate.models import Organizer, Participant
 from .forms import EventForm
 from .models import Event
 
@@ -80,6 +80,20 @@ def event_detail(request, event_id):
             # contoh 125500 -> 125.5K
             formatted_fee = f"{ribu:.1f}K"
     return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,})
+
+@login_required(login_url='authenticate/')
+def book_event(request, event_id):
+    if request.method == 'POST':
+        event = get_object_or_404(Event, id=event_id)
+        try:
+            participant = request.user.participant_profile
+        except Participant.DoesNotExist:
+            messages.error(request, "Hanya partisipan yang bisa book event")
+            return redirect('Event:detail_event', event_id=event.id)
+        event.attendee.add(participant)
+        messages.success(request, f"Anda berhasil book event: {event.name}!")
+        return redirect('profile:profile_view')
+    return redirect(request.META.get('HTTP_REFERER', 'homepage:show_homepage'))
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
