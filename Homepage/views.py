@@ -15,7 +15,7 @@ def serialize_event(card_event):
     # NOTE: Ini adalah struktur data yang dikirim ke JavaScript.
     # JavaScript di homepage.html mengharapkan field seperti 'name', 'date', dll.
     return {
-        'pk': event.pk,
+        'id': str(event.id),
         'name': event.name,
         'date': date_str,
         'location': event.location,
@@ -26,13 +26,8 @@ def serialize_event(card_event):
     }
 
 def show_main(request):
-    events = Event.objects.all()
-    for event in events:
-        CardEvent.objects.get_or_create(parent_event=event)
-    
-    context = {
-        'events': events,
-    }
+    events = Event.objects.all().order_by('-start_time')
+    context = {'events': events}
     return render(request, 'homepage.html', context)
 
 # Tampilan baru untuk menyediakan data event dalam JSON
