@@ -80,3 +80,41 @@ def event_detail(request, event_id):
             formatted_fee = f"{ribu:.1f}K"
     return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,})
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.apps import apps
+
+Participant = apps.get_model('Authenticate', 'Participant')
+
+@login_required(login_url='Authenticate:login')
+@require_POST
+def join_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    # cek user-nya participant atau bukan
+    try:
+        participant = Participant.objects.get(user=request.user)
+    except Participant.DoesNotExist:
+        return JsonResponse({
+            "ok": False,
+            "error": "Kamu bukan participant."
+        }, status=403)
+
+    # kalau udah join sebelumnya
+    if event.attendee.filter(id=participant.id).exists():
+        return JsonResponse({
+            "ok": False,
+            "error": "Kamu sudah join event ini."
+        }, status=400)
+
+    # tambahin ke attendee
+    event.attendee.add(participant)
+
+    return JsonResponse({
+        "ok": True,
+        "joined_count": event.attendee.count(),
+        "capacity": event.capacity,
+    })
+
+
