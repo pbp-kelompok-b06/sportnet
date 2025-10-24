@@ -32,27 +32,45 @@
       <!-- Right side: info -->
       <div class="flex flex-col justify-between">
         <div>
-          <!-- Categories -->
-          <div class="flex gap-2 mb-3">
-            <span class="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full">
-              {{ event.get_sports_category_display }}
-            </span>
-            <span class="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full">
-              {{ event.get_activity_category_display }}
-            </span>
-          </div>
+<!-- Top row: categories + Edit Event (horizontal align) -->
+<div class="flex items-center justify-between mb-3">
+  
+  <!-- left: category pills -->
+  <div class="flex gap-2 flex-wrap">
+    <span class="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full">
+      {{ event.get_sports_category_display }}
+    </span>
+    <span class="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full">
+      {{ event.get_activity_category_display }}
+    </span>
+  </div>
 
-          <!-- Event name and fee -->
-          <div class="flex justify-between items-center mb-2">
-            <h1 class="text-2xl font-bold text-orange-700">{{ event.name }}</h1>
-            <p class="font-semibold text-orange-600">
-              {% if event.fee %}
-                IDR {{ formatted_fee }}
-              {% else %}
-                Free
-              {% endif %}
-            </p>
-          </div>
+  <!-- right: Edit Event -->
+  {% if request.user.is_authenticated and event.organizer.user == request.user %}
+    <a href="{% url 'Event:edit_event' event.id %}"
+       class="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-700 font-semibold
+              hover:bg-orange-200 transition-colors shadow-sm whitespace-nowrap">
+      Edit Event
+    </a>
+  {% endif %}
+</div>
+
+
+<!-- Event name and fee -->
+<div class="flex justify-between items-start mb-2">
+  <h1 class="text-2xl font-bold text-orange-700 leading-snug max-w-[75%]">
+    {{ event.name }}
+  </h1>
+
+  <p class="font-semibold text-orange-600 text-right whitespace-nowrap">
+    {% if event.fee %}
+      IDR {{ formatted_fee }}
+    {% else %}
+      Free
+    {% endif %}
+  </p>
+</div>
+
 
         <!-- Time and location -->
         <div class="text-gray-600 text-sm mt-1">
@@ -115,7 +133,7 @@
        
         <!-- Buttons -->
         <div class="flex gap-4 items-center justify-end mt-6">
-    
+          {% if is_participant %}
           <button type="button" id="bookEventBtn" data-event-id="{{ event.id }}" class="btn px-8 h-11 text-base 
                         bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
                         text-white font-semibold border-none shadow-lg
@@ -143,6 +161,7 @@
                     d="M6 4a2 2 0 0 0-2 2v14l8-4 8 4V6a2 2 0 0 0-2-2H6z"/>
             </svg>
           </button>
+          {% endif %}
         </div>
       </div>
     </div>
