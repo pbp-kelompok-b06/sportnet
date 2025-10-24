@@ -43,7 +43,6 @@ def create_event(request):
             event = form.save(commit=False)
             event.organizer = organizer
             event.save()
-            messages.success(request, "Event created 🎉")
            
             return redirect("dashboard:show")
     else:
@@ -52,4 +51,32 @@ def create_event(request):
 
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-    return render(request, "event_detail.html", {"event": event})
+
+    # --- format fee jadi "K" ---
+    fee_val = event.fee if event.fee is not None else 0
+
+    try:
+        fee_val = int(fee_val)
+    except (TypeError, ValueError):
+        fee_val = 0
+
+    # fee udah divalidasi kelipatan 100 dan max 9,999,999 (info dari kamu)
+    # aturan:
+    # 125000  -> 125K
+    # 125500  -> 125.5K
+    fee_val = int(event.fee or 0)   
+    fee_val = round(fee_val / 100) * 100
+
+    if fee_val < 1000:
+        formatted_fee = str(fee_val)
+    else:
+        ribu = fee_val / 1000  # float
+
+        if fee_val % 1000 == 0:
+            # contoh 125000 -> 125.0 -> 125K
+            formatted_fee = f"{int(ribu)}K"
+        else:
+            # contoh 125500 -> 125.5K
+            formatted_fee = f"{ribu:.1f}K"
+    return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,})
+
