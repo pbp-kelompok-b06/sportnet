@@ -52,11 +52,8 @@ class EventForm(forms.ModelForm):
                 "class": "w-[180px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
             }),
             "fee": forms.NumberInput(attrs={
-                "class": "w-[150px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
-            }),
-            "currency": forms.TextInput(attrs={
-                "class": "w-[50px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
-            }),
+                "class": "w-[180px] w-full rounded-full border border-gray-300 bg-gray-50 px-6 py-3 text-gray-800 placeholder:text-gray-[var(--color-text-200)] focus:outline-none focus:ring-2 focus:ring-orange-400",
+            })
         }
 
     def clean_name(self):
