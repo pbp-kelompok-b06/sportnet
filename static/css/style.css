@@ -117,6 +117,29 @@
     transition: all 0.25s ease;
     background-clip: padding-box;
   }
+  .bookmark-btn {
+  color: white; /* default icon putih */
+}
+
+/* saat belum di-bookmark */
+.bookmark-btn.inactive {
+  color: var(--color-main-700); /* outline gelap */
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-main-200) 30%, white),
+    color-mix(in srgb, var(--color-main-300) 15%, white)
+  );
+}
+
+/* saat di-bookmark */
+.bookmark-btn.active {
+  color: white; /* outline & fill putih */
+  background: linear-gradient(
+    180deg,
+    var(--color-main-300),
+    var(--color-main-400)
+  );
+}
 
   /* Placeholder */
   .field::placeholder {

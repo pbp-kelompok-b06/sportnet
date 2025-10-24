@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
-
+from Authenticate.models import Organizer
 from .forms import EventForm
 from .models import Event
 
@@ -44,8 +44,8 @@ def create_event(request):
             event.organizer = organizer
             event.save()
             messages.success(request, "Event created 🎉")
-            # perbaiki: nama url & argumen harus cocok dengan urls.py
-            return redirect("Event:event_detail", event_id=event.id)
+           
+            return redirect("dashboard:show")
     else:
         form = EventForm()
     return render(request, "create_event.html", {"form": form})

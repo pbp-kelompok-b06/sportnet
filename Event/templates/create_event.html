@@ -166,7 +166,20 @@
             {% endif %}
         </div>
     </div>
-
+ <!-- Capacity -->
+    <div class="flex items-center gap-2">
+        <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.activity_category.id_for_label }}">Capacity</label>
+        <div class="flex-1">
+            {{ form.capacity }}
+            {% if form.capacity.errors %}
+              <div class="text-red-500 text-sm mt-1">
+                {% for error in form.activity_category.errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+        </div>
+    </div>
     <!--  Fee -->
     <div class="flex items-center gap-2">
         <label  class="w-40  text-[var(--color-text-400)] text-left" for="{{ form.fee.id_for_label }}">
@@ -192,6 +205,7 @@
       </div>
     {% endif %}
 </div>
+
 
     <!-- Submit -->
     <div class="flex justify-center pt-4">
