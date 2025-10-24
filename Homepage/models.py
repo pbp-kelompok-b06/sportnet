@@ -7,4 +7,6 @@ class CardEvent(models.Model):
     parent_event = models.OneToOneField(Event, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):
-        return f"{self.name} - {self.date} - {self.location} - {self.price}"
+        if self.parent_event:
+            return f"Card for {self.parent_event.name}"
+        return "CardEvent (no parent)"
