@@ -8,6 +8,28 @@
 {% block content %}
 {% include 'navbar.html' %}
 
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Delete Event?</h3>
+            <p class="text-center text-gray-600 mb-6">Are you sure you want to delete this event? This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button id="cancelDelete" class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold transition-colors">
+                    Cancel
+                </button>
+                <button id="confirmDelete" class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="w-full min-h-screen bg-slate-100 pt-20 pb-20">
     <div class="container mx-auto px-4 max-w-7xl">
 
@@ -55,6 +77,119 @@
 
 {% block scripts %}
 <script>
+    // State untuk menyimpan ID event yang akan dihapus
+    let eventToDelete = null;
+    
+    // Fungsi untuk mendapatkan CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Fungsi untuk menampilkan modal konfirmasi (HARUS GLOBAL)
+    window.showDeleteModal = function(eventId) {
+        eventToDelete = eventId;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    // Fungsi untuk menyembunyikan modal
+    function hideDeleteModal() {
+        eventToDelete = null;
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+
+    // Event listener untuk tombol Cancel
+    document.getElementById('cancelDelete').addEventListener('click', hideDeleteModal);
+
+    // Klik di luar modal untuk close
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideDeleteModal();
+        }
+    });
+
+    // Event listener untuk tombol Confirm Delete
+    document.getElementById('confirmDelete').addEventListener('click', async function() {
+        if (!eventToDelete) return;
+
+        const csrftoken = getCookie('csrftoken');
+        
+        // Disable button saat loading
+        this.disabled = true;
+        this.textContent = 'Deleting...';
+        
+        try {
+            const url = `/dashboard/delete-event/${eventToDelete}/`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            });
+
+            const data = await response.json();
+
+            hideDeleteModal();
+            
+            // Re-enable button
+            this.disabled = false;
+            this.textContent = 'Delete';
+
+            if (response.ok && data.status === 'success') {
+                Toastify({
+                    text: data.message || "Event deleted successfully!",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "linear-gradient(to right, #1D976C, #93F9B9)",
+                    }
+                }).showToast();
+                
+                // Refresh event list
+                await fetchAndDisplayEvents();
+            } else {
+                Toastify({
+                    text: data.message || 'Failed to delete event',
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: {
+                        background: "linear-gradient(to right, #cb2d3e, #ef473a)",
+                    }
+                }).showToast();
+            }
+        } catch (error) {
+            console.error('Failed to delete event:', error);
+            hideDeleteModal();
+            this.disabled = false;
+            this.textContent = 'Delete';
+            
+            Toastify({
+                text: 'Network error. Please try again.',
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                style: {
+                    background: "linear-gradient(to right, #cb2d3e, #ef473a)",
+                }
+            }).showToast();
+        }
+    });
+
     async function fetchAndDisplayEvents() {
         const container = document.getElementById('event-container');
         const loadingText = document.getElementById('loading-text');
@@ -82,38 +217,40 @@
 
             container.innerHTML = ''; 
 
-            ddata.events.forEach(event => {
-            const cardHTML = `
-                <article class="bg-white rounded-2xl shadow-lg overflow-hidden group transform hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
-                    <div class="relative">
-                        <img src="${event.thumbnail || '{% static "images/default-thumbnail.png" %}'}" alt="${event.name}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
-                        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/70 to-transparent"></div>
-                        <span class="absolute top-3 right-3 bg-white/90 text-slate-800 text-xs px-3 py-1 rounded-full font-semibold backdrop-blur-sm">
-                            ${event.sports_category}
-                        </span>
-                        <div class="absolute bottom-3 left-4">
-                            <h3 class="text-xl font-bold text-white leading-tight">${event.name}</h3>
-                            <p class="text-sm text-white/80">${event.start_time}</p>
+            data.events.forEach(event => {
+                const cardHTML = `
+                    <article class="bg-white rounded-2xl shadow-lg overflow-hidden group transform hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
+                        <div class="relative">
+                            <img src="${event.thumbnail || '{% static "images/default-thumbnail.png" %}'}" alt="${event.name}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/70 to-transparent"></div>
+                            <span class="absolute top-3 right-3 bg-white/90 text-slate-800 text-xs px-3 py-1 rounded-full font-semibold backdrop-blur-sm">
+                                ${event.sports_category}
+                            </span>
+                            <div class="absolute bottom-3 left-4">
+                                <h3 class="text-xl font-bold text-white leading-tight">${event.name}</h3>
+                                <p class="text-sm text-white/80">${event.start_time}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="p-5 flex flex-col flex-grow">
-                        <div class="flex-grow space-y-3">
-                            <p class="text-sm text-slate-600 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                                ${event.location}
-                            </p>
-                            <p class="text-sm text-slate-600 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 001 15v3H-2v-3a3.005 3.005 0 013.75-2.906z"></path></svg>
-                                ${event.attendee_count} / ${event.capacity} Attendees
-                            </p>
+                        <div class="p-5 flex flex-col flex-grow">
+                            <div class="flex-grow space-y-3">
+                                <p class="text-sm text-slate-600 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                                    ${event.location}
+                                </p>
+                                <p class="text-sm text-slate-600 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 001 15v3H-2v-3a3.005 3.005 0 013.75-2.906z"></path></svg>
+                                    ${event.attendee_count} / ${event.capacity} Attendees
+                                </p>
+                            </div>
+                            <div class="flex justify-end items-center mt-4 border-t border-slate-200 pt-4 space-x-4">
+                                <a href="${event.edit_url}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">Edit</a>
+                                <button type="button" onclick="showDeleteModal('${event.id}')" class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors focus:outline-none">
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex justify-end items-center mt-4 border-t border-slate-200 pt-4 space-x-4">
-                            <a href="${event.edit_url}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">Edit</a>
-                            <button data-id="${event.id}" class="delete-btn text-sm font-semibold text-red-600 hover:text-red-800 transition-colors">Delete</button>
-                        </div>
-                    </div>
-                </article>
-            `;
+                    </article>
+                `;
                 container.innerHTML += cardHTML;
             });
         } catch (error) {
@@ -122,7 +259,6 @@
         }
     }
 
-    // ... (Fungsi delete_event Anda tidak berubah) ...
     document.addEventListener('DOMContentLoaded', fetchAndDisplayEvents);
 </script>
 {% endblock scripts %}

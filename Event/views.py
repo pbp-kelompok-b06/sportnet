@@ -42,6 +42,7 @@ def create_event(request):
             organizer = Organizer.objects.get(user=request.user)
             event = form.save(commit=False)
             event.organizer = organizer
+            print(request.POST)
             event.save()
             messages.success(request, "Event created 🎉")
            
