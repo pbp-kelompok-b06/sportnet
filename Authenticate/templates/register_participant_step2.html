@@ -10,20 +10,24 @@
     <div class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-2xl bg-white/70 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden p-12">
 
-            <div class="mb-12">
-                <div class="flex items-center">
-                    <div class="flex items-center text-green-600 relative">
-                        <div class="rounded-full h-8 w-8 flex items-center justify-center bg-green-500 text-white">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                        <div class="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-green-600">Authentication</div>
+                <div class="flex justify-between items-center mt-8">
+                    <a href="{% url 'Authenticate:register_organizer_step1' %}" class="text-sm text-gray-600 hover:underline">
+                        &larr; Back
+                    </a>
                     </div>
-                    <div class="flex-auto border-t-2 border-green-500"></div>
-                    <div class="flex items-center text-[var(--color-main-500)] relative">
-                        <div class="rounded-full h-8 w-8 flex items-center justify-center bg-[var(--color-main-500)] text-white font-bold">2</div>
-                        <div class="absolute top-0 -ml-16 text-center mt-16 w-32 text-xs font-medium uppercase text-[var(--color-main-500)]">Profile Details</div>
+
+            <div class="w-full max-w-sm mx-auto mb-12">
+                <div class="flex items-start">
+                    <div class="w-1/2 flex flex-col items-center text-center px-2">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-main-400)] to-[var(--color-main-500)] text-white font-bold text-lg shadow-lg">1</div>
+                        <p class="mt-3 text-sm font-semibold text-[var(--color-main-500)]">Authentication</p>
+                    </div>
+
+                    <div class="w-full h-px bg-gradient-to-br from-[var(--color-main-400)] to-[var(--color-main-500)] mt-5"></div>
+
+                    <div class="w-1/2 flex flex-col items-center text-center px-2">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-500 font-bold text-lg">2</div>
+                        <p class="mt-3 text-sm font-medium text-gray-400">Details</p>
                     </div>
                 </div>
             </div>
