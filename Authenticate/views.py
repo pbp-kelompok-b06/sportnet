@@ -28,6 +28,7 @@ def register_participant_step2(request):
     step1_data = request.session.get('participant_step1_data')
     if not step1_data:
         return redirect('Authenticate:register_participant_step1')
+    
 
     if request.method == 'POST':
         form = ParticipantStep2Form(request.POST)
