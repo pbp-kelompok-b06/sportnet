@@ -13,12 +13,17 @@ function attachBookmarkHandlers() {
       console.log("Clicked bookmark for event:", eventId);
 
       try {
+        console.log("Attempting to bookmark event ID:", eventId);
         const response = await fetch(`/bookmark/${eventId}/`, {
           method: "POST",
-          headers: { "X-CSRFToken": getCookie("csrftoken") },
+          headers: { 
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Content-Type": "application/json"
+          },
         });
 
-        console.log("Response:", response.status);
+        console.log("Response status:", response.status);
+        console.log("Response URL:", response.url);
 
         if (response.redirected) {
           window.location.href = response.url;
