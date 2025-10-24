@@ -5,260 +5,284 @@
 <title>Organizer Dashboard</title>
 {% endblock meta %}
 
+{% load static %}
 {% block content %}
 {% include 'navbar.html' %}
 
-<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
-        <div class="p-6">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
-                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                </svg>
-            </div>
-            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Delete Event?</h3>
-            <p class="text-center text-gray-600 mb-6">Are you sure you want to delete this event? This action cannot be undone.</p>
-            <div class="flex gap-3">
-                <button id="cancelDelete" class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold transition-colors">
-                    Cancel
-                </button>
-                <button id="confirmDelete" class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors">
-                    Delete
-                </button>
-            </div>
-        </div>
+<!-- Delete Modal -->
+<div id="deleteModal"
+  class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
+    <div class="p-6 text-center">
+      <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Event?</h3>
+      <p class="text-gray-600 mb-6">Are you sure you want to delete this event? This action cannot be undone.</p>
+      <div class="flex gap-3">
+        <button id="cancelDelete"
+          class="flex-1 px-4 py-2.5 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-semibold transition-colors">Cancel</button>
+        <button id="confirmDelete"
+          class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors">Delete</button>
+      </div>
     </div>
+  </div>
 </div>
 
+<!-- Main Page -->
 <div class="w-full min-h-screen bg-slate-100 pt-20 pb-20">
-    <div class="container mx-auto px-4 max-w-7xl">
+  <div class="container mx-auto px-6 lg:px-10 max-w-7xl">
 
-        <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl shadow-lg p-8 mb-10 text-white">
-            <h1 class="text-4xl font-bold">Welcome, {{ user.organizer_profile.organizer_name }}!</h1>
-            <p class="text-slate-300 mt-2">Here's a strategic overview of your managed events.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-2xl shadow-md flex items-center space-x-4 transition-all duration-300 hover:shadow-xl hover:scale-105">
-                <div class="bg-amber-100 p-3 rounded-full">
-                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                </div>
-                <div>
-                    <p class="text-sm text-slate-500">Total Events</p>
-                    <p id="total-events-stat" class="text-2xl font-bold text-slate-800">0</p>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-md flex items-center space-x-4 transition-all duration-300 hover:shadow-xl hover:scale-105">
-                <div class="bg-amber-100 p-3 rounded-full">
-                   <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                </div>
-                <div>
-                    <p class="text-sm text-slate-500">Total Attendees</p>
-                    <p id="total-attendees-stat" class="text-2xl font-bold text-slate-800">0</p>
-                </div>
-            </div>
-             <a href="{% url 'Event:create_event' %}" class="bg-white p-6 rounded-2xl shadow-md flex items-center justify-center space-x-3 text-slate-600 font-semibold hover:bg-amber-500 hover:text-white hover:shadow-xl hover:scale-105 transition-all duration-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                <span>Create New Event</span>
-            </a>
-        </div>
-
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold text-slate-800">My Events</h2>
-        </div>
-
-        <div id="event-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <p id="loading-text" class="text-slate-500 col-span-full">Loading events...</p>
-        </div>
-
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-[var(--color-main-400)] to-[var(--color-main-600)] rounded-2xl shadow-lg p-8 mb-10 text-white">
+      <h1 class="text-4xl font-bold">Welcome, {{ user.organizer_profile.organizer_name }}!</h1>
+      <p class="text-[var(--color-main-100)] mt-2">Here's a strategic overview of your managed events.</p>
     </div>
+
+    <!-- Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div
+        class="bg-white p-6 rounded-2xl shadow-md flex items-center space-x-4 transition-all duration-300 hover:shadow-xl hover:scale-105">
+        <div class="bg-[var(--color-main-100)] p-3 rounded-full">
+          <svg class="w-6 h-6 text-[var(--color-main-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Total Events</p>
+          <p id="total-events-stat" class="text-2xl font-bold text-slate-800">0</p>
+        </div>
+      </div>
+
+      <div
+        class="bg-white p-6 rounded-2xl shadow-md flex items-center space-x-4 transition-all duration-300 hover:shadow-xl hover:scale-105">
+        <div class="bg-[var(--color-main-100)] p-3 rounded-full">
+          <svg class="w-6 h-6 text-[var(--color-main-600)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Total Attendees</p>
+          <p id="total-attendees-stat" class="text-2xl font-bold text-slate-800">0</p>
+        </div>
+      </div>
+
+      <a href="{% url 'Event:create_event' %}"
+        class="bg-[var(--color-main-50)] p-6 rounded-2xl shadow-md flex items-center justify-center space-x-3 text-[var(--color-main-700)] font-semibold hover:bg-[var(--color-main-500)] hover:text-white hover:shadow-xl hover:scale-105 transition-all duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Create New Event</span>
+      </a>
+    </div>
+
+    <!-- Events Section -->
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold text-slate-800">My Events</h2>
+    </div>
+
+    <div id="event-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for event in events %}
+      <article class="event-card flex flex-col transition-all duration-300 hover:shadow-xl relative">
+
+        <!-- Image -->
+        <div class="w-full h-48 relative rounded-t-2xl overflow-hidden">
+          {% if event.thumbnail %}
+          <img src="{{ event.thumbnail }}" alt="{{ event.name }}" class="object-cover w-full h-full">
+          {% else %}
+          <img src="{% static 'images/thumbnail-default.jpg' %}" alt="No Image" class="object-cover w-full h-full opacity-80">
+          {% endif %}
+
+          {% if event.sports_category %}
+          <span
+            class="absolute top-3 left-3 text-white text-xs px-3 py-1 rounded-full bg-[var(--color-main-400)] shadow-md">
+            {{ event.get_sports_category_display }}
+          </span>
+          {% endif %}
+          {% if event.activity_category %}
+          <span
+            class="absolute top-10 left-3 text-[var(--color-main-400)] text-xs px-3 py-1 rounded-full bg-[var(--color-main-50)] shadow-md">
+            {{ event.get_activity_category_display }}
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="p-6 flex flex-col justify-between flex-1">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--color-text-500)] mb-1">{{ event.name }}</h3>
+            <p class="text-sm text-[var(--color-text-400)] mb-1">{{ event.start_time|date:"M j, Y" }} • {{ event.start_time|date:"H:i" }}</p>
+            <p class="text-sm text-[var(--color-text-400)] mb-3">{{ event.location }}</p>
+            <p class="text-[var(--color-text-300)] text-sm leading-snug mb-4 line-clamp-3">{{ event.description|truncatechars:100 }}</p>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex justify-between items-center mt-4">
+            <a href="{% url 'Event:event_detail' event.id %}" 
+               class="btn btn-gradient flex items-center gap-2">
+               Details →
+            </a>
+            <button data-id="{{ event.id }}" 
+                    class="btn bg-red-100 text-red-600 hover:bg-red-600 hover:text-white transition-colors"
+                    onclick="openDeleteModal('{{ event.id }}')">
+              Delete
+            </button>
+          </div>
+        </div>
+
+      </article>
+      {% empty %}
+      <p class="text-slate-500 col-span-full text-center">No events found.</p>
+      {% endfor %}
+    </div>
+
+  </div>
 </div>
-{% endblock content %}
+
+{% endblock %}
+
 
 {% block scripts %}
 <script>
-    // State untuk menyimpan ID event yang akan dihapus
-    let eventToDelete = null;
-    
-    // Fungsi untuk mendapatkan CSRF token
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
+let eventToDelete = null;
 
-    // Fungsi untuk menampilkan modal konfirmasi (HARUS GLOBAL)
-    window.showDeleteModal = function(eventId) {
-        eventToDelete = eventId;
-        document.getElementById('deleteModal').classList.remove('hidden');
-    }
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+}
 
-    // Fungsi untuk menyembunyikan modal
-    function hideDeleteModal() {
-        eventToDelete = null;
-        document.getElementById('deleteModal').classList.add('hidden');
-    }
+/* === MODAL HANDLER === */
+window.showDeleteModal = function (eventId) {
+  eventToDelete = eventId;
+  document.getElementById("deleteModal").classList.remove("hidden");
+};
 
-    // Event listener untuk tombol Cancel
-    document.getElementById('cancelDelete').addEventListener('click', hideDeleteModal);
+function hideDeleteModal() {
+  eventToDelete = null;
+  document.getElementById("deleteModal").classList.add("hidden");
+}
 
-    // Klik di luar modal untuk close
-    document.getElementById('deleteModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            hideDeleteModal();
-        }
+document.getElementById("cancelDelete").addEventListener("click", hideDeleteModal);
+document.getElementById("deleteModal").addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) hideDeleteModal();
+});
+
+/* === DELETE EVENT === */
+document.getElementById("confirmDelete").addEventListener("click", async function () {
+  if (!eventToDelete) return;
+
+  const csrftoken = getCookie("csrftoken");
+  const deleteBtn = this;
+  deleteBtn.disabled = true;
+  deleteBtn.textContent = "Deleting...";
+
+  try {
+    const res = await fetch(`/dashboard/delete-event/${eventToDelete}/`, {
+      method: "POST",
+      headers: { "X-CSRFToken": csrftoken },
     });
+    const data = await res.json();
+    hideDeleteModal();
+    deleteBtn.disabled = false;
+    deleteBtn.textContent = "Delete";
 
-    // Event listener untuk tombol Confirm Delete
-    document.getElementById('confirmDelete').addEventListener('click', async function() {
-        if (!eventToDelete) return;
+    if (res.ok && data.status === "success") {
+      console.log("✅ Event deleted:", eventToDelete);
 
-        const csrftoken = getCookie('csrftoken');
-        
-        // Disable button saat loading
-        this.disabled = true;
-        this.textContent = 'Deleting...';
-        
-        try {
-            const url = `/dashboard/delete-event/${eventToDelete}/`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin'
-            });
+      // cari kartu di DOM
+      const card = document.querySelector(`.event-card[data-event-id="${eventToDelete}"]`);
+      if (card) {
+        card.classList.add("opacity-0", "transition", "duration-300");
+        setTimeout(() => {
+          card.remove();
 
-            const data = await response.json();
+          // kalau kosong, munculkan pesan
+          if (document.querySelectorAll(".event-card").length === 0) {
+            document.getElementById("event-container").innerHTML = `
+              <p class="text-gray-500 col-span-full text-center py-10">
+                You have not created any events yet. Click "Create Event" to get started!
+              </p>`;
+          }
+        }, 300);
+      }
 
-            hideDeleteModal();
-            
-            // Re-enable button
-            this.disabled = false;
-            this.textContent = 'Delete';
+      // 🟢 Setelah hapus dari DOM, refetch data biar stat update
+      await fetchAndDisplayEvents();
 
-            if (response.ok && data.status === 'success') {
-                Toastify({
-                    text: data.message || "Event deleted successfully!",
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "linear-gradient(to right, #1D976C, #93F9B9)",
-                    }
-                }).showToast();
-                
-                // Refresh event list
-                await fetchAndDisplayEvents();
-            } else {
-                Toastify({
-                    text: data.message || 'Failed to delete event',
-                    duration: 3000,
-                    gravity: "top",
-                    position: "right",
-                    style: {
-                        background: "linear-gradient(to right, #cb2d3e, #ef473a)",
-                    }
-                }).showToast();
-            }
-        } catch (error) {
-            console.error('Failed to delete event:', error);
-            hideDeleteModal();
-            this.disabled = false;
-            this.textContent = 'Delete';
-            
-            Toastify({
-                text: 'Network error. Please try again.',
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                style: {
-                    background: "linear-gradient(to right, #cb2d3e, #ef473a)",
-                }
-            }).showToast();
-        }
-    });
+    } else {
+      alert(data.message || "Failed to delete event");
+    }
+  } catch (err) {
+    console.error("Error deleting event:", err);
+    alert("Network error. Please try again.");
+    hideDeleteModal();
+    deleteBtn.disabled = false;
+    deleteBtn.textContent = "Delete";
+  }
+});
 
-    async function fetchAndDisplayEvents() {
-        const container = document.getElementById('event-container');
-        const loadingText = document.getElementById('loading-text');
-        const totalEventsStat = document.getElementById('total-events-stat');
-        const totalAttendeesStat = document.getElementById('total-attendees-stat');
+/* === FETCH EVENTS === */
+async function fetchAndDisplayEvents() {
+  const container = document.getElementById("event-container");
+  const loadingText = document.getElementById("loading-text");
 
-        try {
-            const response = await fetch("{% url 'dashboard:get_organizer_events_json' %}");
-            const data = await response.json();
-            
-            if (loadingText) loadingText.style.display = 'none';
+  try {
+    const response = await fetch("{% url 'dashboard:get_organizer_events_json' %}");
+    const data = await response.json();
 
-            // Hitung statistik
-            let totalAttendees = 0;
-            data.events.forEach(event => {
-                totalAttendees += event.attendee_count;
-            });
-            totalEventsStat.textContent = data.events.length;
-            totalAttendeesStat.textContent = totalAttendees;
+    if (loadingText) loadingText.remove();
 
-            if (data.events.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 col-span-full text-center py-10">You have not created any events yet. Click "Create Event" to get started!</p>';
-                return;
-            }
-
-            container.innerHTML = ''; 
-
-            data.events.forEach(event => {
-                const cardHTML = `
-                    <article class="bg-white rounded-2xl shadow-lg overflow-hidden group transform hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col">
-                        <div class="relative">
-                            <img src="${event.thumbnail || '{% static "images/default-thumbnail.png" %}'}" alt="${event.name}" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
-                            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-black/70 to-transparent"></div>
-                            <span class="absolute top-3 right-3 bg-white/90 text-slate-800 text-xs px-3 py-1 rounded-full font-semibold backdrop-blur-sm">
-                                ${event.sports_category}
-                            </span>
-                            <div class="absolute bottom-3 left-4">
-                                <h3 class="text-xl font-bold text-white leading-tight">${event.name}</h3>
-                                <p class="text-sm text-white/80">${event.start_time}</p>
-                            </div>
-                        </div>
-                        <div class="p-5 flex flex-col flex-grow">
-                            <div class="flex-grow space-y-3">
-                                <p class="text-sm text-slate-600 flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
-                                    ${event.location}
-                                </p>
-                                <p class="text-sm text-slate-600 flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 001 15v3H-2v-3a3.005 3.005 0 013.75-2.906z"></path></svg>
-                                    ${event.attendee_count} / ${event.capacity} Attendees
-                                </p>
-                            </div>
-                            <div class="flex justify-end items-center mt-4 border-t border-slate-200 pt-4 space-x-4">
-                                <a href="${event.edit_url}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">Edit</a>
-                                <button type="button" onclick="showDeleteModal('${event.id}')" class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors focus:outline-none">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-                `;
-                container.innerHTML += cardHTML;
-            });
-        } catch (error) {
-            console.error('Failed to fetch events:', error);
-            container.innerHTML = '<p class="text-red-500 col-span-full text-center py-10">Failed to load events. Please try again.</p>';
-        }
+    if (!data.events || data.events.length === 0) {
+      container.innerHTML = `<p class="text-gray-500 col-span-full text-center py-10">
+        You have not created any events yet. Click "Create Event" to get started!</p>`;
+      return;
     }
 
-    document.addEventListener('DOMContentLoaded', fetchAndDisplayEvents);
+    container.innerHTML = "";
+    data.events.forEach((event) => {
+      const card = document.createElement("article");
+      card.className = "event-card bg-white rounded-xl shadow-md overflow-hidden transition-all";
+      card.dataset.eventId = event.id;
+
+      card.innerHTML = `
+        <div class="relative">
+          <img src="${event.thumbnail || '{% static "images/default-thumbnail.png" %}'}"
+               alt="${event.name}" class="w-full h-48 object-cover">
+          <span class="absolute top-3 right-3 bg-white/90 text-orange-600 text-xs px-3 py-1 rounded-full font-medium">
+            ${event.sports_category}
+          </span>
+        </div>
+        <div class="p-5 flex flex-col justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">${event.name}</h3>
+            <p class="text-sm text-gray-500">${event.location}</p>
+            <p class="text-sm text-gray-400">${event.start_time}</p>
+            <p class="text-sm text-gray-600 mt-2">${event.attendee_count}/${event.capacity} attendees</p>
+          </div>
+          <div class="flex justify-end gap-4 mt-4 pt-3 border-t border-gray-200">
+            <a href="${event.edit_url}" class="text-sm font-semibold text-orange-500 hover:text-orange-600">Edit</a>
+            <button onclick="showDeleteModal('${event.id}')" 
+                    class="text-sm font-semibold text-red-600 hover:text-red-700">
+              Delete
+            </button>
+          </div>
+        </div>`;
+      container.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+    container.innerHTML = `<p class="text-red-500 col-span-full text-center py-10">
+      Failed to load events. Please try again.</p>`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", fetchAndDisplayEvents);
 </script>
 {% endblock scripts %}
