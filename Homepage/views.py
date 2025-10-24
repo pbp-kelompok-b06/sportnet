@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from Homepage.models import CardEvent
 from Event.models import Event
+from django.db.models import Q
 from datetime import datetime
 from Bookmark.models import Bookmark
 
@@ -27,7 +28,28 @@ def serialize_event(card_event):
     }
 
 def show_main(request):
+    # Read search and filter parameters from GET
+    q = request.GET.get('q', '').strip()
+    category = request.GET.get('category', '')
+    free = request.GET.get('free', '')  # expect '1' for free events
+
     events = Event.objects.all().order_by('-start_time')
+
+    # Apply search filter (search in name, description, location)
+    if q:
+        events = events.filter(
+            Q(name__icontains=q) |
+            Q(description__icontains=q) |
+            Q(location__icontains=q)
+        )
+
+    # Filter by sports category
+    if category:
+        events = events.filter(sports_category=category)
+
+    # Filter free events (fee is null or zero)
+    if free == '1':
+        events = events.filter(Q(fee__isnull=True) | Q(fee=0))
 
     bookmarked_ids = []
     if request.user.is_authenticated:
@@ -36,7 +58,17 @@ def show_main(request):
             .values_list("event_id", flat=True)
         )
 
-    context = {'events': events, 'bookmarked_ids': bookmarked_ids}
+    # Prepare choices for category select
+    categories = [c for c, _label in Event.SPORTS_CATEGORY_CHOICES]
+
+    context = {
+        'events': events,
+        'bookmarked_ids': bookmarked_ids,
+        'categories': Event.SPORTS_CATEGORY_CHOICES,
+        'filter_q': q,
+        'filter_category': category,
+        'filter_free': free,
+    }
     return render(request, 'homepage.html', context)
 
 # Tampilan baru untuk menyediakan data event dalam JSON
