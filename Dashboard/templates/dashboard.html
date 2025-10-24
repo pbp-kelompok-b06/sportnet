@@ -205,10 +205,11 @@
             // Hitung statistik
             let totalAttendees = 0;
             data.events.forEach(event => {
-                totalAttendees += event.attendee_count;
+                const count = Number(event.attendee_count) || 0;
+                totalAttendees += count;
             });
-            totalEventsStat.textContent = data.events.length;
-            totalAttendeesStat.textContent = totalAttendees;
+            totalEventsStat.textContent = data.events.length || 0;
+            totalAttendeesStat.textContent = totalAttendees || 0;
 
             if (data.events.length === 0) {
                 container.innerHTML = '<p class="text-gray-500 col-span-full text-center py-10">You have not created any events yet. Click "Create Event" to get started!</p>';
@@ -239,11 +240,13 @@
                                 </p>
                                 <p class="text-sm text-slate-600 flex items-center gap-2">
                                     <svg class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 001 15v3H-2v-3a3.005 3.005 0 013.75-2.906z"></path></svg>
-                                    ${event.attendee_count} / ${event.capacity} Attendees
+                                    ${Number(event.attendee_count) || 0} / ${event.capacity} Attendees
                                 </p>
                             </div>
                             <div class="flex justify-end items-center mt-4 border-t border-slate-200 pt-4 space-x-4">
-                                <a href="${event.edit_url}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">Edit</a>
+                               <a href="/event/${event.id}/edit/" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+                                Edit
+                                </a>
                                 <button type="button" onclick="showDeleteModal('${event.id}')" class="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors focus:outline-none">
                                     Delete
                                 </button>

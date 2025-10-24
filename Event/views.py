@@ -6,6 +6,9 @@ from django.apps import apps
 from Authenticate.models import Organizer, Participant
 from .forms import EventForm
 from .models import Event
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
 
 # Ambil model Organizer dari app Authenticate tanpa hard import
 Organizer = apps.get_model('Authenticate', 'Organizer')
@@ -142,6 +145,42 @@ def join_event(request, event_id):
         "ok": True,
         "joined_count": event.attendee.count(),
         "capacity": event.capacity,
+    })
+
+@organizer_required
+def edit_event(request, event_id):
+    # Ambil event yang mau diedit
+    event = get_object_or_404(Event, id=event_id)
+
+    # Pastikan ini event-nya organizer yang lagi login
+    # (kalo beda owner, tolak aja biar aman)
+    try:
+        current_org = Organizer.objects.get(user=request.user)
+    except Organizer.DoesNotExist:
+        return redirect('Homepage:show_main')
+
+    if event.organizer != current_org and not request.user.is_superuser:
+        # ga boleh ngedit event orang lain
+        return HttpResponseForbidden("Lu gak punya akses buat edit event ini.")
+
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            updated_event = form.save(commit=False)
+            updated_event.organizer = current_org  # jaga-jaga aja, jangan sampe ke-unset
+            updated_event.save()
+            messages.success(request, "Event berhasil diupdate!")
+            # setelah update mau kemana?
+            # bisa balik ke dashboard atau ke detail event
+            return redirect("dashboard:show")
+            # atau:
+            # return redirect("Event:event_detail", event_id=event.id)
+    else:
+        form = EventForm(instance=event)
+
+    return render(request, "edit_event.html", {
+        "form": form,
+        "event": event,
     })
 
 
