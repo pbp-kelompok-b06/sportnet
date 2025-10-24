@@ -3,9 +3,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.apps import apps
-from Authenticate.models import Organizer
+from Authenticate.models import Organizer, Participant
 from .forms import EventForm
 from .models import Event
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+
 
 # Ambil model Organizer dari app Authenticate tanpa hard import
 Organizer = apps.get_model('Authenticate', 'Organizer')
@@ -25,8 +28,7 @@ def organizer_required(view_func):
         if not is_organizer(request.user):
             # Pilih salah satu:
             # 1) arahkan ke halaman "jadi organizer"
-            messages.error(request, "Kamu belum terdaftar sebagai Organizer.")
-            return redirect('Authenticate:be_organizer')  # ganti ke url kamu sendiri
+            return redirect('Homepage:show_main')
             # 2) atau balikin 403:
             # from django.http import HttpResponseForbidden
             # return HttpResponseForbidden("Kamu bukan Organizer.")
@@ -81,6 +83,20 @@ def event_detail(request, event_id):
             formatted_fee = f"{ribu:.1f}K"
     return render(request, "event_detail.html", {"event": event, "formatted_fee": formatted_fee,})
 
+@login_required(login_url='authenticate/')
+def book_event(request, event_id):
+    if request.method == 'POST':
+        event = get_object_or_404(Event, id=event_id)
+        try:
+            participant = request.user.participant_profile
+        except Participant.DoesNotExist:
+            messages.error(request, "Hanya partisipan yang bisa book event")
+            return redirect('Event:detail_event', event_id=event.id)
+        event.attendee.add(participant)
+        messages.success(request, f"Anda berhasil book event: {event.name}!")
+        return redirect('profile:profile_view')
+    return redirect(request.META.get('HTTP_REFERER', 'homepage:show_homepage'))
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
@@ -112,10 +128,59 @@ def join_event(request, event_id):
     # tambahin ke attendee
     event.attendee.add(participant)
 
+    # create a notification for the participant to confirm join
+    try:
+        from Notification.models import Notifications as Notif
+        Notif.objects.create(
+            user=participant,
+            title=f"Berhasil bergabung: {event.name}",
+            message=f"Kamu telah berhasil mendaftar dan bergabung di event '{event.name}'. Lihat detail acara untuk informasi lebih lanjut.",
+            event=event
+        )
+    except Exception:
+        # if Notification app not available or any error, ignore to not block join
+        pass
+
     return JsonResponse({
         "ok": True,
         "joined_count": event.attendee.count(),
         "capacity": event.capacity,
+    })
+
+@organizer_required
+def edit_event(request, event_id):
+    # Ambil event yang mau diedit
+    event = get_object_or_404(Event, id=event_id)
+
+    # Pastikan ini event-nya organizer yang lagi login
+    # (kalo beda owner, tolak aja biar aman)
+    try:
+        current_org = Organizer.objects.get(user=request.user)
+    except Organizer.DoesNotExist:
+        return redirect('Homepage:show_main')
+
+    if event.organizer != current_org and not request.user.is_superuser:
+        # ga boleh ngedit event orang lain
+        return HttpResponseForbidden("Lu gak punya akses buat edit event ini.")
+
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            updated_event = form.save(commit=False)
+            updated_event.organizer = current_org  # jaga-jaga aja, jangan sampe ke-unset
+            updated_event.save()
+            messages.success(request, "Event berhasil diupdate!")
+            # setelah update mau kemana?
+            # bisa balik ke dashboard atau ke detail event
+            return redirect("dashboard:show")
+            # atau:
+            # return redirect("Event:event_detail", event_id=event.id)
+    else:
+        form = EventForm(instance=event)
+
+    return render(request, "edit_event.html", {
+        "form": form,
+        "event": event,
     })
 
 

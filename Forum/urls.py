@@ -6,7 +6,7 @@ app_name = 'forum' # Namespace agar tidak bentrok
 urlpatterns = [
 
     path(
-        'event/<int:event_id>/', 
+        'event/<uuid:event_id>/', 
         views.forum_page_view, 
         name='forum_page' 
     ),

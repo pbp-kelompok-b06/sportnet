@@ -23,7 +23,7 @@
       <!-- Left side: image -->
       <div>
         {% if event.thumbnail %}
-          <img src="{{ event.thumbnail.url }}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
+          <img src="{{ event.thumbnail }}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
         {% else %}
           <img src="{% static 'images/default_event.jpg' %}" alt="{{ event.name }}" class="rounded-xl w-full object-cover">
         {% endif %}
@@ -88,9 +88,9 @@
     <div class="flex items-center gap-3">
       <!-- Foto attendee -->
       {% for participant in event.attendee.all|slice:":5" %}
-        <img src="{{ participant.profile_picture.url|default:'{% static "images/default_profile.jpg" %}' }}" 
-             alt="{{ participant.user.username }}" 
-             class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
+          <img src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% else %}{% static 'images/default_profile.jpg' %}{% endif %}" 
+              alt="{{ participant.user.username }}" 
+              class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
       {% endfor %}
 
       <!-- Counter -->
@@ -150,32 +150,33 @@
     <!-- Divider -->
     <hr class="my-8 border-orange-100">
 
-    <!-- Forum & Review -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
-        <h2 class="text-orange-600 font-semibold text-lg mb-3">Forum</h2>
-        <button href="{{ forum_url|default:'#' }}"
-          class="btn px-8 h-11 text-base 
-          bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
-          text-white font-semibold border-none shadow-lg
-          hover:shadow-xl hover:-translate-y-0.5 
-          transition-all duration-200 ease-in-out">
-          Go to Forum
-      </button>
-      </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Forum -->
+  <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
+    <h2 class="text-orange-600 font-semibold text-lg mb-3">Forum</h2>
+    <a href="{% url 'forum:forum_page' event.id %}"
+       class="btn px-8 h-11 text-base 
+              bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+              text-white font-semibold border-none shadow-lg
+              hover:shadow-xl hover:-translate-y-0.5 
+              transition-all duration-200 ease-in-out inline-flex items-center justify-center">
+      Go to Forum
+    </a>
+  </div>
 
-      <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
-        <h2 class="text-orange-600 font-semibold text-lg mb-3">Review</h2>
-        <button href="{{ review_url|default:'#' }}"
-           class="btn px-8 h-11 text-base 
-                        bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
-                        text-white font-semibold border-none shadow-lg
-                        hover:shadow-xl hover:-translate-y-0.5 
-                        transition-all duration-200 ease-in-out">
-          Go to Review
-      </button>
-      </div>
-    </div>
+  <!-- Review -->
+  <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
+    <h2 class="text-orange-600 font-semibold text-lg mb-3">Review</h2>
+    <a href="{% url 'review:add_review' event.id %}"
+       class="btn px-8 h-11 text-base 
+              bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] 
+              text-white font-semibold border-none shadow-lg
+              hover:shadow-xl hover:-translate-y-0.5 
+              transition-all duration-200 ease-in-out inline-flex items-center justify-center">
+      Go to Review
+    </a>
+  </div>
+</div>
 
   </div>
 </div>

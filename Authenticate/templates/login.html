@@ -35,11 +35,13 @@
                     </div>
 
                     {% if messages %}
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
-                            {% for message in messages %}
-                                <span class="block sm:inline">{{ message }}</span>
-                            {% endfor %}
-                        </div>
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
+                                    <span class="block sm:inline">{{ message }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
 
                     <div class="flex justify-center">
