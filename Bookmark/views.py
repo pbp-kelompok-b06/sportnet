@@ -6,10 +6,6 @@ from django.shortcuts import get_object_or_404
 from Event.models import Event
 from .models import Bookmark
 
-# Create your views here.
-def show_bookmark(request):
-    return render(request, 'bookmark.html')
-
 @login_required
 @csrf_exempt
 def toggle_bookmark(request, event_id):
