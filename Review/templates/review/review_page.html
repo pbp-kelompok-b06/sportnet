@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-24">
+  <h1 class="text-2xl font-bold mb-4 text-[var(--color-main-700)]">
+    Review Event: {{ event.name }}
+  </h1>
+
+  <form method="POST" class="mb-6 bg-white p-4 rounded-xl shadow">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-gradient w-full mt-2">Kirim Review</button>
+  </form>
+
+  <div class="space-y-4">
+    {% for review in reviews %}
+      <div class="bg-[var(--color-main-50)] p-4 rounded-lg shadow">
+        <p class="font-semibold">{{ review.participant.full_name }}</p>
+        <p class="text-yellow-500">{{ review.rating }}</p>
+        <p class="text-gray-800">{{ review.comment }}</p>
+        <p class="text-sm text-gray-500 mt-1">{{ review.created_at|date:"d M Y, H:i" }}</p>
+      </div>
+    {% empty %}
+      <p class="text-gray-500">Belum ada review untuk event ini.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

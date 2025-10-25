@@ -1,13 +1,8 @@
 from django.urls import path
-from . import views  # Impor views dari app review
+from . import views
 
-app_name = 'review' # Namespace agar tidak bentrok
+app_name = 'Review'
 
 urlpatterns = [
-    
-    path(
-        'event/<uuid:event_id>/add/', 
-        views.add_review_view, 
-        name='add_review'
-    ),
+    path('<uuid:event_id>/', views.review_page_view, name='review_page'),
 ]

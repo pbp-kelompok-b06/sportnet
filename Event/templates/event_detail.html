@@ -137,21 +137,20 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="bg-[var(--color-main-50)] rounded-2xl p-6 border border-[var(--color-main-100)]">
         <h2 class="text-[var(--color-main-600)] font-semibold mb-3 text-lg">Forum</h2>
-        <a href="{% url 'forum:forum_page' event.id %}"
-           class="btn btn-gradient font-semibold w-full mt-2">
+        <a href="{% url 'Forum:forum_page' event.id %}"
+          class="btn btn-gradient font-semibold w-full mt-2">
           Go to Forum
         </a>
       </div>
 
       <div class="bg-[var(--color-main-50)] rounded-2xl p-6 border border-[var(--color-main-100)]">
         <h2 class="text-[var(--color-main-600)] font-semibold mb-3 text-lg">Review</h2>
-        <a href="{% url 'review:add_review' event.id %}"
-           class="btn btn-gradient font-semibold w-full mt-2">
+        <a href="{% url 'Review:review_page' event.id %}"
+          class="btn btn-gradient font-semibold w-full mt-2">
           Go to Review
         </a>
       </div>
     </div>
-  </div>
 
   <!-- ==== JOIN MODAL ==== -->
   <div id="joinModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
