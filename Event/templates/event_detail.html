@@ -102,6 +102,37 @@
           </div>
         </div>
 
+        <!-- Attendees Section -->
+        <div class="mt-5">
+          <h2 class="text-orange-600 font-semibold text-lg mb-2">Attendees</h2>
+
+          {% if event.attendee.count > 0 %}
+            <div class="flex items-center gap-3">
+              <!-- Foto attendee -->
+              {% for participant in event.attendee.all|slice:":5" %}
+                  <img src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% else %}{% static 'images/default_profile.jpg' %}{% endif %}" 
+                      alt="{{ participant.user.username }}" 
+                      class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
+              {% endfor %}
+
+              <!-- Counter -->
+              <span class="text-gray-600 text-sm font-medium ml-2" data-attendee-counter>
+                {{ event.attendee.count }}/{{ event.capacity }}
+              </span>
+            </div>
+          {% else %}
+            <!-- Belum ada yang ikut -->
+            <div class="flex items-center gap-2">
+              <div class="w-12 h-12 rounded-full border-2 border-dashed border-gray-400 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </div>
+              <p class="text-gray-500 text-sm">Belum ada yang join</p>
+            </div>
+          {% endif %}
+        </div>
+
         <!-- Buttons -->
         {% if is_participant %}
           <div class="flex gap-4 items-center justify-end mt-6">
