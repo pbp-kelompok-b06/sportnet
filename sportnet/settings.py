@@ -184,6 +184,6 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
-CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://anya-aleena-sportnet.pbp.cs.ui.ac.id/","https://anya-aleena-sportnet.pbp.cs.ui.ac.id/","http://192.168.56.1:8000", 'http://localhost:65368']
+CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://anya-aleena-sportnet.pbp.cs.ui.ac.id","https://anya-aleena-sportnet.pbp.cs.ui.ac.id","http://192.168.56.1:8000", 'http://localhost:65368']
 
 CORS_ALLOW_ALL_ORIGINS = True
