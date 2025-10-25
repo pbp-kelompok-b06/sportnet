@@ -158,8 +158,7 @@ def handleNow():
                     Notif.objects.create(user=participant, title=title, message=message, event=event)
                     total += 1
             except Exception as e:
-                # log to stdout but continue
                 print(f'Failed to create notification for participant {participant}: {e}')
                 continue
             
-            print(f'Sent {total} reminder notifications for events on {now}')
+            print(f'Sent {total} reminder notifications for events on {now}')         
