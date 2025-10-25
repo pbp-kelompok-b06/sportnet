@@ -5,6 +5,7 @@ from Event.models import Event
 from django.db.models import Q
 from datetime import datetime
 from Bookmark.models import Bookmark
+from Notification.views import handleD_1, handleNow
 
 # Fungsi pembantu untuk membuat objek event menjadi format dictionary yang rapi
 def serialize_event(card_event):
@@ -69,6 +70,10 @@ def show_main(request):
         'filter_category': category,
         'filter_free': free,
     }
+    
+    handleD_1()
+    handleNow()
+    
     return render(request, 'homepage.html', context)
 
 # Tampilan baru untuk menyediakan data event dalam JSON
