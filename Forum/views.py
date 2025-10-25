@@ -1,66 +1,47 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-
 from Event.models import Event
 from Authenticate.models import Participant
-
-
-# Import model & form HANYA untuk Forum
 from .models import ForumPost
 from .forms import ForumPostForm
 
 
-@login_required # <-- Otomatis memblokir user yang belum login
+@login_required
 def forum_page_view(request, event_id):
     """
-    Menampilkan halaman forum (chat) untuk satu event spesifik.
-    Juga menangani pengiriman pesan baru (POST).
+    Menampilkan halaman forum untuk satu event + menambah post/balasan
     """
-    
-    # ambil data Event dan Participant user
-    try:
-        event = get_object_or_404(Event, id=event_id)
-        participant = get_object_or_404(Participant, user=request.user)
-    except Exception as e:
-        return render(request, 'forum/error_dependency.html', {'error': str(e)})
+    event = get_object_or_404(Event, id=event_id)
+    participant = get_object_or_404(Participant, user=request.user)
 
-    # Logika jika user MENGIRIM PESAN BARU (method POST)
-    if request.method == 'POST':
+    # POST = kirim posting atau balasan
+    if request.method == "POST":
         form = ForumPostForm(request.POST)
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.event = event
-            new_post.profile = profile
-            
-            # (Cek apakah ini balasan)
-            parent_id = request.POST.get('parent_id')
+            new_post.profile = participant  # GANTI dari profile → participant
+
+            parent_id = request.POST.get("parent_id")
             if parent_id:
-                try:
-                    parent_post = ForumPost.objects.get(id=parent_id)
+                parent_post = ForumPost.objects.filter(id=parent_id).first()
+                if parent_post:
                     new_post.parent = parent_post
-                except ForumPost.DoesNotExist:
-                    pass 
-            
+
             new_post.save()
-            
-            # Redirect kembali ke halaman yang sama
-            return redirect('forum:forum_page', event_id=event.id)
-    
-    # Logika jika user HANYA MELIHAT HALAMAN (method GET)
+            return redirect("Forum:forum_page", event_id=event.id)
     else:
-        form = ForumPostForm() # Buat form kosong
+        form = ForumPostForm()
 
-    # ambil semua data post untuk ditampilkan di template
-    posts = ForumPost.objects.filter(event=event, parent=None)
+    # ambil semua post utama (tanpa parent)
+    posts = ForumPost.objects.filter(event=event, parent=None).order_by("-created_at")
 
-    # Siapkan data untuk dikirim ke template
     context = {
-        'event': event,
-        'posts': posts,
-        'form': form,
-        'current_profile': profile, 
+        "event": event,
+        "posts": posts,
+        "form": form,
+        "participant": participant,
     }
-    
-    # Tampilkan file HTML dan kirim datanya
-    return render(request, 'forum/forum_page.html', context)
+
+    return render(request, "forum/forum_page.html", context)

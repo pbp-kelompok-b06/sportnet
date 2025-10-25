@@ -11,32 +11,25 @@ from .forms import ReviewForm
 
 
 @login_required
-def add_review_view(request, event_id):
-    # Hanya izinkan method POST
-    if request.method != 'POST':
-        return HttpResponseForbidden("Metode tidak diizinkan")
+def review_page_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    participant = get_object_or_404(Participant, user=request.user)
+    reviews = Review.objects.filter(event=event).order_by("-created_at")
 
-    # Ambil data Event dan Participant
-    try:
-        event = get_object_or_404(Event, id=event_id)
-        participant = get_object_or_404(Participant, user=request.user)
-    except Exception as e:
-        return render(request, 'review/error_dependency.html', {'error': str(e)})
-
-    # Cek apakah user sudah pernah memberikan review untuk event ini
-    if Review.objects.filter(event=event, participant=participant).exists():
-        print("Anda sudah pernah memberikan review untuk event ini.")
-        return redirect('event_detail', event_id=event.id)
-
-    # Proses form yang dikirim
-    form = ReviewForm(request.POST)
-    if form.is_valid():
-        new_review = form.save(commit=False)
-        new_review.event = event
-        new_review.participant = participant
-        new_review.save()
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.event = event
+            review.participant = participant
+            review.save()
+            return redirect("Review:review_page", event_id=event.id)
     else:
-        print("Form review tidak valid:", form.errors)
+        form = ReviewForm()
 
-    # Kembalikan user ke halaman detail event
-    return redirect('event_detail', event_id=event.id)
+    return render(request, "review/review_page.html", {
+        "event": event,
+        "form": form,
+        "reviews": reviews,
+        "participant": participant,
+    })

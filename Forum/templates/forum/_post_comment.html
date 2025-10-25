@@ -1,28 +1,31 @@
-<div class="post">
-    <p>
-        <img src="{{ post.profile.foto_profil.url }}" alt="foto" width="30" height="30">
-        <strong>{{ post.profile.nama }}</strong> 
-        <small>({{ post.created_at|timesince }} lalu)</small>
+<div class="border-l-2 border-[var(--color-main-200)] pl-4 mt-3">
+  <div class="bg-[var(--color-main-50)] p-3 rounded-lg shadow-sm">
+    <p class="font-semibold text-[var(--color-main-700)]">
+      {{ post.participant.full_name }}
+      <span class="text-sm text-gray-500">• {{ post.created_at|timesince }} lalu</span>
     </p>
-    <p>{{ post.content }}</p>
-    
-    <a href="javascript:void(0);" onclick="toggleReply({{ post.id }})">Reply</a>
+    <p class="text-gray-800 mt-2">{{ post.content }}</p>
+    <a href="javascript:void(0)" onclick="toggleReply({{ post.id }})"
+       class="text-sm text-[var(--color-main-500)] hover:underline">Balas</a>
+  </div>
 
-    <div id="reply-form-{{ post.id }}" class="reply-form" style="display:none;">
-        <form method="POST" action="{% url 'forum:forum_page' event.id %}">
-            {% csrf_token %}
-            
-            <input type="hidden" name="parent_id" value="{{ post.id }}">
-            
-            {{ form }} 
-            
-            <button type="submit">Kirim Balasan</button>
-        </form>
-    </div>
+  <div id="reply-form-{{ post.id }}" class="ml-4 mt-2 hidden">
+    <form method="POST" action="{% url 'Forum:forum_page' event.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="parent_id" value="{{ post.id }}">
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-gradient mt-1">Kirim Balasan</button>
+    </form>
+  </div>
 
-    <div class="replies">
-        {% for reply in post.replies.all %}
-            {% include "forum/_post_comment.html" with post=reply form=form %}
-        {% endfor %}
-    </div>
+  {% for reply in post.replies.all %}
+    {% include "forum/_post_comment.html" with post=reply form=form %}
+  {% endfor %}
 </div>
+
+<script>
+  function toggleReply(id) {
+    const el = document.getElementById(`reply-form-${id}`);
+    if (el) el.style.display = el.style.display === "none" ? "block" : "none";
+  }
+</script>

@@ -86,6 +86,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.debug',
                 'Notification.context_processors.notification_count',
+                'sportnet.context_processors.current_or_latest_event',
             ],
         },
     },
