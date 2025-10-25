@@ -15,7 +15,7 @@ class Notifications(models.Model):
     message = models.TextField(null=True, blank=True, default="")
     event = models.ForeignKey(
         Event,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         default=None  # penting: biar tidak minta default manual
