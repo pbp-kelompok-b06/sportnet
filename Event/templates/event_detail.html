@@ -107,13 +107,15 @@
           <h2 class="text-orange-600 font-semibold text-lg mb-2">Attendees</h2>
 
           {% if event.attendee.count > 0 %}
-            <div class="flex items-center gap-3">
+            <div class="flex items-center">
               <!-- Foto attendee -->
+              <div class="flex -space-x-3">
               {% for participant in event.attendee.all|slice:":5" %}
-                  <img src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% else %}{% static 'images/default_profile.jpg' %}{% endif %}" 
+                  <img src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}" 
                       alt="{{ participant.user.username }}" 
                       class="w-10 h-10 rounded-full border-2 border-white shadow-md object-cover">
               {% endfor %}
+              </div>
 
               <!-- Counter -->
               <span class="text-gray-600 text-sm font-medium ml-2" data-attendee-counter>
