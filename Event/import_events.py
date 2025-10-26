@@ -5,11 +5,12 @@ import re
 from datetime import datetime
 from Event.models import Event
 from Authenticate.models import Organizer
+from django.contrib.auth.models import User
 
 
 # Tentukan path absolut dari file ini
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(BASE_DIR, "dataset", "event", "events_v2.json")
+DATA_PATH = os.path.join(BASE_DIR,"static", "dataset", "dataset_event_sportnet.json")
 
 
 def parse_time(value):
@@ -39,16 +40,28 @@ def run():
     with open(DATA_PATH, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    organizer = Organizer.objects.first()
 
     count = 0
     for item in data:
         try:
-            event_id = uuid.UUID(item.get("id")) if item.get("id") else uuid.uuid4()
+            if User.objects.filter(username=item.get("organizer")).exists():
+                userCreate = User.objects.get(username=item.get("organizer"))
+                organizer = Organizer.objects.get(user=userCreate)
+            else:
+                userCreate = User.objects.create(username=item.get("organizer"))
+                organizer = Organizer.objects.create(
+                    user=userCreate,
+                    organizer_name=item.get("organizer", "Untitled Organizer"),
+                    contact_email=item.get("contact_email", ""),
+                    contact_phone=item.get("contact_phone", ""),
+                    about=item.get("about", ""),
+                    profile_picture=item.get("profile_picture", ""),
+                    username=item.get("organizer", ""),
+                    password=item.get("password", ""),
+                )
             Event.objects.get_or_create(
-                id=event_id,
+                name=item.get("name", "Untitled Event"),
                 defaults={
-                    "name": item.get("name", "Untitled Event"),
                     "description": item.get("description", ""),
                     "thumbnail": item.get("thumbnail"),
                     "organizer": organizer,
@@ -60,6 +73,7 @@ def run():
                     "activity_category": item.get("activity_category", "fun_run_ride"),
                     "fee": item.get("fee", 0),
                     "capacity": item.get("capacity", 0),
+                    "id": item.get("id", uuid.uuid4()),
                 },
             )
             count += 1
