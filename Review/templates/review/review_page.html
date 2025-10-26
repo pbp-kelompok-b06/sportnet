@@ -11,10 +11,10 @@
   <form method="POST" class="mb-6 bg-white p-4 rounded-xl shadow">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-gradient w-full mt-2">Kirim Review</button>
+    <button type="submit" class="btn btn-gradient w-full mt-2">Send Review</button>
   </form>
   {% else %}
-  <p class="text-gray-500 mb-6">Anda telah memberikan review untuk event ini.</p>
+  <p class="text-gray-500 mb-6">You have reviewed this event.</p>
   {% endif %}
   <div class="space-y-4">
     {% for review in reviews %}
@@ -37,7 +37,7 @@
         <p class="text-sm text-gray-500 mt-1">{{ review.created_at|date:"d M Y, H:i" }}</p>
       </div>
     {% empty %}
-      <p class="text-gray-500">Belum ada review untuk event ini.</p>
+      <p class="text-gray-500">No review yet.</p>
     {% endfor %}
   </div>
 </div>

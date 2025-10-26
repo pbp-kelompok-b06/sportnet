@@ -1,12 +1,21 @@
 <div class="border-l-2 border-[var(--color-main-200)] pl-4 mt-3">
   <div class="bg-[var(--color-main-50)] p-3 rounded-lg shadow-sm">
-    <p class="font-semibold text-[var(--color-main-700)]">
-      {{ post.participant.full_name }}
-      <span class="text-sm text-gray-500">• {{ post.created_at|timesince }} lalu</span>
+    <p class="font-semibold text-[var(--color-main-700)] flex items-center gap-2 flex-wrap">
+      {% if post.organizer %}
+        {{ post.organizer.organizer_name }}
+        <span class="text-xs bg-[var(--color-main-100)] text-[var(--color-main-700)] px-2 py-0.5 rounded-full font-medium">
+          Organizer
+        </span>
+      {% elif post.participant %}
+        {{ post.participant.full_name }}
+      {% else %}
+        <span class="text-gray-500 italic">Unknown User</span>
+      {% endif %}
+      <span class="text-sm text-gray-500 ml-1">• {{ post.created_at|timesince }} ago</span>
     </p>
     <p class="text-gray-800 mt-2">{{ post.content }}</p>
     <a href="javascript:void(0)" onclick="toggleReply({{ post.id }})"
-       class="text-sm text-[var(--color-main-500)] hover:underline">Balas</a>
+       class="text-sm text-[var(--color-main-500)] hover:underline">Reply</a>
   </div>
 
   <div id="reply-form-{{ post.id }}" class="ml-4 mt-2 hidden">
@@ -14,7 +23,7 @@
       {% csrf_token %}
       <input type="hidden" name="parent_id" value="{{ post.id }}">
       {{ form.as_p }}
-      <button type="submit" class="btn btn-gradient mt-1">Kirim Balasan</button>
+      <button type="submit" class="btn btn-gradient mt-1">Send Reply</button>
     </form>
   </div>
 
@@ -26,6 +35,8 @@
 <script>
   function toggleReply(id) {
     const el = document.getElementById(`reply-form-${id}`);
-    if (el) el.style.display = el.style.display === "none" ? "block" : "none";
+    if (el) {
+      el.style.display = el.style.display === "none" ? "block" : "none";
+    }
   }
 </script>
