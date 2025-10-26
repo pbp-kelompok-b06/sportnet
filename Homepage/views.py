@@ -46,7 +46,9 @@ def show_main(request):
 
     # Filter by sports category
     if category:
-        events = events.filter(sports_category=category)
+        events = events.filter(sports_category=category.strip())
+        print(f"Filtering by category: {category}")
+        print(f"Events count after category filter: {events.count()}")
 
     # Filter free events (fee is null or zero)
     if free == '1':

@@ -10,7 +10,7 @@
     "organizer": "Paul J.",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/6/f/0/3/highres_530308419.webp?w=1080",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 170,
     "activity_category_display": "Fun Run/Ride"
@@ -26,7 +26,7 @@
     "organizer": "PD IAI BALI",
     "fee": null,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1756041726-BiM5HVBpRm6G4WhU6dz6V0QJ7qKsyJUG.png?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 220,
     "activity_category_display": "Marathon"
@@ -42,7 +42,7 @@
     "organizer": "Event by Narasi",
     "fee": 185000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1759481145-cfgb9uFOTbg1DfOushM6nLjNBl3sLZjv.png?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "course",
     "capacity": 105,
     "activity_category_display": "Course"
@@ -58,7 +58,7 @@
     "organizer": "SIP CLUB",
     "fee": 240000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1759475956-bevt2Rj0axxNs9aUUfbQtbpPspiGjoYp.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 16,
     "activity_category_display": "Open Play"
@@ -74,7 +74,7 @@
     "organizer": "SIP CLUB",
     "fee": 235000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1759474427-HeiEGLdlvG7kVBx3OXoFSPiOunCqTWTQ.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 48,
     "activity_category_display": "Open Play"
@@ -90,7 +90,7 @@
     "organizer": "BORSUMY HERITAGE INDONESIA",
     "fee": 200000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1757932076-Xpu8vOQ7vmkyenydlw4BksOhkhUnqaAo.png?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 20,
     "activity_category_display": "Fun Run/Ride"
@@ -106,7 +106,7 @@
     "organizer": "Somethinc Official",
     "fee": 45000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1757492316-3THeIWHbjkywJTNdZjDNBbywFFAgDMEV.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Poundfit",
+    "sports_category": "poundfit",
     "activity_category": "course",
     "capacity": 60,
     "activity_category_display": "Course"
@@ -122,7 +122,7 @@
     "organizer": "Somethinc Official",
     "fee": 45000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1757490650-mvpwROn71TrnIdrqaMlRdviaQp9PHdSH.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Poundfit",
+    "sports_category": "poundfit",
     "activity_category": "course",
     "capacity": 80,
     "activity_category_display": "Course"
@@ -138,7 +138,7 @@
     "organizer": "Somethinc Official",
     "fee": 45000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1757489744-m8aboIOlen0hD7UzyGLdzLw94R8Q8rRO.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Poundfit",
+    "sports_category": "poundfit",
     "activity_category": "course",
     "capacity": 85,
     "activity_category_display": "Course"
@@ -154,7 +154,7 @@
     "organizer": "Somethinc Official",
     "fee": 45000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1757488819-nUgiwBRNjpt9xOFE2QaoKA2VzNYmtbdT.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Poundfit",
+    "sports_category": "poundfit",
     "activity_category": "course",
     "capacity": 60,
     "activity_category_display": "Course"
@@ -170,7 +170,7 @@
     "organizer": "Somethinc Official",
     "fee": 45000,
     "thumbnail": "https://d3hzxw6fwm263k.cloudfront.net/uploads/events/photos/1757487926-8UgWoDlWEnsi5Uwry4CW9iJcsYThw871.jpg?width=1024&quality=90&x-oss-process=image/resize,w_1024,m_lfit/quality,q_90",
-    "sports_category": "Poundfit",
+    "sports_category": "poundfit",
     "activity_category": "course",
     "capacity": 145,
     "activity_category_display": "Course"
@@ -186,7 +186,7 @@
     "organizer": "Biznet",
     "fee": 200000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20251007110719_68e491f7746a0.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 38,
     "activity_category_display": "Fun Run/Ride"
@@ -202,7 +202,7 @@
     "organizer": "Vegan Runners Indonesia",
     "fee": 200000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250622000226_6856e5a25d940.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 44,
     "activity_category_display": "Marathon"
@@ -218,7 +218,7 @@
     "organizer": "Smart Mendunia Enterprise",
     "fee": 150000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250925104806_68d4bb7639c60.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 50,
     "activity_category_display": "Marathon"
@@ -234,7 +234,7 @@
     "organizer": "Hotel Dafam Semarang",
     "fee": 188000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250908112241_68be5a1104ca7.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 55,
     "activity_category_display": "Fun Run/Ride"
@@ -250,7 +250,7 @@
     "organizer": "Fun Run IKA UNHAS Jeneponto",
     "fee": 125000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250809151908_6897047c34ac2.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 105,
     "activity_category_display": "Fun Run/Ride"
@@ -266,7 +266,7 @@
     "organizer": "Podomoro Golf View",
     "fee": 50000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250924103644_68d3674c26933.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 125,
     "activity_category_display": "Fun Run/Ride"
@@ -282,7 +282,7 @@
     "organizer": "KADIN Majalengka",
     "fee": 160000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250728182304_68875d981d373.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 85,
     "activity_category_display": "Marathon"
@@ -298,7 +298,7 @@
     "organizer": "The Hurun x Lampung Marriott",
     "fee": 350000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20250819203231_68a47cef9c157.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 28,
     "activity_category_display": "Fun Run/Ride"
@@ -314,7 +314,7 @@
     "organizer": "GEBYAR KOMUNIKASI",
     "fee": 250000,
     "thumbnail": "https://assets.loket.com/neo/production/images/banner/20251006132413_68e3608d00929.jpg",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "fun_run_ride",
     "capacity": 36,
     "activity_category_display": "Fun Run/Ride"
@@ -330,7 +330,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=750",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 180,
     "activity_category_display": "Marathon"
@@ -346,7 +346,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=751",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 220,
     "activity_category_display": "Marathon"
@@ -362,7 +362,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=752",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 180,
     "activity_category_display": "Marathon"
@@ -378,7 +378,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=753",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 240,
     "activity_category_display": "Marathon"
@@ -394,7 +394,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=754",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 230,
     "activity_category_display": "Marathon"
@@ -410,7 +410,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=755",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 180,
     "activity_category_display": "Marathon"
@@ -426,7 +426,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=756",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 210,
     "activity_category_display": "Marathon"
@@ -442,7 +442,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=757",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 240,
     "activity_category_display": "Marathon"
@@ -458,7 +458,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=758",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 170,
     "activity_category_display": "Marathon"
@@ -474,7 +474,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=759",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 220,
     "activity_category_display": "Marathon"
@@ -490,7 +490,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=760",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 190,
     "activity_category_display": "Marathon"
@@ -506,7 +506,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=761",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 160,
     "activity_category_display": "Marathon"
@@ -522,7 +522,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=762",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 250,
     "activity_category_display": "Marathon"
@@ -538,7 +538,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=763",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 210,
     "activity_category_display": "Marathon"
@@ -554,7 +554,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=764",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 180,
     "activity_category_display": "Marathon"
@@ -570,7 +570,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=765",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 170,
     "activity_category_display": "Marathon"
@@ -586,7 +586,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=766",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 160,
     "activity_category_display": "Marathon"
@@ -602,7 +602,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=767",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 220,
     "activity_category_display": "Marathon"
@@ -618,7 +618,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=768",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 250,
     "activity_category_display": "Marathon"
@@ -634,7 +634,7 @@
     "organizer": "Linda",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/e/7/2/f/highres_452879183.jpeg?w=769",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 170,
     "activity_category_display": "Marathon"
@@ -650,7 +650,7 @@
     "organizer": "Entario Susanto",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/6/c/3/d/highres_528807709.jpeg?w=750",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 240,
     "activity_category_display": "Open Play"
@@ -666,7 +666,7 @@
     "organizer": "Entarico Susanto",
     "fee": null,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/6/c/3/d/highres_528807709.jpeg?w=750",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 190,
     "activity_category_display": "Open Play"
@@ -682,7 +682,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 90,
     "activity_category_display": "Open Play"
@@ -698,7 +698,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 55,
     "activity_category_display": "Open Play"
@@ -714,7 +714,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 80,
     "activity_category_display": "Open Play"
@@ -730,7 +730,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 115,
     "activity_category_display": "Open Play"
@@ -746,7 +746,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 55,
     "activity_category_display": "Open Play"
@@ -762,7 +762,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 75,
     "activity_category_display": "Open Play"
@@ -778,7 +778,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 75,
     "activity_category_display": "Open Play"
@@ -794,7 +794,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 95,
     "activity_category_display": "Open Play"
@@ -810,7 +810,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 70,
     "activity_category_display": "Open Play"
@@ -826,7 +826,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 120,
     "activity_category_display": "Open Play"
@@ -842,7 +842,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 75,
     "activity_category_display": "Open Play"
@@ -858,7 +858,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 90,
     "activity_category_display": "Open Play"
@@ -874,7 +874,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 70,
     "activity_category_display": "Open Play"
@@ -890,7 +890,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 120,
     "activity_category_display": "Open Play"
@@ -906,7 +906,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 90,
     "activity_category_display": "Open Play"
@@ -922,7 +922,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 130,
     "activity_category_display": "Open Play"
@@ -938,7 +938,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 115,
     "activity_category_display": "Open Play"
@@ -954,7 +954,7 @@
     "organizer": "Yanie G. and Alona K.",
     "fee": 80000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/d/0/4/0/highres_500453312.webp?w=750",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 90,
     "activity_category_display": "Open Play"
@@ -970,7 +970,7 @@
     "organizer": "Rodalink Cilegon",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/FyXFod6syAJ4cANGwdxIJ0nCPaFGLQaUYmVx5Gwn.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 160,
     "activity_category_display": "Fun Run/Ride"
@@ -986,7 +986,7 @@
     "organizer": "Rodalink Jember",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/6eoHMdKTCayzcW6J620CMCVLjdLaBOxXwy9DEpYx.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 200,
     "activity_category_display": "Fun Run/Ride"
@@ -1002,7 +1002,7 @@
     "organizer": "Rodalink Madiun",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/0uurz3cgEdh3jxeUN2JpxNR3qh63vCzPvKggChle.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 150,
     "activity_category_display": "Fun Run/Ride"
@@ -1018,7 +1018,7 @@
     "organizer": "Rodalink Bekasi Jatiwaringin",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/7fHTihdheYun8DS0iZyXqXZQRuOqbnrOiuWRoXPv.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 160,
     "activity_category_display": "Fun Run/Ride"
@@ -1034,7 +1034,7 @@
     "organizer": "Rodalink Bogor Siliwangi",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/DDicpbhuk8yQiFD9xgnBquzIS2ywBGl4gUH5ydH1.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 170,
     "activity_category_display": "Fun Run/Ride"
@@ -1050,7 +1050,7 @@
     "organizer": "Rodalink Bekasi Kalimalang",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/ubMse1whNyiXUjsFnLsV7JZjqob4XisfjYhMpN5k.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 230,
     "activity_category_display": "Fun Run/Ride"
@@ -1066,7 +1066,7 @@
     "organizer": "Rodalink Surabaya Concept Store",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/TN2X1d0Z6mXPn6UbPHkUeqphOYSdIh9Lc55Oj7vL.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 230,
     "activity_category_display": "Fun Run/Ride"
@@ -1082,7 +1082,7 @@
     "organizer": "Rodalink Bekasi Cibubur",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/B52XeXRgBn3O6XNNhLYSIz6yHiUiL9kV4YHmMVwM.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 190,
     "activity_category_display": "Fun Run/Ride"
@@ -1098,7 +1098,7 @@
     "organizer": "Rodalink Tangerang Citra Raya",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/jAuHQcg5noPL5BxB4zO1YEprTXRQHwNl4ApTuKyJ.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 150,
     "activity_category_display": "Fun Run/Ride"
@@ -1114,7 +1114,7 @@
     "organizer": "Rodalink Bekasi Tambun",
     "fee": null,
     "thumbnail": "https://event.rodalink.com/images/2x47ZyaZZ9GVe7rzJ4ctOvZixlhH9dmqakomYdv4.jpg",
-    "sports_category": "Cycling",
+    "sports_category": "cycling",
     "activity_category": "fun_run_ride",
     "capacity": 250,
     "activity_category_display": "Fun Run/Ride"
@@ -1130,7 +1130,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 450000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-42925-AWSS382b707a7-cbb2-48c7-99a7-61ce10b1ec2e-IP77.jpg",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 16,
     "activity_category_display": "Course"
@@ -1146,7 +1146,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 600000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-42867-AWSS36d713074-b4ec-4e25-bbe9-1424792d7d10-3RWS.jpg",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 32,
     "activity_category_display": "Course"
@@ -1162,7 +1162,7 @@
     "organizer": "Fitness First",
     "fee": 300000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-42770-AWSS301e06beb-47f9-4a60-ad7e-5056f3e93952-lOsi.jpg",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 40,
     "activity_category_display": "Course"
@@ -1178,7 +1178,7 @@
     "organizer": "Fitness First",
     "fee": 75000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-42579-AWSS3c1c19f07-eb13-4ec8-a816-cf446b7427c0-0D4p.jpg",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 140,
     "activity_category_display": "Course"
@@ -1194,7 +1194,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 75000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-42564-AWSS3d1b7cef6-dcc6-4b54-ad1a-31b31566b45d-u6y5.jpeg",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 90,
     "activity_category_display": "Course"
@@ -1210,7 +1210,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 296000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-33733-AWSS3c243a8b9-b5c9-4eb9-adbf-6384b91a9b52-cOMq.jpg",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 46,
     "activity_category_display": "Course"
@@ -1226,7 +1226,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 150000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-33392-AWSS39f7e3585-c672-44f9-9164-cfde7ec9fef8-VYHi.png",
-    "sports_category": "Fitness",
+    "sports_category": "fitness",
     "activity_category": "course",
     "capacity": 50,
     "activity_category_display": "Course"
@@ -1242,7 +1242,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 125000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-32480-AWSS3667a80af-448a-4dd4-ba9a-fb409743dcad-c66G.jpg",
-    "sports_category": "Yoga",
+    "sports_category": "yoga",
     "activity_category": "course",
     "capacity": 100,
     "activity_category_display": "Course"
@@ -1258,7 +1258,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 150000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-32477-AWSS396cf6270-172c-4579-8397-b5a881e8beae-zBwO.jpg",
-    "sports_category": "Yoga",
+    "sports_category": "yoga",
     "activity_category": "course",
     "capacity": 80,
     "activity_category_display": "Course"
@@ -1274,7 +1274,7 @@
     "organizer": "Celebrity Fitness",
     "fee": 150000,
     "thumbnail": "https://images.t2u.io/upload/event/listing/0-32472-AWSS341ddff9d-069f-42b7-9e04-1ed54162039a-XPsx.jpg",
-    "sports_category": "Yoga",
+    "sports_category": "yoga",
     "activity_category": "course",
     "capacity": 75,
     "activity_category_display": "Course"
@@ -1290,7 +1290,7 @@
     "organizer": "BAF",
     "fee": 249000,
     "thumbnail": "https://img.cause.id/event/blr2025/page/banner.webp",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 100,
     "activity_category_display": "Marathon"
@@ -1306,7 +1306,7 @@
     "organizer": "BAF",
     "fee": 299000,
     "thumbnail": "https://img.cause.id/event/blr2025/page/banner.webp",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 10,
     "activity_category_display": "Marathon"
@@ -1322,7 +1322,7 @@
     "organizer": "BAF",
     "fee": 399000,
     "thumbnail": "https://img.cause.id/event/blr2025/page/banner.webp",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 14,
     "activity_category_display": "Marathon"
@@ -1338,7 +1338,7 @@
     "organizer": "PRUActive by PRUdential",
     "fee": null,
     "thumbnail": "https://alt.cause.id/img/event/pruactive25/page/banner.webp",
-    "sports_category": "Running",
+    "sports_category": "running",
     "activity_category": "marathon",
     "capacity": 10,
     "activity_category_display": "Marathon"
@@ -1354,7 +1354,7 @@
     "organizer": "Mabar Badminton Jakarta",
     "fee": 50000,
     "thumbnail": "https://storage.googleapis.com/data.ayo.co.id/photos/77445/SEO%20HDI%202/55.%20Mengenal%20Raket%20Olahraga%20Badminton%2C%20Jenis%2C%20Material%20dan%20Cara%20Memilih%20yang%20Tepat.jpg",
-    "sports_category": "Badminton",
+    "sports_category": "badminton",
     "activity_category": "open_play",
     "capacity": 150,
     "activity_category_display": "Open Play"
@@ -1370,7 +1370,7 @@
     "organizer": "Ngalter Di Padel",
     "fee": 120000,
     "thumbnail": "https://storage.googleapis.com/data.ayo.co.id/photos/77445/SEO%20HDI%202/30.%20Bagaimana%20Ciri-Ciri%20Padel%20Court%20yang%20Baik%20dan%20Berkualitas.jpg",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 95,
     "activity_category_display": "Open Play"
@@ -1386,7 +1386,7 @@
     "organizer": "Php Padel Club",
     "fee": 275000,
     "thumbnail": "https://storage.googleapis.com/data.ayo.co.id/photos/77445/SEO%20HDI%202/30.%20Bagaimana%20Ciri-Ciri%20Padel%20Court%20yang%20Baik%20dan%20Berkualitas.jpg",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 100,
     "activity_category_display": "Open Play"
@@ -1402,7 +1402,7 @@
     "organizer": "Padelpuff Club",
     "fee": 170000,
     "thumbnail": "https://storage.googleapis.com/data.ayo.co.id/photos/77445/SEO%20HDI%202/30.%20Bagaimana%20Ciri-Ciri%20Padel%20Court%20yang%20Baik%20dan%20Berkualitas.jpg",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 50,
     "activity_category_display": "Open Play"
@@ -1418,7 +1418,7 @@
     "organizer": "Rally Rebels",
     "fee": 129000,
     "thumbnail": "https://storage.googleapis.com/data.ayo.co.id/photos/77445/SEO%20HDI%202/30.%20Bagaimana%20Ciri-Ciri%20Padel%20Court%20yang%20Baik%20dan%20Berkualitas.jpg",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 100,
     "activity_category_display": "Open Play"
@@ -1434,7 +1434,7 @@
     "organizer": "Vp Padel Pku",
     "fee": 110000,
     "thumbnail": "https://storage.googleapis.com/data.ayo.co.id/photos/77445/SEO%20HDI%202/30.%20Bagaimana%20Ciri-Ciri%20Padel%20Court%20yang%20Baik%20dan%20Berkualitas.jpg",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 70,
     "activity_category_display": "Open Play"
@@ -1450,7 +1450,7 @@
     "organizer": "Entario Susanto",
     "fee": 198000,
     "thumbnail": "https://secure.meetupstatic.com/photos/event/6/c/3/d/highres_528807709.jpeg?w=640",
-    "sports_category": "Padel",
+    "sports_category": "padel",
     "activity_category": "open_play",
     "capacity": 70,
     "activity_category_display": "Open Play"
@@ -1466,7 +1466,7 @@
     "organizer": "Liga Santai",
     "fee": 60000,
     "thumbnail": "https://cdn.rri.co.id/berita/Purwokerto/o/1724229043991-A24P0825/gxl4424bu8jw00y.jpeg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 150,
     "activity_category_display": "Friendly Match"
@@ -1482,7 +1482,7 @@
     "organizer": "Master Soccer",
     "fee": 80000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 65,
     "activity_category_display": "Friendly Match"
@@ -1498,7 +1498,7 @@
     "organizer": "Falcon FC",
     "fee": 100000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 90,
     "activity_category_display": "Friendly Match"
@@ -1514,7 +1514,7 @@
     "organizer": "Sekawan FC",
     "fee": 80000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 75,
     "activity_category_display": "Friendly Match"
@@ -1530,7 +1530,7 @@
     "organizer": "Mini Soccer Community - Msc",
     "fee": 120000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 70,
     "activity_category_display": "Friendly Match"
@@ -1546,7 +1546,7 @@
     "organizer": "Soccer7fc",
     "fee": 90000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 125,
     "activity_category_display": "Friendly Match"
@@ -1562,7 +1562,7 @@
     "organizer": "Olympia FC",
     "fee": 70000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 135,
     "activity_category_display": "Friendly Match"
@@ -1578,7 +1578,7 @@
     "organizer": "Unity FC",
     "fee": 80000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 100,
     "activity_category_display": "Friendly Match"
@@ -1594,7 +1594,7 @@
     "organizer": "Kebelet Bola Community",
     "fee": 105000,
     "thumbnail": "https://asset.ayo.co.id/image/venue/172681452391310.image_cropper_62478FE7-2691-40C6-90D2-92D9CDF115E8-24431-00000BAEB306B587_large.jpg",
-    "sports_category": "Football",
+    "sports_category": "football",
     "activity_category": "friendly_match",
     "capacity": 110,
     "activity_category_display": "Friendly Match"

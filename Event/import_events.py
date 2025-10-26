@@ -81,3 +81,7 @@ def run():
             print(f"Gagal menambah event: {item.get('name')} karena {e}")
 
     print(f"{count} data event berhasil diimport.")
+
+def delete_all_events():
+    deleted_count, _ = Event.objects.all().delete()
+    print(f"Deleted {deleted_count} events from the database.")
