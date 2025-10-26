@@ -2,6 +2,7 @@ import uuid
 from django.conf import settings
 from django.db import models
 from django.core.validators import MinValueValidator
+from Authenticate.models import Participant, Organizer
 
 # Create your models here.
 class Event(models.Model):
@@ -31,7 +32,7 @@ class Event(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
-    organizer = models.ForeignKey('Authenticate.Organizer', on_delete=models.CASCADE, related_name="owned_events", null=True)
+    organizer = models.ForeignKey(Organizer, on_delete=models.CASCADE, related_name="owned_events", null=True)
 
     # Date Time
     start_time = models.DateTimeField()
@@ -50,7 +51,7 @@ class Event(models.Model):
 
     # Kapasitas
     capacity = models.PositiveSmallIntegerField(default=0)
-    attendee = models.ManyToManyField('Authenticate.Participant', related_name="events_joined", blank=True)
+    attendee = models.ManyToManyField(Participant, related_name="events_joined", blank=True)
 
 
     @property
