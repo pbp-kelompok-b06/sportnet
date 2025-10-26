@@ -22,7 +22,6 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts', to='Event.event')),
                 ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='replies', to='Forum.forumpost')),
-                ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='posts', to='Authenticate.participant')),
             ],
         ),
     ]

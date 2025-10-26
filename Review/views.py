@@ -12,11 +12,15 @@ from .forms import ReviewForm
 
 @login_required
 def review_page_view(request, event_id):
+    authen = True
     event = get_object_or_404(Event, id=event_id)
     participant = get_object_or_404(Participant, user=request.user)
     reviews = Review.objects.filter(event=event).order_by("-created_at")
 
-    if request.method == "POST":
+    if Review.objects.filter(event=event, participant=participant).exists():
+        authen = False
+    
+    if request.method == "POST" and authen:
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
@@ -32,4 +36,5 @@ def review_page_view(request, event_id):
         "form": form,
         "reviews": reviews,
         "participant": participant,
+        "authen": authen,
     })

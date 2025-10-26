@@ -54,5 +54,5 @@ class Participant(models.Model):
         
 
     def __str__(self):
-        return self.participant_name
+        return self.user.username
     
