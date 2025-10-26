@@ -12,7 +12,7 @@ class ReviewForm(forms.ModelForm):
                 'class': 'form-select-rating',
             }),
             'comment': forms.Textarea(attrs={
-                'placeholder': 'Tulis review Anda tentang event ini...',
+                'placeholder': 'Write your review about this event',
                 'rows': 4,
                 'class': 'form-textarea-review',
             })
