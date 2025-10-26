@@ -24,26 +24,6 @@
           Home
         </a>
 
-        <!-- Forum dan Review --> 
-        {% if event %}
-          <a href="{% url 'Forum:forum_page' event.id %}"
-            class="{% if 'forum' in request.path %}text-white font-bold{% else %}hover:text-white hover:font-bold focus:text-white focus:font-bold{% endif %} transition-colors">
-            Forum
-          </a>
-          <a href="{% url 'Review:review_page' event.id %}"
-            class="{% if 'review' in request.path %}text-white font-bold{% else %}hover:text-white hover:font-bold focus:text-white focus:font-bold{% endif %} transition-colors">
-            Review
-          </a>
-        {% elif global_event %}
-          <a href="{% url 'Forum:forum_page' global_event.id %}"
-            class="hover:text-white hover:font-bold transition-colors">Forum</a>
-          <a href="{% url 'Review:review_page' global_event.id %}"
-            class="hover:text-white hover:font-bold transition-colors">Review</a>
-        {% else %}
-          <a href="#" class="opacity-60 cursor-not-allowed">Forum</a>
-          <a href="#" class="opacity-60 cursor-not-allowed">Review</a>
-        {% endif %}
-
         <!-- Bookmarks -->
         <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_bookmark' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
           class="{% if 'bookmark' in request.path %}text-white font-bold{% else %}hover:text-white hover:font-bold focus:text-white focus:font-bold{% endif %} transition-colors">
