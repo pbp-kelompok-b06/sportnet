@@ -15,8 +15,7 @@ def serialize_event(card_event):
     date_str = event.start_time.strftime("%d %B %Y") if event.start_time else ""
     price_str = f"Rp {int(event.fee):,}".replace(",", ".") if event.fee is not None else "Gratis"
     
-    # NOTE: Ini adalah struktur data yang dikirim ke JavaScript.
-    # JavaScript di homepage.html mengharapkan field seperti 'name', 'date', dll.
+    # Ini adalah struktur data yang dikirim ke JavaScript.
     return {
         'id': str(event.id),
         'name': event.name,
@@ -87,3 +86,38 @@ def get_event_data_json(request):
     event_list = [serialize_event(event) for event in events]
 
     return JsonResponse(event_list, safe=False)
+
+
+def ajax_get_events(request):
+    q = request.GET.get('q', '').strip()
+    category = request.GET.get('category', '')
+    free = request.GET.get('free', '')
+
+    events = Event.objects.all().order_by('-start_time')
+
+    if q:
+        events = events.filter(
+            Q(name__icontains=q) |
+            Q(description__icontains=q) |
+            Q(location__icontains=q)
+        )
+
+    if category:
+        events = events.filter(sports_category=category.strip())
+
+    if free == '1':
+        events = events.filter(Q(fee__isnull=True) | Q(fee=0))
+
+    bookmarked_ids = []
+    if request.user.is_authenticated:
+        bookmarked_ids = list(
+            Bookmark.objects.filter(user=request.user)
+            .values_list("event_id", flat=True)
+        )
+
+    context = {
+        'events': events,
+        'bookmarked_ids': bookmarked_ids,
+    }
+
+    return render(request, 'partials/event_grid.html', context)
