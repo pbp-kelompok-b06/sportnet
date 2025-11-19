@@ -114,6 +114,11 @@ def mark_all_read(request):
 
     return JsonResponse({'status': 'success', 'updated': updated})
 
+def delete_notif(request, notif_id):
+    notif = get_object_or_404(Notif, pk=notif_id)
+    notif.delete()
+    return redirect('Notification:show_all')
+
 def handleD_1():
         now = timezone.now()
         tomorrow = (now + timedelta(days=1)).date()
