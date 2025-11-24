@@ -71,4 +71,3 @@ def delete_event(request, event_id):
             return JsonResponse({'status': 'error', 'message': 'Anda tidak punya izin untuk menghapus event ini.'}, status=403)
             
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
-
