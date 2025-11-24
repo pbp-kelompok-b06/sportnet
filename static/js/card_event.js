@@ -33,31 +33,68 @@ function attachBookmarkHandlers() {
         const data = await response.json();
         console.log("Data:", data);
 
-        // Ubah ikon sesuai status
+        // ambil icon di dalam tombol
+        const icon = btn.querySelector(".bookmark-icon");
+
         if (data.status === "added") {
           btn.classList.add("active");
-          btn.querySelector(".bookmark-icon").src = "/static/icons/bookmark-toggle.png";
-        } else {
+          if (icon) icon.src = "/static/icons/bookmark-toggle.png";
+        } else if (data.status === "removed") {
           btn.classList.remove("active");
-          btn.querySelector(".bookmark-icon").src = "/static/icons/bookmark-default.png";
+          if (icon) icon.src = "/static/icons/bookmark-default.png";
 
-          // Kalau user di halaman bookmark list → hapus card
-          if (window.location.pathname.startsWith("/bookmark")) {
-            const card = btn.closest("article.event-card");
-            if (card) {
-              card.classList.add("opacity-0", "transition", "duration-300");
+          console.log(
+            "Status is 'removed', trying to remove DOM for event:",
+            eventId
+          );
+
+          const path = window.location.pathname.toLowerCase();
+          console.log("Current pathname:", path);
+
+          if (path.includes("bookmark")) {
+            let wrapper = btn.closest(".bookmark-item");
+            console.log("closest('.bookmark-item') =>", wrapper);
+
+            if (!wrapper) {
+              wrapper = document.querySelector(
+                `.bookmark-item[data-event-id="${eventId}"]`
+              );
+              console.log(
+                "querySelector('.bookmark-item[data-event-id=...]') =>",
+                wrapper
+              );
+            }
+
+            if (!wrapper) {
+              console.warn(
+                "Wrapper .bookmark-item tidak ditemukan, fallback ke .bookmark-item pertama"
+              );
+              wrapper = document.querySelector(".bookmark-item");
+            }
+
+            if (wrapper) {
+              wrapper.classList.add("opacity-0", "transition", "duration-300");
+
               setTimeout(() => {
-                card.remove();
+                wrapper.remove();
 
-                // kalau udah gak ada event, tampilkan empty state
-                const remaining = document.querySelectorAll("article.event-card").length;
+                const remaining =
+                  document.querySelectorAll(".bookmark-item").length;
+                console.log("Remaining bookmark-item:", remaining);
+
                 if (remaining === 0) {
                   const container = document.querySelector("#event-grid");
-                  const emptyState = `
-                    <div id="no-events" class="rounded-lg border border-gray-200 p-12 text-center max-w-5xl mx-auto my-10">
-                      <h3 class="text-lg font-medium text-gray-900 mb-2">You haven't bookmarked any event yet.</h3>
-                    </div>`;
-                  container.insertAdjacentHTML("afterend", emptyState);
+                  if (container) {
+                    const emptyState = `
+                      <div id="no-events"
+                           class="text-center bg-white shadow-sm rounded-xl border border-gray-100 p-12 mt-10">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">No Bookmarks Yet</h3>
+                        <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                          It looks like you haven't bookmarked any events. Start exploring to find events you'll love!
+                        </p>
+                      </div>`;
+                    container.insertAdjacentHTML("afterend", emptyState);
+                  }
                 }
               }, 300);
             }
