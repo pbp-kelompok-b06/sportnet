@@ -72,3 +72,44 @@ def forum_page_view(request, event_id):
     }
 
     return render(request, "forum/forum_page.html", context)
+
+@login_required
+def edit_post_view(request, post_id):
+    post = get_object_or_404(ForumPost, id=post_id)
+
+    # Cek apakah user adalah author (participant atau organizer)
+    if post.participant:
+        if request.user != post.participant.user:
+            return HttpResponseForbidden("You cannot edit this post.")
+    elif post.organizer:
+        if request.user != post.organizer.user:
+            return HttpResponseForbidden("You cannot edit this post.")
+
+    if request.method == "POST":
+        form = ForumPostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect("Forum:forum_page", event_id=post.event.id)
+    else:
+        form = ForumPostForm(instance=post)
+
+    return render(request, "forum/edit_post.html", {
+        "form": form,
+        "post": post,
+    })
+
+@login_required
+def delete_post_view(request, post_id):
+    post = get_object_or_404(ForumPost, id=post_id)
+
+    # Cek author
+    if post.participant:
+        if request.user != post.participant.user:
+            return HttpResponseForbidden("You cannot delete this post.")
+    elif post.organizer:
+        if request.user != post.organizer.user:
+            return HttpResponseForbidden("You cannot delete this post.")
+
+    event_id = post.event.id
+    post.delete()
+    return redirect("Forum:forum_page", event_id=event_id)

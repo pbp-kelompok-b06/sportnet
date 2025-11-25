@@ -38,3 +38,39 @@ def review_page_view(request, event_id):
         "participant": participant,
         "authen": authen,
     })
+
+@login_required
+def edit_review_view(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    # Cek author
+    if review.participant.user != request.user:
+        return HttpResponseForbidden("You cannot edit this review.")
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect("Review:review_page", event_id=review.event.id)
+
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, "review/edit_review.html", {
+        "form": form,
+        "review": review
+    })
+
+@login_required
+def delete_review_view(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    # Cek author
+    if review.participant.user != request.user:
+        return HttpResponseForbidden("You cannot delete this review.")
+
+    event_id = review.event.id
+    review.delete()
+
+    return redirect("Review:review_page", event_id=event_id)
+
