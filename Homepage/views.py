@@ -6,6 +6,8 @@ from django.db.models import Q
 from datetime import datetime
 from Bookmark.models import Bookmark
 from Notification.views import handleD_1, handleNow
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 
 # Fungsi pembantu untuk membuat objek event menjadi format dictionary yang rapi
 def serialize_event(card_event):
