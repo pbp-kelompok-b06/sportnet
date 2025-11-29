@@ -180,7 +180,6 @@ def edit_event(request, event_id):
         "event": event,
     })
 
-
 def show_json(request):
     events = Event.objects.all()
     event_list = []
@@ -199,4 +198,5 @@ def show_json(request):
             'capacity': event.capacity,
             'organizer': event.organizer.user.username,
         })
-    return JsonResponse({'status' : 'success', 'events' : event_list}, safe=False)
+    return JsonResponse({'status' : 'success', 'events' : event_list}, safe=False)def show_json(request):
+   

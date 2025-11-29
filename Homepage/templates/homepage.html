@@ -33,7 +33,7 @@
 <div class="page-container container mx-auto px-4 bg-fixed bg-center bg-no-repeat min-h-screen min-w-full pb-10">
   <!-- Search and filter bar -->
   <div class="max-w-5xl pt-4 mx-auto mb-6">
-    <form method="get" class="flex flex-col md:flex-row items-stretch gap-3">
+    <form id="searchForm" method="get" class="flex flex-col md:flex-row items-stretch gap-3">
       <input type="text" name="q" placeholder="Cari event, lokasi, deskripsi..." value="{{ filter_q|default:'' }}" class="flex-1 px-4 py-2 rounded-3xl border border-gray-200" />
 
       <select name="category" class="px-3 py-2 rounded-3xl border border-gray-200">
@@ -49,11 +49,81 @@
       </label>
 
       <div class="flex items-center gap-2">
-        <button type="submit" class="px-4 py-2 bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-white rounded-3xl">Cari</button>
-        <a href="{% url 'Homepage:show_main' %}" class="px-4 py-2 bg-white hover:bg-gray-200 border border-gray-200 rounded-3xl">Reset</a>
+        <button id="searchBtn" type="submit" class="px-4 py-2 bg-gradient-to-b from-[var(--color-main-300)] to-[var(--color-main-400)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-white rounded-3xl flex items-center gap-2">
+          <span id="searchBtnText">Cari</span>
+          <svg id="searchSpinner" class="hidden w-4 h-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+        </button>
+        <a id="resetBtn" href="{% url 'Homepage:show_main' %}" class="px-4 py-2 bg-white hover:bg-gray-200 border border-gray-200 rounded-3xl">Reset</a>
       </div>
     </form>
   </div>
+
+  <script>
+    (function(){
+      const form = document.getElementById('searchForm');
+      const btn = document.getElementById('searchBtn');
+      const spinner = document.getElementById('searchSpinner');
+      const btnText = document.getElementById('searchBtnText');
+
+      if (!form) return;
+
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        for (const [k,v] of formData.entries()) {
+          if (v !== null && v !== undefined && v !== '') params.append(k, v);
+        }
+
+        // UI: show loading
+        btn.disabled = true;
+        spinner.classList.remove('hidden');
+        btnText.classList.add('opacity-70');
+
+        try {
+          const url = `{% url 'Homepage:search_events_ajax' %}` + '?' + params.toString();
+          const resp = await fetch(url, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+          if (!resp.ok) throw new Error('Network response was not ok');
+          const html = await resp.text();
+
+          // Replace content: if server returns #event-grid or #no-events container, swap it
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newGrid = doc.getElementById('event-grid');
+          const newNo = doc.getElementById('no-events');
+
+          const oldGrid = document.getElementById('event-grid');
+          const oldNo = document.getElementById('no-events');
+
+          if (newGrid) {
+            if (oldGrid) oldGrid.replaceWith(newGrid);
+            else document.querySelector('.page-container').appendChild(newGrid);
+            if (oldNo) oldNo.remove();
+          } else if (newNo) {
+            if (oldGrid) oldGrid.replaceWith(newNo);
+            else if (!oldNo) document.querySelector('.page-container').appendChild(newNo);
+          }
+
+          // update browser URL so results are shareable
+          const newUrl = new URL(window.location);
+          // clear existing search params from form fields
+          for (const key of ['q','category','free']) newUrl.searchParams.delete(key);
+          for (const [k,v] of params.entries()) newUrl.searchParams.set(k, v);
+          window.history.pushState({}, '', newUrl);
+
+        } catch (err) {
+          console.error('AJAX search failed', err);
+        } finally {
+          btn.disabled = false;
+          spinner.classList.add('hidden');
+          btnText.classList.remove('opacity-70');
+        }
+      });
+    })();
+  </script>
 
   <div id="event-container">
     {% include 'partials/event_grid.html' %}
