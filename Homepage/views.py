@@ -87,8 +87,7 @@ def get_event_data_json(request):
 
     return JsonResponse(event_list, safe=False)
 
-
-def ajax_get_events(request):
+def search_events_ajax(request):
     q = request.GET.get('q', '').strip()
     category = request.GET.get('category', '')
     free = request.GET.get('free', '')
@@ -120,4 +119,10 @@ def ajax_get_events(request):
         'bookmarked_ids': bookmarked_ids,
     }
 
-    return render(request, 'partials/event_grid.html', context)
+    # If there are results, render the event grid partial; otherwise render no-events partial
+    if events.exists():
+        html = render_to_string('partials/event_grid.html', context, request=request)
+    else:
+        html = render_to_string('partials/no_events.html', context, request=request)
+
+    return HttpResponse(html)
