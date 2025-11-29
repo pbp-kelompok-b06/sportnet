@@ -1,5 +1,5 @@
 from django.urls import path
-from Homepage.views import show_main, get_event_data_json, ajax_get_events
+from Homepage.views import show_main, get_event_data_json, search_events_ajax
 
 app_name = 'Homepage'
 
