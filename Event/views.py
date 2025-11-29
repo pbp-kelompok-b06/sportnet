@@ -201,4 +201,4 @@ def show_json(request):
             'organizer': event.organizer.user.username,
 
         })
-    return JsonResponse(event_list, safe=False)
+    return JsonResponse({'status':'success','events': event_list}, safe=False)
