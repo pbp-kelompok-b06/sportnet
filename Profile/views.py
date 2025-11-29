@@ -16,8 +16,8 @@ from django.core.files.base import ContentFile
 from django.utils import timezone
 from Follow.models import Follow
 
-@login_required
 @csrf_exempt
+@login_required(login_url='Authenticate:login')
 def profile_api(request, username=None):
     if username:
         profile_user = get_object_or_404(User, username=username)
@@ -128,7 +128,7 @@ def profile_api(request, username=None):
     return JsonResponse(response_data)
 
 
-@login_required
+@login_required(login_url='Authenticate:login')
 def profile_view(request, username=None):
     if username:
         profile_user = get_object_or_404(User, username=username)
@@ -190,8 +190,8 @@ def profile_view(request, username=None):
 
     return render(request, 'profile.html', context)
 
-@login_required
 @csrf_exempt
+@login_required(login_url='Authenticate:login')
 def edit_profile(request):
     user = request.user
     ProfileForm = None
@@ -218,8 +218,8 @@ def edit_profile(request):
     
     return render(request, 'edit_profile.html', {'form': form})
 
-@login_required
 @csrf_exempt
+@login_required(login_url='Authenticate:login')
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
@@ -259,7 +259,7 @@ def delete_account_flutter(request):
         "message": "Method not allowed. Gunakan POST atau DELETE."
     }, status=405)
 
-@login_required
+@login_required(login_url='Authenticate:login')
 def delete_Profilepict(request):
     if request.method == 'POST':
         profile = None
