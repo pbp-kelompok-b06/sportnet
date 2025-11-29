@@ -7,4 +7,5 @@ urlpatterns = [
     path('', show_main, name='show_main'),
     # URL baru untuk mengambil data event via AJAX
     path('json/', get_event_data_json, name='get_event_data_json'),
+    path('search_ajax/', search_events_ajax, name='search_events_ajax'),
 ]

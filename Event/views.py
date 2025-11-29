@@ -198,5 +198,4 @@ def show_json(request):
             'capacity': event.capacity,
             'organizer': event.organizer.user.username,
         })
-    return JsonResponse({'status' : 'success', 'events' : event_list}, safe=False)def show_json(request):
-   
+    return JsonResponse({'status' : 'success', 'events' : event_list}, safe=False)
