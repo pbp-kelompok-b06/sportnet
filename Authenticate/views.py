@@ -47,8 +47,7 @@ def register_participant_step2(request):
         form = ParticipantStep2Form()
     return render(request, 'register_participant_step2.html', {'form': form})
 
-
-# --- ALUR REGISTRASI ORGANIZER ---
+@csrf_exempt
 def register_organizer_step1(request):
     if request.method == 'POST':
         form = AuthStep1Form(request.POST) # Gunakan AuthStep1Form
