@@ -1,49 +1,38 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<style>
-    /* (Anda bisa taruh CSS di file statis, ini hanya contoh cepat) */
-    .chat-container { max-height: 500px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; }
-    .post { margin-bottom: 10px; }
-    .replies { margin-left: 30px; border-left: 2px solid #eee; padding-left: 10px; }
-    .reply-form { display: none; margin-left: 30px; }
-</style>
+{% include 'navbar.html' %}
+<div class="max-w-4xl mx-auto mt-24">
+  <h1 class="text-2xl font-bold mb-4 text-[var(--color-main-700)]">
+    Forum: {{ event.name }}
+  </h1>
 
-<div class="forum-page">
-    <a href="{% url 'event_detail' event.id %}">
-        &larr; Kembali ke Event
-    </a>
-    
-    <h1>Forum Diskusi: {{ event.name }}</h1>
+  <p class="text-gray-600 mb-6">
+    Discuss this event with other participants.
+  </p>
 
+  <!-- Form Posting -->
+  <form method="POST" class="mb-6 bg-white p-4 rounded-xl shadow">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-gradient w-full mt-2">Send</button>
+  </form>
 
-    <div class="chat-container">
-        {% for post in posts %}
-            {% include "forum/_post_comment.html" with post=post form=form %}
-        {% empty %}
-            <p>Belum ada diskusi. Jadilah yang pertama!</p>
-        {% endfor %}
-    </div>
-
-    <hr>
-
-    <h3>Tinggalkan Pesan Baru</h3>
-    <form method="POST" action="{% url 'forum:forum_page' event.id %}">
-        {% csrf_token %}
-        
-        {{ form.as_p }} 
-        
-        <button type="submit">Kirim</button>
-    </form>
+  <!-- Daftar Post -->
+  <div class="space-y-6">
+    {% for post in posts %}
+      {% include "forum/_post_comment.html" with post=post form=form %}
+    {% empty %}
+      <p class="text-gray-500">No discussions yet.</p>
+    {% endfor %}
+  </div>
 </div>
 
 <script>
-    function toggleReply(id) {
-        var form = document.getElementById('reply-form-' + id);
-        if (form.style.display === 'none') {
-            form.style.display = 'block';
-        } else {
-            form.style.display = 'none';
-        }
-    }
+  function toggleReply(id) {
+    const el = document.getElementById(`reply-form-${id}`);
+    if (el) el.style.display = el.style.display === "none" ? "block" : "none";
+  }
 </script>
 {% endblock %}

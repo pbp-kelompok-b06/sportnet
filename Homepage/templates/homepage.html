@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block meta %}
+<title>SportNet - Home</title>
+{% endblock meta %}
 {% block content %}
 {% include 'navbar.html' %}
 
@@ -53,17 +55,41 @@
     </form>
   </div>
 
-  {% if events %}
-    <div id="event-grid" class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-      {% for event in events %}
-        {% include 'card_event.html' with event=event %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <div id="no-events" class="rounded-lg border border-gray-200 p-12 text-center max-w-5xl mx-auto my-10">
-      <h3 class="text-lg font-medium text-gray-900 mb-2">No event available yet.</h3>
-    </div>
-  {% endif %}
+  <div id="event-container">
+    {% include 'partials/event_grid.html' %}
+  </div>
 
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form[method="get"]');
+    const eventContainer = document.getElementById('event-container');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const params = new URLSearchParams(formData);
+      const queryString = params.toString();
+
+      // Add a loading indicator
+      eventContainer.innerHTML = '<div class="text-center py-12">Loading...</div>';
+
+      fetch(`search_ajax/?${queryString}`, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.text())
+      .then(html => {
+        eventContainer.innerHTML = html;
+      })
+      .catch(error => {
+        console.error('Error fetching events:', error);
+        eventContainer.innerHTML = '<div class="text-center py-12 text-red-500">Failed to load events.</div>';
+      });
+    });
+  });
+</script>
 {% endblock content %}

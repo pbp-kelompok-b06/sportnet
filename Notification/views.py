@@ -113,3 +113,57 @@ def mark_all_read(request):
     updated = qs.update(is_read=True)
 
     return JsonResponse({'status': 'success', 'updated': updated})
+
+def delete_notif(request, notif_id):
+    notif = get_object_or_404(Notif, pk=notif_id)
+    notif.delete()
+    return redirect('Notification:show_all')
+
+def handleD_1():
+        now = timezone.now()
+        tomorrow = (now + timedelta(days=1)).date()
+
+        events = Event.objects.filter(start_time__date=tomorrow)
+        total = 0
+        for event in events:
+            attendees = event.attendee.all()
+            for participant in attendees:
+                # create a reminder notification if not already created
+                title = f"Reminder: {event.name} will start tomorrow"
+                message = f"Don't forget, event '{event.name}' will start on {event.start_time.strftime('%d %b %Y, %H:%M')}."
+                try:
+                    from Notification.models import Notifications as Notif
+                    exists = Notif.objects.filter(user=participant, event=event, title=title).exists()
+                    if not exists:
+                        Notif.objects.create(user=participant, title=title, message=message, event=event)
+                        total += 1
+                except Exception as e:
+                    # log to stdout but continue
+                    print(f'Failed to create notification for participant {participant}: {e}')
+                    continue
+
+       
+        print(f'Sent {total} reminder notifications for events on {tomorrow}')
+        
+def handleNow():
+    now = timezone.now().date()
+
+    events = Event.objects.filter(start_time__date=now)
+    total = 0
+    for event in events:
+        attendees = event.attendee.all()
+        for participant in attendees:
+            # create a reminder notification if not already created
+            title = f"Reminder: {event.name} is happening today"
+            message = f"Head to the venue, '{event.name}' is happening today on {event.start_time.strftime('%d %b %Y, %H:%M')}."
+            try:
+                from Notification.models import Notifications as Notif
+                exists = Notif.objects.filter(user=participant, event=event, title=title).exists()
+                if not exists:
+                    Notif.objects.create(user=participant, title=title, message=message, event=event)
+                    total += 1
+            except Exception as e:
+                print(f'Failed to create notification for participant {participant}: {e}')
+                continue
+            
+            print(f'Sent {total} reminder notifications for events on {now}')         

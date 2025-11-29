@@ -18,30 +18,35 @@
       <div class="hidden md:flex items-center space-x-8 absolute left-1/2 transform -translate-x-1/2"
           style="color:var(--color-main-50); font-weight:500; font-family:var(--font-inter);">
 
+        <!-- Home -->
         <a href="/"
           class="{% if request.path == '/' %}text-white font-bold{% else %}hover:text-white hover:font-bold focus:text-white focus:font-bold{% endif %} transition-colors">
           Home
         </a>
 
+        <!-- Bookmarks -->
         <a href="{% if user.is_authenticated %}{% url 'Bookmark:show_bookmark' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
           class="{% if 'bookmark' in request.path %}text-white font-bold{% else %}hover:text-white hover:font-bold focus:text-white focus:font-bold{% endif %} transition-colors">
           Bookmarks
         </a>
 
+        <!-- Dashboard (for Organizer only) -->
         {% if user.is_authenticated and user.organizer_profile %}
           <a href="{% url 'dashboard:show' %}"
             class="{% if 'dashboard' in request.path %}text-white font-bold{% else %}hover:text-white hover:font-bold focus:text-white focus:font-bold{% endif %} transition-colors">
             Dashboard
           </a>
         {% endif %}
+
+        <!-- Notifications -->
         <a href="{% if user.is_authenticated %}{% url 'Notification:show_all' %}{% else %}{% url 'Authenticate:login' %}{% endif %}" 
-            class="hover:text-white hover:font-bold transition-colors relative">
-            Notifications
-            {% if unread_notification_count > 0 %}
+          class="hover:text-white hover:font-bold transition-colors relative">
+          Notifications
+          {% if unread_notification_count > 0 %}
             <span class="absolute -top-2 -right-4 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
-                {{ unread_notification_count }}
+              {{ unread_notification_count }}
             </span>
-            {% endif %}
+          {% endif %}
         </a>
       </div>
 

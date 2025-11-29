@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="max-w-4xl mx-auto mt-24">
+
+  <h1 class="text-2xl font-bold mb-4 text-[var(--color-main-700)]">
+    Review Event: {{ event.name }}
+  </h1>
+
+  {% if authen %}
+    <!-- FORM CREATE REVIEW -->
+    <form method="POST" class="mb-6 bg-white p-4 rounded-xl shadow">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-gradient w-full mt-2">Send Review</button>
+    </form>
+  {% else %}
+    <p class="text-gray-500 mb-6">You have reviewed this event.</p>
+  {% endif %}
+
+  <!-- LIST OF REVIEWS -->
+  <div class="space-y-4">
+    {% for review in reviews %}
+      <div class="bg-[var(--color-main-50)] p-4 rounded-lg shadow">
+
+        <!-- Nama user -->
+        <p class="font-semibold">{{ review.participant.full_name }}</p>
+
+        <!-- Bintang Rating -->
+        <div class="flex items-center mb-2">
+          {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}
+              <!-- Bintang aktif -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                   fill="#FF773D" viewBox="0 0 20 20" class="inline-block mr-1">
+                <polygon points="10,1 12.59,6.99 19,7.64 
+                  14,12.26 15.18,18.51 10,15.27 
+                  4.82,18.51 6,12.26 1,7.64 7.41,6.99"/>
+              </svg>
+            {% else %}
+              <!-- Bintang kosong -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                   fill="#E5E7EB" viewBox="0 0 20 20" class="inline-block mr-1">
+                <polygon points="10,1 12.59,6.99 19,7.64 
+                  14,12.26 15.18,18.51 10,15.27 
+                  4.82,18.51 6,12.26 1,7.64 7.41,6.99"/>
+              </svg>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <!-- Komentar -->
+        <p class="text-gray-800">{{ review.comment }}</p>
+
+        <!-- Tombol Edit/Delete ADA DI BAWAH -->
+        {% if review.participant.user == request.user %}
+          <div class="flex items-center gap-3 text-sm mt-2">
+            <a href="{% url 'Review:edit_review' review.id %}"
+               class="text-blue-600 hover:underline">Edit</a>
+
+            <a href="{% url 'Review:delete_review' review.id %}"
+               class="text-red-600 hover:underline"
+               onclick="return confirm('Are you sure you want to delete your review?');">
+              Delete
+            </a>
+          </div>
+        {% endif %}
+
+        <!-- Tanggal -->
+        <p class="text-sm text-gray-500 mt-1">
+          {{ review.created_at|date:"d M Y, H:i" }}
+        </p>
+
+      </div>
+
+    {% empty %}
+      <p class="text-gray-500">No review yet.</p>
+
+    {% endfor %}
+  </div>
+
+</div>
+
+{% endblock %}

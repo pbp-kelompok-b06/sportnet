@@ -53,21 +53,21 @@ def delete_event(request, event_id):
                     try:
                         Notif.objects.create(
                             user=participant,
-                            title=f"Event dibatalkan: {event.name}",
-                            message=f"Mohon maaf, event '{event.name}' telah dibatalkan oleh penyelenggara.",
-                            event=event
+                            title=f"Event Cancelled: {event.name}",
+                            message=f"Unfortunately, The event '{event.name}' has been cancelled by the organizer.",
+                            event=None
                         )
                     except Exception:
                         # ignore individual failures
+                        print(f'Failed to notify participant {participant} about event deletion.')
                         pass
             except Exception:
                 # Notification app missing or other error; continue with deletion
                 pass
-
+            
             event.delete()
             return JsonResponse({'status': 'success', 'message': 'Event berhasil dihapus.'})
         else:
             return JsonResponse({'status': 'error', 'message': 'Anda tidak punya izin untuk menghapus event ini.'}, status=403)
             
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
-
