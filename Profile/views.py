@@ -220,6 +220,61 @@ def edit_profile(request):
 
 @csrf_exempt
 @login_required(login_url='Authenticate:login')
+def edit_profile_api(request):
+    if request.method == 'POST':
+        user = request.user
+        data = request.POST
+
+        if not data and request.body:
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError:
+                pass
+        
+        try:
+            if hasattr(user, 'participant_profile'):
+                profile = user.participant_profile
+                
+                if 'full_name' in data:
+                    profile.full_name = data['full_name']
+                if 'location' in data:
+                    profile.location = data['location']
+                if 'about' in data:
+                    profile.about = data['about']
+                if 'interests' in data:
+                    profile.interests = data['interests']
+                if 'birth_date' in data and data['birth_date']:
+                    profile.birth_date = data['birth_date']
+                
+                if 'profile_picture' in request.FILES:
+                    profile.profile_picture = request.FILES['profile_picture']
+                
+                profile.save()
+
+            elif hasattr(user, 'organizer_profile'):
+                profile = user.organizer_profile
+                
+                if 'organizer_name' in data:
+                    profile.organizer_name = data['organizer_name']
+                if 'contact_email' in data:
+                    profile.contact_email = data['contact_email']
+                if 'contact_phone' in data:
+                    profile.contact_phone = data['contact_phone']
+                if 'about' in data:
+                    profile.about = data['about']
+                
+                if 'profile_picture' in request.FILES:
+                    profile.profile_picture = request.FILES['profile_picture']
+                
+                profile.save()
+
+            return JsonResponse({"status": "success", "message": "Profil berhasil diupdate"}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
+
+@csrf_exempt
+@login_required(login_url='Authenticate:login')
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
