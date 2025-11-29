@@ -76,7 +76,7 @@
       // Add a loading indicator
       eventContainer.innerHTML = '<div class="text-center py-12">Loading...</div>';
 
-      fetch(`/events/?${queryString}`, {
+      fetch(`search_ajax/?${queryString}`, {
         headers: {
           'X-Requested-With': 'XMLHttpRequest'
         }
