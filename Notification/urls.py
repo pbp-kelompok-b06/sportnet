@@ -13,7 +13,7 @@ urlpatterns = [
     path('check-new/', check_new_notifications, name='check_new_notifications'),
     path('delete/<int:notif_id>/', delete_notif, name='delete_notif'),
     path('json/', notif_json, name='notif_json'),
-    path('flutter-mark-as-read/', mark_flutter_notification_read, name='mark_flutter_notification_read'),
-    path('delete-flutter/', delete_flutter_notif, name='delete_flutter_notif'),
+    path('flutter-mark-as-read/<int:notif_id>/', mark_flutter_notification_read, name='mark_flutter_notification_read'),
+    path('delete-flutter/<int:notif_id>/', delete_flutter_notif, name='delete_flutter_notif'),
 
 ]
