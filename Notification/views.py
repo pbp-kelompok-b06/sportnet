@@ -188,7 +188,7 @@ def notif_json(request):
         })
     return JsonResponse({'notifications': notif_list})
 
-@login_required
+
 def delete_flutter_notif(request):
     data = json.loads(request.body)
     notif_id = data.get('notif_id')
@@ -196,7 +196,7 @@ def delete_flutter_notif(request):
     notif.delete()
     return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
 
-@login_required
+
 def mark_flutter_notification_read(request):
     data = json.loads(request.body)
     notif_id = data.get('notif_id')
