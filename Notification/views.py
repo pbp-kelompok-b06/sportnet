@@ -169,27 +169,20 @@ def handleNow():
             print(f'Sent {total} reminder notifications for events on {now}')         
             
 @login_required
-def notif_json(request, as_json=False):
+def notif_json(request):
     try:
         participant = request.user.participant_profile
         notifications = Notif.objects.filter(user=participant).order_by('-timestamp')
     except Exception:
         notifications = Notif.objects.none()
-
-    if as_json:
-        notif_list = []
-        for notif in notifications:
-            notif_list.append({
-                'id': notif.id,
-                'title': notif.title,
-                'message': notif.message,
-                'is_read': notif.is_read,
-                'timestamp': notif.timestamp.isoformat(),
-                'event_id': notif.event.id if notif.event else None,
-            })
-        return JsonResponse({'notifications': notif_list})
-    else:
-        context = {
-            'notif': notifications,
-        }
-        return render(request, 'all_notif.html', context)
+    notif_list = []
+    for notif in notifications:
+        notif_list.append({
+            'id': notif.id,
+            'title': notif.title,
+            'message': notif.message,
+            'is_read': notif.is_read,
+            'timestamp': notif.timestamp.isoformat(),
+            'event_id': notif.event.id if notif.event else None,
+        })
+    return JsonResponse({'notifications': notif_list})
