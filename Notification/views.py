@@ -206,10 +206,6 @@ def mark_flutter_notification_read(request):
     except Notif.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
     # Ensure the logged-in user is the owner of the notification
-    try:
-        participant = request.user.participant_profile
-    except Exception:
-        return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
 
     notif.is_read = True
     notif.save()
