@@ -181,24 +181,3 @@ def edit_event(request, event_id):
     })
 
 
-def show_json(request):
-    events = Event.objects.all()
-    event_list = []
-    for event in events:
-        event_list.append({
-            'id': event.id,
-            'name': event.name,
-            'description': event.description,
-            'thumbnail': event.thumbnail,
-            'location': event.location,
-            'address': event.address,
-            'start_time': event.start_time,
-            'end_time': event.end_time,
-            'sports_category': event.sports_category,
-            'activity_category': event.activity_category,
-            'fee': event.fee,
-            'capacity': event.capacity,
-            'organizer': event.organizer.user.username,
-
-        })
-    return JsonResponse({'status':'success','events': event_list}, safe=False)

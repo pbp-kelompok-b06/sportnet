@@ -4,9 +4,6 @@ from Authenticate.views import *
 app_name = 'Authenticate'
 
 urlpatterns = [
-    path('api/login/', login_api, name='login_api'),
-    path('api/register/', register_api, name='register_api'),
-    path('api/logout/', logout_api, name='logout_api'),
     path('login/', log_in, name='login'),
     path('register/participant1/', register_participant_step1, name='register_participant_step1'),
     path('register/participant2/', register_participant_step2, name='register_participant_step2'),
