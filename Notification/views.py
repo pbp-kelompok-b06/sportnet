@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def check_new_notifications(request):
@@ -189,25 +190,60 @@ def notif_json(request):
     return JsonResponse({'notifications': notif_list})
 
 
-def delete_flutter_notif(request):
-    data = json.loads(request.body)
-    notif_id = data.get('notif_id')
-    notif = get_object_or_404(Notif, pk=notif_id)
-    notif.delete()
-    return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
-
-
+@csrf_exempt
 def mark_flutter_notification_read(request):
-    data = json.loads(request.body)
-    notif_id = data.get('notif_id')
-    
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+
     try:
-        notif = get_object_or_404(Notif, pk=notif_id)
+        # 1. Decode JSON dari body
+        data = json.loads(request.body)
+        notif_id = data.get('notif_id')
+
+        # 2. Ambil objek notifikasi
+        notif = Notif.objects.get(pk=notif_id)
+
+        # 3. Validasi kepemilikan (Opsional tapi disarankan)
+        # Jika user login via cookies, request.user tersedia
+        if request.user.is_authenticated and hasattr(request.user, 'participant_profile'):
+             if notif.user != request.user.participant_profile:
+                 return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+
+        # 4. Update status
+        notif.is_read = True
+        notif.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Notification marked as read'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
     except Notif.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
-    # Ensure the logged-in user is the owner of the notification
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-    notif.is_read = True
-    notif.save()
+@csrf_exempt
+def delete_flutter_notif(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
 
-    return JsonResponse({'status': 'success', 'message': 'Notification marked as read'})
+    try:
+        data = json.loads(request.body)
+        notif_id = data.get('notif_id')
+
+        notif = Notif.objects.get(pk=notif_id)
+        
+        # Validasi kepemilikan
+        if request.user.is_authenticated and hasattr(request.user, 'participant_profile'):
+             if notif.user != request.user.participant_profile:
+                 return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+
+        notif.delete()
+        return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
+
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+    except Notif.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
