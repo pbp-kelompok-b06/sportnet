@@ -211,9 +211,6 @@ def mark_flutter_notification_read(request):
     except Exception:
         return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
 
-    if notif.user != participant:
-        return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
-
     notif.is_read = True
     notif.save()
 
