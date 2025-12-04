@@ -186,3 +186,28 @@ def notif_json(request):
             'event_id': notif.event.id if notif.event else None,
         })
     return JsonResponse({'notifications': notif_list})
+
+@login_required
+def delete_flutter_notif(request, notif_id):
+    notif = get_object_or_404(Notif, pk=notif_id)
+    notif.delete()
+    return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
+
+@login_required
+def mark_flutter_notification_read(request, notif_id):
+    
+    notif = get_object_or_404(Notif, pk=notif_id)
+
+    # Ensure the logged-in user is the owner of the notification
+    try:
+        participant = request.user.participant_profile
+    except Exception:
+        return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
+
+    if notif.user != participant:
+        return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+
+    notif.is_read = True
+    notif.save()
+
+    return JsonResponse({'status': 'success', 'message': 'Notification marked as read'})
