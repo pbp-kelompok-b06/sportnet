@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
+import json
 
 @login_required
 def check_new_notifications(request):
@@ -188,13 +189,17 @@ def notif_json(request):
     return JsonResponse({'notifications': notif_list})
 
 @login_required
-def delete_flutter_notif(request, notif_id):
+def delete_flutter_notif(request):
+    data = json.loads(request.body)
+    notif_id = data.get('notif_id')
     notif = get_object_or_404(Notif, pk=notif_id)
     notif.delete()
     return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
 
 @login_required
-def mark_flutter_notification_read(request, notif_id):
+def mark_flutter_notification_read(request):
+    data = json.loads(request.body)
+    notif_id = data.get('notif_id')
     
     try:
         notif = get_object_or_404(Notif, pk=notif_id)
