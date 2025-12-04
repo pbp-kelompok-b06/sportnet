@@ -15,275 +15,637 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="w-full min-h-screen bg-gradient-to-br from-[var(--color-main-50)] to-[var(--color-main-200)] pt-20 pb-20">
-    <div class="container mx-auto px-4 max-w-4xl">
-        
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden relative">
-            
-            <div class="h-40 bg-gradient-to-r from-[var(--color-main-300)] to-[var(--color-main-500)] relative">
-                <div class="absolute inset-0 bg-black opacity-10"></div>
+<div class="min-h-screen bg-gray-50 pt-20 pb-20">
+    <div class="container mx-auto px-4 max-w-6xl">
+
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6 relative">
+            <div class="h-48 w-full bg-gradient-to-r from-[var(--color-main-600)] to-[var(--color-main-400)] relative">
+                <div class="absolute inset-0 bg-black/10"></div>
             </div>
 
-            <div class="absolute top-24 left-1/2 -translate-x-1/2 w-full px-6 mb-12">
-                <div class="flex flex-col items-center text-center">
-                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white bg-white shadow-lg">
-                        <img class="w-full h-full object-cover"
-                             src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% elif organizer.profile_picture %}{{ organizer.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
-                             alt="Profile Picture">
-                    </div>
-                    <div class="mt-4">
-                        <h2 class="text-3xl font-bold text-[var(--color-text-700)]">
-                            {% if participant %}{{ participant.full_name }}{% elif organizer %}{{ organizer.organizer_name }}{% endif %}
-                        </h2>
-                        <p class="text-md text-[var(--color-text-400)]">@{{ profile_user.username }}</p>
-                    </div>
-                </div>
-            </div>
-
-            {% if user == profile_user %}
-                <div class="absolute top-4 right-4">
-                    <a href="{% url 'profile:edit_profile' %}" class="btn p-2 rounded-full bg-white/30 text-white hover:bg-white/50 backdrop-blur-sm transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"></path></svg>
-                    </a>
-                </div>
-            {% endif %}
-
-            <div class="px-6 sm:px-10 pb-10 pt-40"> <div>
-                    {% if participant %}
-                        <h3 class="text-xl font-bold text-[var(--color-text-600)] mb-4">About Me</h3>
-                        <p class="text-[var(--color-text-500)] mb-8">{{ participant.about|default:"No bio provided." }}</p>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                            <div>
-                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Location</h4>
-                                <p class="text-lg text-[var(--color-text-700)]">{{ participant.location|default:"-" }}</p>
-                            </div>
-                            <div>
-                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Birth Date</h4>
-                                <p class="text-lg text-[var(--color-text-700)]">{{ participant.birth_date|date:"F d, Y"|default:"-" }}</p>
-                            </div>
-                            <div class="md:col-span-2">
-                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Interests</h4>
-                                <p class="text-lg text-[var(--color-text-700)]">{{ participant.interests|default:"-" }}</p>
-                            </div>
-                        </div>
-
-                    {% elif organizer %}
+            <div class="px-6 pb-6">
+                <div class="flex flex-col md:flex-row items-center md:items-end -mt-16 md:-mt-12 gap-6">
                     
-                    <h3 class="text-xl font-bold text-[var(--color-text-600)] mb-2">About Organizer</h3>
-                    <p class="text-[var(--color-text-500)] mb-8">{{ organizer.about|default:"No bio provided." }}</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                            <div>
-                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Contact Email</h4>
-                                <p class="text-lg text-[var(--color-text-700)]">{{ organizer.contact_email|default:"-" }}</p>
-                            </div>
-                            <div>
-                                <h4 class="text-sm text-[var(--color-text-400)] uppercase font-semibold">Contact Phone</h4>
-                                <p class="text-lg text-[var(--color-text-700)]">{{ organizer.contact_phone|default:"-" }}</p>
-                            </div>
+                    <div class="relative">
+                        <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white bg-white shadow-md overflow-hidden">
+                            <img class="w-full h-full object-cover"
+                                 src="{% if participant.profile_picture %}{{ participant.profile_picture.url }}{% elif organizer.profile_picture %}{{ organizer.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}"
+                                 alt="Profile">
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left mb-2">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+                            {% if participant %}{{ participant.full_name }}{% elif organizer %}{{ organizer.organizer_name }}{% endif %}
+                        </h1>
+                        <p class="text-gray-500 font-medium">@{{ profile_user.username }}</p>
+                        
+                        <div class="mt-3 flex items-center gap-2">
+                        {% if participant %}
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                PARTICIPANT
+                            </span>
+                        {% elif organizer %}
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
+                                <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                                </span>
+                                ORGANIZER
+                            </span>
+                        {% endif %}
+                    </div>
+                    </div>
+
+                    {% if organizer and user.is_authenticated and user != profile_user and user.participant_profile%}
+                        <div class="mb-4 md:mb-2">
+                            <button id="followBtn" onclick="toggleFollow('{{ organizer.user.id }}')"
+                                    class="min-w-[140px] px-6 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm flex items-center justify-center gap-2
+                                    {% if is_following %} bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 {% else %} bg-orange-600 text-white hover:bg-orange-700 hover:shadow-md {% endif %}">
+                                {% if is_following %}
+                                    <span>Unfollow</span>
+                                {% else %}
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                    <span>Follow</span>
+                                {% endif %}
+                            </button>
                         </div>
                     {% endif %}
                 </div>
             </div>
         </div>
 
-    {% if participant %}
-        <div class="mt-12 space-y-8">
-            <header class="text-center mb-10 relative">
-                <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-700">
-                    Booked Events
-                </h2>
-                <p class="text-gray-500 mt-2 text-sm tracking-wide">
-                    Keep track of your upcoming and past events easily
-                </p>
-            </header>
-            <!-- Upcoming Events -->
-                    <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
-                        <span class="bg-orange-100 text-orange-500 p-2 rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="space-y-6">
+                
+                {% if organizer %}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                    
+                    <div class="flex items-center gap-2 mb-6">
+                        <h3 class="font-bold text-lg text-gray-800">Pengikut</h3>
+                        <span class="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
+                            {{ followers_count }}
                         </span>
-                        Upcoming Events
-                    </h3>
-                </div>
-            <section>
-                {% if upcoming_events %}
-                    <div class="relative">
-                        <div class="swiper upcoming-events-slider px-6">
-                            <div class="swiper-wrapper py-4">
-                                {% for event in upcoming_events %}
-                                <div class="swiper-slide h-auto pb-8">
-                                    <article class="bg-white rounded-2xl shadow-md overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col border border-gray-100">
-                                        <div class="relative">
-                                            <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" 
-                                                class="h-44 w-full object-cover">
-                                            <span class="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-semibold px-2 py-1 rounded-full shadow">
-                                                Upcoming
-                                            </span>
-                                        </div>
-                                        <div class="p-5 flex-grow">
-                                            <h3 class="font-bold text-lg text-gray-800 mb-1">{{ event.name }}</h3>
-                                            <p class="text-sm text-gray-500">{{ event.start_time|date:"D, d M Y" }}</p>
-                                        </div>
-                                    </article>
+                    </div>
+
+                    {% if followers_count > 0 %}
+                        <div class="grid grid-cols-4 gap-y-6 gap-x-2 mb-6">
+                            {% for follow in followers_list|slice:":8" %}
+                            <a href="{% url 'profile:profile_view_user' follow.user_from.username %}" 
+                               class="flex flex-col items-center group cursor-pointer">
+                                
+                                <div class="relative w-14 h-14 transition-transform group-hover:-translate-y-1 duration-300">
+                                    <img src="{% if follow.user_from.participant_profile.profile_picture %}{{ follow.user_from.participant_profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}" 
+                                         alt="{{ follow.user_from.username }}"
+                                         class="w-full h-full rounded-full object-cover border border-gray-100 shadow-sm group-hover:shadow-md">
                                 </div>
-                                {% endfor %}
-                            </div>
-                            <div class="swiper-pagination mt-4"></div>
+                                
+                                <span class="text-[11px] font-medium text-gray-700 mt-2 text-center leading-tight line-clamp-2 w-full px-1 group-hover:text-orange-600 transition-colors">
+                                    {{ follow.user_from.participant_profile.full_name|default:follow.user_from.username }}
+                                </span>
+                            </a>
+                            {% endfor %}
                         </div>
 
-                    <button
-                    class="swiper-button-prev-past absolute top-1/2 -left-5 md:-left-6 z-10 -translate-y-1/2
-                            bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
-                            text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                    </button>
-
-                    <button
-                    class="swiper-button-next-past absolute top-1/2 -right-5 md:-right-6 z-10 -translate-y-1/2
-                            bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
-                            text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                    </button>
-                    </div>
+                        <button onclick="openFollowersModal()" 
+                                class="w-full py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300 transition-all">
+                            Lihat semua
+                        </button>
                     {% else %}
-                    <div class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-10 text-center shadow-sm">
-                        <div class="flex flex-col items-center justify-center space-y-3">
-                            <div class="bg-orange-100 text-orange-500 w-14 h-14 flex items-center justify-center rounded-full shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                        <div class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 text-gray-300 shadow-sm">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-700">No Upcoming Events</h3>
-                            <p class="text-sm text-gray-500">Start exploring new events and book your first one!</p>
+                            <p class="text-xs text-gray-400">Belum ada pengikut</p>
                         </div>
-                    </div>
                     {% endif %}
 
+                </div>
+                {% endif %}
 
-            </section>
-            <div class="flex items-center justify-between mb-3">
-            <h3 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
-                <span class="bg-gray-200 text-gray-600 p-2 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                </span>
-                    Past Events
-            </h3>
-        </div>
-            <!-- Past Events -->
-            <section>
-                {% if past_events %}
-                    <div class="relative">
-                        <div class="swiper past-events-slider px-6">
-                            <div class="swiper-wrapper py-4">
-                                {% for event in past_events %}
-                                <div class="swiper-slide h-auto pb-8">
-                                    <article class="bg-white rounded-2xl shadow-md overflow-hidden opacity-85 h-full flex flex-col border border-gray-100">
-                                        <div class="relative">
-                                            <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" 
-                                                class="h-44 w-full object-cover grayscale">
-                                            <span class="absolute top-3 right-3 bg-gray-500 text-white text-[10px] font-semibold px-2 py-1 rounded-full shadow">
-                                                Past
-                                            </span>
-                                        </div>
-                                        <div class="p-5 flex-grow">
-                                            <h3 class="font-bold text-lg text-gray-800 mb-1">{{ event.name }}</h3>
-                                            <p class="text-sm text-gray-500">{{ event.start_time|date:"D, d M Y" }}</p>
-                                        </div>
-                                    </article>
+                {% if participant %}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6 h-fit">
+                    
+                    <div class="flex items-center gap-2 mb-6">
+                        <h3 class="font-bold text-lg text-gray-800">Mengikuti</h3>
+                        <span class="bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
+                            {{ following_count|default:"0" }} </span>
+                    </div>
+
+                    {% if following_list %}
+                        <div class="grid grid-cols-4 gap-y-6 gap-x-2 mb-6">
+                            {% for follow in following_list|slice:":8" %}
+                            <a href="{% url 'profile:profile_view_user' follow.user_to.username %}" 
+                               class="flex flex-col items-center group cursor-pointer">
+                                
+                                <div class="relative w-14 h-14 transition-transform group-hover:-translate-y-1 duration-300">
+                                    <img src="{% if follow.user_to.organizer_profile.profile_picture %}{{ follow.user_to.organizer_profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}" 
+                                         alt="{{ follow.user_to.username }}"
+                                         class="w-full h-full rounded-full object-cover border border-gray-100 shadow-sm group-hover:shadow-md">
                                 </div>
-                                {% endfor %}
-                            </div>
-                            <div class="swiper-pagination mt-4"></div>
+                                
+                                <span class="text-[11px] font-medium text-gray-700 mt-2 text-center leading-tight line-clamp-2 w-full px-1 group-hover:text-orange-600 transition-colors">
+                                    {{ follow.user_to.organizer_profile.organizer_name|default:follow.user_to.username }}
+                                </span>
+                            </a>
+                            {% endfor %}
                         </div>
 
-                        <button
-                        class="swiper-button-prev-past absolute top-1/2 -right-5 md:-left-6 z-10 -translate-y-1/2
-                                bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
-                                text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                        </svg>
+                        <button onclick="openFollowingModal()" 
+                                class="w-full py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300 transition-all">
+                            Lihat semua
                         </button>
-                        <button
-                        class="swiper-button-next-past absolute top-1/2 -right-5 md:-right-6 z-10 -translate-y-1/2
-                                bg-white/90 backdrop-blur-sm rounded-full shadow-md w-8 h-8 flex items-center justify-center
-                                text-orange-400 hover:bg-orange-50 transition-all duration-200 hover:scale-105 border border-orange-100">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                        </button>
+                    {% else %}
+                        <div class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 text-gray-300 shadow-sm">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            </div>
+                            <p class="text-xs text-gray-400">Belum mengikuti siapapun</p>
+                        </div>
+                    {% endif %}
 
+                </div>
+                {% endif %}
+                
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h3 class="font-bold text-gray-800 text-lg mb-4 border-b border-gray-100 pb-2">Tentang</h3>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            {% if participant %}
+                                {{ participant.about|default:"Belum ada deskripsi diri." }}
+                            {% elif organizer %}
+                                {{ organizer.about|default:"Belum ada deskripsi organizer." }}
+                            {% endif %}
+                        </p>
                     </div>
-{% else %}
-<div class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-10 text-center shadow-sm">
-    <div class="flex flex-col items-center justify-center space-y-3">
-        <div class="bg-gray-100 text-gray-500 w-14 h-14 flex items-center justify-center rounded-full shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-        </div>
-        <h3 class="text-lg font-semibold text-gray-700">No Past Events</h3>
-        <p class="text-sm text-gray-500">You haven’t joined any events yet. Stay tuned for more opportunities!</p>
-    </div>
-</div>
-{% endif %}
 
-            </section>
+                    <div class="space-y-4">
+                        {% if participant %}
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Domisili</p>
+                                    <p class="text-sm font-medium text-gray-700">{{ participant.location|default:"-" }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Tanggal Lahir</p>
+                                    <p class="text-sm font-medium text-gray-700">{{ participant.birth_date|date:"d F Y"|default:"-" }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Minat Olahraga</p>
+                                    <p class="text-sm font-medium text-gray-700">{{ participant.interests|default:"-" }}</p>
+                                </div>
+                            </div>
+
+                        {% elif organizer %}
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Email</p>
+                                    <p class="text-sm font-medium text-gray-700">{{ organizer.contact_email|default:"-" }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Telepon</p>
+                                    <p class="text-sm font-medium text-gray-700">{{ organizer.contact_phone|default:"-" }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                {% if user == profile_user %}
+                        <div class="mt-8 pt-6 border-t border-gray-100 flex flex-col gap-3">
+                            
+                            <a href="{% url 'profile:edit_profile' %}" 
+                               class="w-full py-2.5 px-4 rounded-lg border border-gray-300 text-gray-700 font-semibold text-sm hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-2 group">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L16.732 3.732z"/>
+                                </svg>
+                                Edit Profil
+                            </a>
+
+                            <button type="button" onclick="openDeleteModal()"
+                                    class="w-full py-2.5 px-4 rounded-lg border border-red-100 text-red-600 font-semibold text-sm hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center gap-2 group">
+                                <svg class="w-4 h-4 text-red-500 group-hover:text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Hapus Akun
+                            </button>
+
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+
+
+            <div class="lg:col-span-2 space-y-8">
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-xl text-gray-800 flex items-center gap-2">
+                            {% if participant %}
+                            <span class="w-2 h-8 bg-orange-500 rounded-full"></span>
+                            Aktivitas Mendatang
+                            {% else %}
+                            <span class="w-2 h-8 bg-orange-500 rounded-full"></span>
+                            Event
+                            {% endif %}
+                        </h3>
+                        {% if upcoming_events %}
+                            <span class="text-xs font-semibold bg-orange-100 text-orange-600 px-2 py-1 rounded-md">{{ upcoming_events.count }} Event</span>
+                        {% endif %}
+                    </div>
+
+                    {% if participant and upcoming_events or organizer and my_events %}
+                        <div class="relative group">
+                            <div class="swiper upcoming-events-slider">
+                                <div class="swiper-wrapper py-2">
+                                    {% if upcoming_events %}
+                                        {% for event in upcoming_events %}
+                                            <div class="swiper-slide h-auto">
+                                                <a href="{% url 'Event:event_detail' event.id %}" class="block h-full">
+                                                    <article class="bg-white rounded-lg overflow-hidden border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300 h-full flex flex-col group/card">
+                                                        <div class="relative h-28 overflow-hidden">
+                                                            <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500">
+                                                            <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-gray-800 shadow-sm">{{ event.start_time|date:"d M" }}</div>
+                                                        </div>
+                                                        <div class="p-3 flex-grow flex flex-col">
+                                                            <h4 class="font-bold text-gray-800 text-sm mb-2 line-clamp-2 group-hover/card:text-orange-600 transition-colors">{{ event.name }}</h4>
+                                                            <p class="text-sm text-gray-500">{{ event.start_time|date:"H:i" }} WIB</p>
+                                                        </div>
+                                                    </article>
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if organizer and my_events %}
+                                        {% for event in my_events %}
+                                            <div class="swiper-slide h-auto">
+                                                <a href="{% url 'Event:event_detail' event.id %}" class="block h-full">
+                                                    <article class="bg-white rounded-lg overflow-hidden border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all duration-300 h-full flex flex-col group/card">
+                                                        <div class="relative h-40 overflow-hidden">
+                                                            <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500">
+                                                        </div>
+                                                        <div class="p-3 flex-grow flex flex-col">
+                                                            <h4 class="font-bold text-gray-800 text-sm mb-2 line-clamp-2 group-hover/card:text-orange-600 transition-colors">{{ event.name }}</h4>
+                                                            <p class="text-sm text-gray-500">{{ event.start_time|date:"d M Y, H:i" }}</p>
+                                                        </div>
+                                                    </article>
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="swiper-pagination upcoming-pagination !bottom-0"></div>
+                            </div>
+                            
+                            <button class="upcoming-button-prev absolute top-1/2 -left-4 z-20 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-600 transition-colors opacity-0 group-hover:opacity-100">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <button class="upcoming-button-next absolute top-1/2 -right-4 z-20 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-600 transition-colors opacity-0 group-hover:opacity-100">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+
+                    {% else %}
+                        <div class="text-center py-10 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-gray-300">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <h4 class="text-gray-900 font-medium">Tidak ada aktivitas mendatang</h4>
+                            <p class="text-gray-500 text-sm">Belum ada event yang diikuti atau dibuat.</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if participant %}
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 opacity-90">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-xl text-gray-500 flex items-center gap-2">
+                            <span class="w-2 h-8 bg-gray-300 rounded-full"></span>
+                            Riwayat Aktivitas
+                        </h3>
+                    </div>
+
+                    {% if past_events %}
+                        <div class="relative group">
+                            <div class="swiper past-events-slider">
+                                <div class="swiper-wrapper py-2">
+                                    {% for event in past_events %}
+                                    <div class="swiper-slide h-auto">
+                                        <article class="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 h-full flex flex-col grayscale hover:grayscale-0 transition-all duration-300">
+                                            <div class="relative h-32 overflow-hidden">
+                                                <img src="{% if event.thumbnail %}{{ event.thumbnail }}{% else %}{% static 'images/default-thumbnail.png' %}{% endif %}" class="w-full h-full object-cover">
+                                                <span class="absolute top-2 right-2 bg-gray-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">Selesai</span>
+                                            </div>
+                                            <div class="p-3 flex-grow">
+                                                <h4 class="font-bold text-gray-700 text-md mb-1 line-clamp-2">{{ event.name }}</h4>
+                                                <p class="text-[10px] text-gray-500">{{ event.start_time|date:"d M Y" }}</p>
+                                            </div>
+                                        </article>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="swiper-pagination past-pagination !bottom-0"></div>
+                            </div>
+
+                            <button class="past-button-prev absolute top-1/2 -left-4 z-20 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-600 transition-colors opacity-0 group-hover:opacity-100">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <button class="past-button-next absolute top-1/2 -right-4 z-20 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-orange-600 transition-colors opacity-0 group-hover:opacity-100">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                        
+                    {% else %}
+                        <p class="text-gray-400 text-sm italic">Belum ada riwayat aktivitas.</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+            </div>
         </div>
-    {% endif %}
+
     </div>
 </div>
+
+<div id="deleteModal" tabindex="-1" aria-hidden="true" 
+     class="hidden fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-black/60 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+    <div class="relative p-4 w-full max-w-md h-auto">
+        <div class="relative bg-white rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="p-6 text-center">
+                <div class="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <h3 class="mb-2 text-xl font-bold text-gray-800">Hapus Akun?</h3>
+                <p class="mb-6 text-gray-500 text-sm">Tindakan ini tidak dapat dibatalkan. Semua data profil dan riwayat akan hilang permanen.</p>
+                
+                <div class="flex justify-center gap-3">
+                    <button type="button" onclick="closeDeleteModal()" 
+                            class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-300 hover:bg-gray-50 focus:ring-2 focus:ring-gray-200">
+                        Batal
+                    </button>
+                    <form action="{% url 'profile:delete_account' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                class="px-5 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300">
+                            Ya, Hapus
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="followersModal" tabindex="-1" aria-hidden="true" 
+     class="hidden fixed inset-0 z-[60] flex items-center justify-center w-full h-full bg-black/50 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+    <div class="relative p-4 w-full max-w-sm h-auto">
+        <div class="relative bg-white rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300" id="followersModalContent">
+            
+            <div class="flex items-center justify-between p-4 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800">
+                    Pengikut <span class="text-gray-400 text-sm font-normal ml-1">({{ followers_count }})</span>
+                </h3>
+                <button type="button" onclick="closeFollowersModal()" class="text-gray-400 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/></svg>
+                </button>
+            </div>
+
+            <div class="p-2 overflow-y-auto max-h-80 custom-scrollbar">
+                {% if followers_list %}
+                    {% for follow in followers_list %}
+                    <a href="{% url 'profile:profile_view_user' follow.user_from.username %}" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors group">
+                        
+                        <img src="{% if follow.user_from.participant_profile.profile_picture %}{{ follow.user_from.participant_profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}" 
+                             class="w-10 h-10 rounded-full object-cover border border-gray-100">
+                        
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-orange-600 transition-colors">
+                                {{ follow.user_from.participant_profile.full_name }}
+                            </p>
+                            <p class="text-xs text-gray-500 truncate">@{{ follow.user_from.username }}</p>
+                        </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8 text-gray-400 text-sm">Belum ada pengikut.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="followingModal" tabindex="-1" aria-hidden="true" 
+     class="hidden fixed inset-0 z-[60] flex items-center justify-center w-full h-full bg-black/50 backdrop-blur-sm transition-opacity opacity-0 duration-300">
+    <div class="relative p-4 w-full max-w-sm h-auto">
+        <div class="relative bg-white rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300" id="followingModalContent">
+            
+            <div class="flex items-center justify-between p-4 border-b border-gray-100">
+                <h3 class="text-lg font-bold text-gray-800">
+                    Mengikuti <span class="text-gray-400 text-sm font-normal ml-1">({{ following_count|default:"0" }})</span>
+                </h3>
+                <button type="button" onclick="closeFollowingModal()" class="text-gray-400 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/></svg>
+                </button>
+            </div>
+
+            <div class="p-2 overflow-y-auto max-h-80 custom-scrollbar">
+                {% if following_list %}
+                    {% for follow in following_list %}
+                    <a href="{% url 'profile:profile_view_user' follow.user_to.username %}" class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-xl transition-colors group">
+                        
+                        <img src="{% if follow.user_to.organizer_profile.profile_picture %}{{ follow.user_to.organizer_profile.profile_picture.url }}{% else %}{% static 'images/profile-default.png' %}{% endif %}" 
+                             class="w-10 h-10 rounded-full object-cover border border-gray-100">
+                        
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                                {{ follow.user_to.organizer_profile.organizer_name }}
+                            </p>
+                            <p class="text-xs text-gray-500 truncate">@{{ follow.user_to.username }}</p>
+                        </div>
+                        
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8 text-gray-400 text-sm">Belum mengikuti siapapun.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
 
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Inisialisasi Slider Upcoming Events
-        const upcomingSwiper = new Swiper('.upcoming-events-slider', {
-            loop: true,
-            slidesPerView: 1,
-            spaceBetween: 16,
-            pagination: { el: '.swiper-pagination', clickable: true },
+        // upcoming slider
+        new Swiper('.upcoming-events-slider', {
+            loop: false, 
+            slidesPerView: 1.5,
+            spaceBetween: 12,
+            watchOverflow: true, // hide navigasi jika item cuma 1
             navigation: {
-                nextEl: '.swiper-button-next-past',
-                prevEl: '.swiper-button-prev-past',
+                nextEl: '.upcoming-button-next', 
+                prevEl: '.upcoming-button-prev', 
+            },
+            pagination: { 
+                el: '.upcoming-pagination', 
+                clickable: true,
+                dynamicBullets: true
             },
             breakpoints: {
-                768: { slidesPerView: 2, spaceBetween: 24 },
-                1024: { slidesPerView: 3, spaceBetween: 24 }
+                640: { slidesPerView: 2.5, spaceBetween: 20 },
+                1024: { slidesPerView: 3.2, spaceBetween: 24 }
             },
         });
 
-        // Inisialisasi Slider Past Events
-        const pastSwiper = new Swiper('.past-events-slider', {
-            loop: true,
-            slidesPerView: 1,
-            spaceBetween: 16,
-            pagination: { el: '.swiper-pagination', clickable: true },
+        // past slider
+        new Swiper('.past-events-slider', {
+            loop: false,
+            slidesPerView: 1.5,
+            spaceBetween: 12,
+            watchOverflow: true, // hide navigasi jika item cuma 1
             navigation: {
-                nextEl: '.swiper-button-next-past', // Gunakan kelas unik
-                prevEl: '.swiper-button-prev-past', // Gunakan kelas unik
+                nextEl: '.past-button-next', 
+                prevEl: '.past-button-prev', 
+            },
+            pagination: { 
+                el: '.past-pagination', 
+                clickable: true,
+                dynamicBullets: true
             },
             breakpoints: {
-                768: { slidesPerView: 2, spaceBetween: 24 },
-                1024: { slidesPerView: 3, spaceBetween: 24 }
+                640: { slidesPerView: 2.5, spaceBetween: 20 },
+                1024: { slidesPerView: 3.2, spaceBetween: 24 }
             },
         });
     });
+
+    async function toggleFollow(organizerId) {
+        const btn = document.getElementById('followBtn');
+        const isFollowing = btn.innerText.trim() === "Unfollow";
+        
+        let url = isFollowing ? `/follow/${organizerId}/unfollow/` : `/follow/${organizerId}/follow/`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                location.reload(); // Refresh halaman otomatis
+            } else {
+                alert("Gagal melakukan aksi follow");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    const modalElement = document.getElementById('deleteModal');
+    const modalContent = document.getElementById('modalContent');
+    function openDeleteModal() {
+        modalElement.classList.remove('hidden');
+        setTimeout(() => {
+            modalElement.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeDeleteModal() {
+        modalElement.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        
+        setTimeout(() => {
+            modalElement.classList.add('hidden');
+        }, 300);
+    }
+
+    const followersModal = document.getElementById('followersModal');
+    const followersContent = document.getElementById('followersModalContent');
+
+    function openFollowersModal() {
+        if(!followersModal) return;
+        followersModal.classList.remove('hidden');
+        setTimeout(() => {
+            followersModal.classList.remove('opacity-0');
+            followersContent.classList.remove('scale-95');
+            followersContent.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeFollowersModal() {
+        if(!followersModal) return;
+        followersModal.classList.add('opacity-0');
+        followersContent.classList.remove('scale-100');
+        followersContent.classList.add('scale-95');
+        setTimeout(() => {
+            followersModal.classList.add('hidden');
+        }, 300);
+    }
+
+    const followingModal = document.getElementById('followingModal');
+    const followingContent = document.getElementById('followingModalContent');
+
+    function openFollowingModal() {
+        if(!followingModal) return;
+        followingModal.classList.remove('hidden');
+        setTimeout(() => {
+            followingModal.classList.remove('opacity-0');
+            followingContent.classList.remove('scale-95');
+            followingContent.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeFollowingModal() {
+        if(!followingModal) return;
+        followingModal.classList.add('opacity-0');
+        followingContent.classList.remove('scale-100');
+        followingContent.classList.add('scale-95');
+        setTimeout(() => {
+            followingModal.classList.add('hidden');
+        }, 300);
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalElement) closeDeleteModal();
+        if (event.target == followersModal) closeFollowersModal();
+        if (event.target == followingModal) closeFollowingModal(); 
+    }
+    // test
 </script>
 {% endblock scripts %}

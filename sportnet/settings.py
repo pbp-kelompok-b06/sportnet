@@ -32,7 +32,7 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "anya-aleena-sportnet.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "anya-aleena-sportnet.pbp.cs.ui.ac.id","10.0.2.2"]
 
 LOGIN_URL = '/authenticate/login'
 
@@ -54,21 +54,21 @@ INSTALLED_APPS = [
     'Notification',
     'Homepage',
     'Dashboard',
+    'Follow',
     'django.contrib.humanize',
-    # 'corsheaders',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
-
 ]
 
 ROOT_URLCONF = 'sportnet.urls'
@@ -185,5 +185,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 CSRF_TRUSTED_ORIGINS = ["http://localhost","http://127.0.0.1","http://anya-aleena-sportnet.pbp.cs.ui.ac.id","https://anya-aleena-sportnet.pbp.cs.ui.ac.id","http://192.168.56.1:8000", 'http://localhost:65368']
-
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
