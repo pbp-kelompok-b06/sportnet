@@ -196,8 +196,10 @@ def delete_flutter_notif(request, notif_id):
 @login_required
 def mark_flutter_notification_read(request, notif_id):
     
-    notif = get_object_or_404(Notif, pk=notif_id)
-
+    try:
+        notif = get_object_or_404(Notif, pk=notif_id)
+    except Notif.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
     # Ensure the logged-in user is the owner of the notification
     try:
         participant = request.user.participant_profile
