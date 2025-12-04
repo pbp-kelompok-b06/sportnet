@@ -8,6 +8,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
+import json
 
 @login_required
 def check_new_notifications(request):
@@ -186,3 +187,34 @@ def notif_json(request):
             'event_id': notif.event.id if notif.event else None,
         })
     return JsonResponse({'notifications': notif_list})
+
+
+def delete_flutter_notif(request):
+    data = json.loads(request.body)
+    notif_id = data.get('notif_id')
+    notif = get_object_or_404(Notif, pk=notif_id)
+    notif.delete()
+    return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
+
+
+def mark_flutter_notification_read(request):
+    data = json.loads(request.body)
+    notif_id = data.get('notif_id')
+    
+    try:
+        notif = get_object_or_404(Notif, pk=notif_id)
+    except Notif.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
+    # Ensure the logged-in user is the owner of the notification
+    try:
+        participant = request.user.participant_profile
+    except Exception:
+        return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
+
+    if notif.user != participant:
+        return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+
+    notif.is_read = True
+    notif.save()
+
+    return JsonResponse({'status': 'success', 'message': 'Notification marked as read'})
