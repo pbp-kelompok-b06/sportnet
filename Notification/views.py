@@ -105,7 +105,6 @@ def mark_notification_read(request, notif_id):
 @login_required
 @require_POST
 def mark_all_read(request):
-    
     try:
         participant = request.user.participant_profile
     except Exception:
@@ -245,5 +244,23 @@ def delete_flutter_notif(request):
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
     except Notif.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Notification not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+@csrf_exempt
+def mark_read_all_flutter(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
+
+    try:
+        if not request.user.is_authenticated or not hasattr(request.user, 'participant_profile'):
+            return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
+
+        participant = request.user.participant_profile
+        qs = Notif.objects.filter(user=participant, is_read=False)
+        updated = qs.update(is_read=True)
+
+        return JsonResponse({'status': 'success', 'updated': updated})
+
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
