@@ -42,7 +42,8 @@ def profile_api(request, username=None):
         role = "participant"
         
         booked_data = None
-        # tampilkan my booked event jika profile sendiri
+        following_people = []
+
         if is_me:
             now = timezone.now()
             all_booked = participant_profile.events_joined.all().order_by('start_time')
@@ -67,16 +68,30 @@ def profile_api(request, username=None):
                     } for event in past
                 ]
             }
+            my_follows = Follow.objects.filter(user_from=profile_user).select_related('user_to')
+            
+            for follow in my_follows:
+                organizer_user = follow.user_to
+                if hasattr(organizer_user, 'organizer_profile'):
+                    org_profile = organizer_user.organizer_profile
+                    following_people.append({
+                        "username": organizer_user.username,
+                        "organizer_name": org_profile.organizer_name,
+                        "profile_picture": org_profile.profile_picture.url if org_profile.profile_picture else None
+                    })
 
         profile_data = {
             "full_name": participant_profile.full_name,
             "location": participant_profile.location,
             "interests": participant_profile.interests,
+            "birth_date": participant_profile.birth_date.strftime("%Y-%m-%d") if participant_profile.birth_date else None,
             "about": participant_profile.about,
             "profile_picture": participant_profile.profile_picture.url if participant_profile.profile_picture else None,
             "stats": {
                 "following_count": following_count, 
-                "followers_count": 0 
+                "followers_count": 0,
+
+                "following_list": following_people 
             },
             "booked_events": booked_data
         }
