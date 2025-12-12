@@ -238,18 +238,16 @@ def edit_profile(request):
 def edit_profile_api(request):
     if request.method == 'POST':
         user = request.user
-        data = request.POST
 
-        if not data and request.body:
-            try:
-                data = json.loads(request.body)
-            except json.JSONDecodeError:
-                pass
+        data = request.POST
+        files = request.FILES
         
         try:
+            # Cek Role User
             if hasattr(user, 'participant_profile'):
                 profile = user.participant_profile
                 
+                # Update Text Fields
                 if 'full_name' in data:
                     profile.full_name = data['full_name']
                 if 'location' in data:
@@ -260,9 +258,9 @@ def edit_profile_api(request):
                     profile.interests = data['interests']
                 if 'birth_date' in data and data['birth_date']:
                     profile.birth_date = data['birth_date']
-                
-                if 'profile_picture' in request.FILES:
-                    profile.profile_picture = request.FILES['profile_picture']
+
+                if 'profile_picture' in files:
+                    profile.profile_picture = files['profile_picture']
                 
                 profile.save()
 
@@ -278,14 +276,20 @@ def edit_profile_api(request):
                 if 'about' in data:
                     profile.about = data['about']
                 
-                if 'profile_picture' in request.FILES:
-                    profile.profile_picture = request.FILES['profile_picture']
+                if 'profile_picture' in files:
+                    profile.profile_picture = files['profile_picture']
                 
                 profile.save()
+            
+            else:
+                return JsonResponse({"status": "error", "message": "Profile not found"}, status=404)
 
             return JsonResponse({"status": "success", "message": "Profil berhasil diupdate"}, status=200)
+
         except Exception as e:
+            print(f"Error update profile: {e}") 
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
 @csrf_exempt
