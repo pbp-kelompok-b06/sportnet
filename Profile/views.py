@@ -1,7 +1,7 @@
 from django.contrib.auth import logout
 import json
 from django.shortcuts import render, redirect,get_object_or_404
-from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -237,48 +237,68 @@ def edit_profile(request):
 @login_required(login_url='Authenticate:login')
 def edit_profile_api(request):
     if request.method == 'POST':
-        user = request.user
-
-        data = request.POST
-        files = request.FILES
-        
         try:
+            # mengambil data JSON dari body request
+            data = json.loads(request.body.decode('utf-8'))
+            user = request.user
+            profile = None
+            
+            profile_picture_base64 = data.get("profile_picture_base64", None)
+            profile_picture_file = None
+
+            # menangani gambar profile base64
+            if profile_picture_base64 and profile_picture_base64 != "":
+                try:
+                    if ";base64," in profile_picture_base64:
+                        format, imgstr = profile_picture_base64.split(';base64,')
+                        ext = format.split('/')[-1]
+                    else:
+                        imgstr = profile_picture_base64
+                        ext = "jpeg" 
+                        
+                    profile_picture_file = ContentFile(
+                        base64.b64decode(imgstr), 
+                        name=f"profile_{user.id}_{user.username}.{ext}"
+                    )
+                except Exception as e:
+                    return JsonResponse({"status": "error", "message": f"Invalid image format: {e}"}, status=400)
+
             # Cek Role User
             if hasattr(user, 'participant_profile'):
                 profile = user.participant_profile
                 
-                # Update Text Fields
                 if 'full_name' in data:
-                    profile.full_name = data['full_name']
+                    profile.full_name = data.get('full_name')
                 if 'location' in data:
-                    profile.location = data['location']
+                    profile.location = data.get('location')
                 if 'about' in data:
-                    profile.about = data['about']
+                    profile.about = data.get('about')
                 if 'interests' in data:
-                    profile.interests = data['interests']
-                if 'birth_date' in data and data['birth_date']:
-                    profile.birth_date = data['birth_date']
+                    profile.interests = data.get('interests')
+                if 'birth_date' in data and data.get('birth_date'):
+                    profile.birth_date = data.get('birth_date')
+                    
+                # Update Gambar
+                if profile_picture_file:
+                    profile.profile_picture = profile_picture_file
 
-                if 'profile_picture' in files:
-                    profile.profile_picture = files['profile_picture']
-                
                 profile.save()
 
             elif hasattr(user, 'organizer_profile'):
                 profile = user.organizer_profile
                 
                 if 'organizer_name' in data:
-                    profile.organizer_name = data['organizer_name']
+                    profile.organizer_name = data.get('organizer_name')
                 if 'contact_email' in data:
-                    profile.contact_email = data['contact_email']
+                    profile.contact_email = data.get('contact_email')
                 if 'contact_phone' in data:
-                    profile.contact_phone = data['contact_phone']
+                    profile.contact_phone = data.get('contact_phone')
                 if 'about' in data:
-                    profile.about = data['about']
-                
-                if 'profile_picture' in files:
-                    profile.profile_picture = files['profile_picture']
-                
+                    profile.about = data.get('about')
+                    
+                if profile_picture_file:
+                    profile.profile_picture = profile_picture_file
+                    
                 profile.save()
             
             else:
@@ -286,6 +306,8 @@ def edit_profile_api(request):
 
             return JsonResponse({"status": "success", "message": "Profil berhasil diupdate"}, status=200)
 
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON format"}, status=400)
         except Exception as e:
             print(f"Error update profile: {e}") 
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
