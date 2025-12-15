@@ -122,9 +122,8 @@ def log_out(request):
 def login_api(request):
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
+            username = request.POST['username']
+            password = request.POST['password']
 
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -157,8 +156,7 @@ def register_api(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            
-            # Data Wajib (Step 1)
+
             username = data.get('username')
             password = data.get('password')
             role = data.get('role')
