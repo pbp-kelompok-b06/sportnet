@@ -25,7 +25,7 @@
                     {% if notifs.is_read %}bg-white opacity-70{% else %}bg-blue-50 border-l-4 border-blue-500{% endif %}">
                     <div class="flex-1">
                         <div class="flex justify-between items-start">
-                            <div>
+                            <div class="flex-1 text-center">
                                 <h2 class="text-lg font-bold text-gray-800 {% if not notifs.is_read %}text-blue-700{% endif %}">
                                     {{ notifs.title }}
                                     {% if not notifs.is_read %}

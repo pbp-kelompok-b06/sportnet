@@ -146,10 +146,10 @@ function updateNotificationBadge() {
     .then(data => {
         const notifications = data.notifications || [];
         const unreadCount = notifications.filter(n => !n.is_read).length;
-        
-        // Update all notification badges (desktop and mobile)
-        const badges = document.querySelectorAll('.absolute.-top-2.-right-4, .absolute.-top-1.-right-3');
-        
+
+        // Update all notification badges (desktop and mobile) via shared class
+        const badges = document.querySelectorAll('.notif-badge');
+
         badges.forEach(badge => {
             if (unreadCount > 0) {
                 badge.textContent = unreadCount;
@@ -181,6 +181,7 @@ function checkNewNotifications() {
 }
 
 // Check immediately on page load
+updateNotificationBadge();
 checkNewNotifications();
 
 // Check for new notifications every 30 seconds
