@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.style.display = 'none';
                     const newBadge = notifItem.querySelector('.bg-blue-200');
                     if (newBadge) newBadge.style.display = 'none';
+                    // Update notification badge
+                    updateNotificationBadge();
                     // Show toast
                     showToast('Notifikasi telah ditandai sebagai dibaca', 'success');
                 }
@@ -55,6 +57,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.querySelectorAll('.bg-blue-200').forEach(badge => {
                         badge.style.display = 'none';
                     });
+                    // Update notification badge
+                    updateNotificationBadge();
                     showToast('Semua notifikasi telah ditandai sebagai dibaca', 'success');
                 }
             })
@@ -130,6 +134,34 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Function to update notification badge
+function updateNotificationBadge() {
+    fetch('/notification/json/', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        const notifications = data.notifications || [];
+        const unreadCount = notifications.filter(n => !n.is_read).length;
+        
+        // Update all notification badges (desktop and mobile)
+        const badges = document.querySelectorAll('.absolute.-top-2.-right-4, .absolute.-top-1.-right-3');
+        
+        badges.forEach(badge => {
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = '';
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+    })
+    .catch(error => console.error('Error updating badge:', error));
+}
+
 // Function to check for new notifications
 function checkNewNotifications() {
     fetch('/notification/check-new/', {
@@ -142,10 +174,14 @@ function checkNewNotifications() {
     .then(data => {
         if (data.hasNew) {
             showToast('Anda memiliki notifikasi baru!', 'success');
+            updateNotificationBadge();
         }
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error checking notifications:', error));
 }
+
+// Check immediately on page load
+checkNewNotifications();
 
 // Check for new notifications every 30 seconds
 setInterval(checkNewNotifications, 30000);
