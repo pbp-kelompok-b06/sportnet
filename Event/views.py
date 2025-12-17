@@ -12,6 +12,7 @@ from django.http import HttpResponseForbidden
 from Bookmark.models import Bookmark
 from Notification.models import Notifications
 from Follow.models import Follow
+from Authenticate.models import Participant
 
 
 # Ambil model Organizer dari app Authenticate tanpa hard import
@@ -54,14 +55,14 @@ def create_event(request):
             followers = Follow.objects.filter(user_to=organizer.user)
             for follower in followers:
                 try:
-                    print("Creating notification for follower:", follower.user_from.username)
-                    notif = Notifications.objects.create(
-                        user=follower.user_from,
+                    participant = Participant.objects.get(user=follower.user_from)
+                    Notifications.objects.create(
+                        user=participant,
                         title="New Event from Organizer You Follow",
                         message=f"{organizer.user.username} has created a new event: {event.name}. Check it out!",
                         event=event
                     )
-                    notif.save()
+                    
                 except Exception as e:
                     # if Notification app not available or any error, ignore to not block event creation
                     print("Failed to create notification for follower:", follower.user_from.user.username)

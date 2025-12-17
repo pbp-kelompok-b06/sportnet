@@ -347,13 +347,31 @@
 
       const data = await res.json();
       if (data.ok) {
-        alert("Successfully joined event!");
+        if (typeof showToast === "function") {
+          showToast("Successfully joined event!", "success");
+        } else {
+          alert("Successfully joined event!");
+        }
+        if (typeof checkNewNotifications === "function") {
+          checkNewNotifications();
+        }
+        if (typeof updateNotificationBadge === "function") {
+          updateNotificationBadge();
+        }
       } else {
-        alert(data.error || "Failed to join event.");
+        if (typeof showToast === "function") {
+          showToast(data.error || "Failed to join event.", "error");
+        } else {
+          alert(data.error || "Failed to join event.");
+        }
       }
     } catch (err) {
       console.error("Join error:", err);
-      alert("There was an error. Try again.");
+      if (typeof showToast === "function") {
+        showToast("There was an error. Try again.", "error");
+      } else {
+        alert("There was an error. Try again.");
+      }
     } finally {
       modal.classList.add("hidden");
     }
