@@ -54,7 +54,7 @@ def create_event(request):
             followers = Follow.objects.filter(user_to=organizer.user)
             for follower in followers:
                 try:
-                    print("Creating notification for follower:", follower.user_from.user.username)
+                    print("Creating notification for follower:", follower.user_from.username)
                     notif = Notifications.objects.create(
                         user=follower.user_from,
                         title="New Event from Organizer You Follow",
