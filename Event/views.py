@@ -10,6 +10,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
 from Bookmark.models import Bookmark
+from Notification.models import Notifications
+from Follow.models import Follow
 
 
 # Ambil model Organizer dari app Authenticate tanpa hard import
@@ -48,6 +50,23 @@ def create_event(request):
             event.organizer = organizer
             print(request.POST)
             event.save()
+
+            followers = Follow.objects.filter(user_to=organizer.user)
+            for follower in followers:
+                try:
+                    print("Creating notification for follower:", follower.user_from.user.username)
+                    notif = Notifications.objects.create(
+                        user=follower.user_from,
+                        title="New Event from Organizer You Follow",
+                        message=f"{organizer.user.username} has created a new event: {event.name}. Check it out!",
+                        event=event
+                    )
+                    notif.save()
+                except Exception as e:
+                    # if Notification app not available or any error, ignore to not block event creation
+                    print("Failed to create notification for follower:", follower.user_from.user.username)
+                    print("Error:", e)
+
            
             return redirect("dashboard:show")
     else:
