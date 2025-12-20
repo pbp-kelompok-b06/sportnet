@@ -22,7 +22,7 @@ function showToast(message, type = 'info') {
 
 async function markAsRead(notifId, btn) {
   try {
-    const res = await fetch(`/notification/read/${notifId}/`, {
+    const res = await fetch(`/notification/mark-as-read/${notifId}/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': getCookie('csrftoken'),
@@ -56,7 +56,7 @@ async function markAsRead(notifId, btn) {
 
 async function markAllAsRead(btn) {
   try {
-    const res = await fetch(`/notification/read/all/`, {
+    const res = await fetch(`/notification/mark-all-read/`, {
       method: 'POST',
       headers: {
         'X-CSRFToken': getCookie('csrftoken'),
@@ -91,12 +91,64 @@ async function markAllAsRead(btn) {
   }
 }
 
+async function deleteNotification(notifId, btn) {
+
+  try {
+    const res = await fetch(`/notification/delete/${notifId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Accept': 'application/json'
+      }
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      console.error('Delete failed:', res.status, txt);
+      showToast('Failed to delete notification', 'error');
+      return;
+    }
+    const data = await res.json();
+    if (data.status === 'success') {
+      // Animate removal
+      const li = btn.closest('li');
+      if (li) {
+        li.style.opacity = '0';
+        li.style.transform = 'translateX(20px)';
+        li.style.transition = 'all 0.3s ease-out';
+        
+        setTimeout(() => {
+          li.remove();
+          
+          // Check if there are no more notifications
+          const notifList = document.querySelector('ul.space-y-4');
+          if (notifList && notifList.children.length === 0) {
+            // Reload page to show "No Notifications yet" message
+            location.reload();
+          }
+        }, 300);
+      }
+      showToast('Notification deleted', 'success');
+    }
+  } catch (err) {
+    console.error('Error deleting notification', err);
+    showToast('Error occurred while deleting notification', 'error');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-  const buttons = document.querySelectorAll('.mark-read-btn');
-  buttons.forEach(btn => {
+  const markReadButtons = document.querySelectorAll('.mark-read-btn');
+  markReadButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const notifId = btn.dataset.notifId;
       markAsRead(notifId, btn);
+    });
+  });
+
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+  deleteButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const notifId = btn.dataset.notifId;
+      deleteNotification(notifId, btn);
     });
   });
 

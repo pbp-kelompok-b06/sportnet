@@ -71,7 +71,8 @@
     </div>
     </section>
 
-    <script src="{% static 'js/notification.js' %}"></script>
+    {% csrf_token %}
+    <script src="{% static 'notif.js' %}"></script>
 {% endblock content %}
 
 {% block scripts %}
