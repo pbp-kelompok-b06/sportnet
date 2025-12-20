@@ -8,10 +8,7 @@ from Authenticate.models import Participant
 from .models import Review
 from .forms import ReviewForm
 
-# =========================
 # WEB VIEW (HTML)
-# =========================
-
 @hybrid_login_required
 def review_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -94,11 +91,7 @@ def delete_review_view(request, review_id):
     review.delete()
     return redirect("Review:review_page", event_id=event_id)
 
-
-# =========================
 # API (FLUTTER)
-# =========================
-
 @csrf_exempt
 @hybrid_login_required
 def review_api_add(request, event_id):

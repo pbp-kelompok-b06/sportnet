@@ -8,10 +8,7 @@ from Authenticate.models import Participant, Organizer
 from .models import ForumPost
 from .forms import ForumPostForm
 
-
-# =====================================================
-# HELPER — SERIALIZE POST + REPLIES (RECURSIVE)
-# =====================================================
+# HELPER AND SERIALIZE POST + REPLIES (RECURSIVE)
 def serialize_post(post):
     return {
         "id": post.id,
@@ -24,10 +21,7 @@ def serialize_post(post):
         ],
     }
 
-
-# =====================================================
 # WEB PAGE
-# =====================================================
 @hybrid_login_required
 def forum_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -94,10 +88,7 @@ def forum_page_view(request, event_id):
         },
     )
 
-
-# =====================================================
-# EDIT & DELETE (WAJIB ADA)
-# =====================================================
+# EDIT & DELETE
 @hybrid_login_required
 def edit_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
@@ -131,10 +122,7 @@ def delete_post_view(request, post_id):
     post.delete()
     return redirect("Forum:forum_page", event_id=event_id)
 
-
-# =====================================================
-# API — ADD POST / REPLY (FLUTTER)
-# =====================================================
+# API AND ADD POST / REPLY (FLUTTER)
 @csrf_exempt
 @hybrid_login_required
 def forum_api_add(request, event_id):
@@ -193,10 +181,7 @@ def forum_api_add(request, event_id):
 
     return JsonResponse({"success": True})
 
-
-# =====================================================
-# API — LIST POSTS (NESTED)
-# =====================================================
+# API AND LIST POSTS (NESTED)
 @hybrid_login_required
 def forum_api_list(request, event_id):
     if request.method != "GET":
