@@ -32,3 +32,22 @@ class ProfileFormOrganizer(forms.ModelForm):
             'about': forms.Textarea(attrs={**textarea_attrs, 'placeholder': 'Tell us about your organization...'}),
             'profile_picture': forms.FileInput(attrs={'class': 'mt-2'}),
         }
+
+class CreateParticipantForm(forms.ModelForm):
+    class Meta:
+        model = Participant
+        fields = ['full_name', 'location', 'birth_date']
+        widgets = {
+            'full_name': forms.TextInput(attrs={**default_attrs, 'placeholder': 'Full name'}),
+            'location': forms.TextInput(attrs={**default_attrs, 'placeholder': 'City'}),
+            'birth_date': forms.DateInput(attrs={**default_attrs, 'type': 'date'}),
+        }
+
+class CreateOrganizerForm(forms.ModelForm):
+    class Meta:
+        model = Organizer
+        fields = ['organizer_name', 'contact_email']
+        widgets = {
+            'organizer_name': forms.TextInput(attrs={**default_attrs, 'placeholder': 'Your Organizer Name'}),
+            'contact_email': forms.EmailInput(attrs={**default_attrs, 'placeholder': 'Contact Email'}),
+        }

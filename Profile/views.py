@@ -3,13 +3,11 @@ import json
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.core import serializers
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from django.contrib import messages
-from django.urls import reverse
-from django.db import IntegrityError
 from Authenticate.models import Organizer, Participant
 from django.contrib.auth.models import User
-from Profile.forms import ProfileFormOrganizer, ProfileFormParticipant
+from Profile.forms import *
 from django.views.decorators.csrf import csrf_exempt
 import base64
 from django.core.files.base import ContentFile
@@ -17,7 +15,7 @@ from django.utils import timezone
 from Follow.models import Follow
 
 @csrf_exempt
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 def profile_api(request, username=None):
     if username:
         profile_user = get_object_or_404(User, username=username)
@@ -143,7 +141,7 @@ def profile_api(request, username=None):
     return JsonResponse(response_data)
 
 
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 def profile_view(request, username=None):
     if username:
         profile_user = get_object_or_404(User, username=username)
@@ -206,7 +204,7 @@ def profile_view(request, username=None):
     return render(request, 'profile.html', context)
 
 @csrf_exempt
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 def edit_profile(request):
     user = request.user
     ProfileForm = None
@@ -234,7 +232,7 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 
 @csrf_exempt
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 def edit_profile_api(request):
     if request.method == 'POST':
         try:
@@ -315,7 +313,7 @@ def edit_profile_api(request):
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
 @csrf_exempt
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
@@ -355,7 +353,7 @@ def delete_account_flutter(request):
         "message": "Method not allowed. Gunakan POST atau DELETE."
     }, status=405)
 
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 def delete_Profilepict(request):
     if request.method == 'POST':
         profile = None
@@ -374,6 +372,142 @@ def delete_Profilepict(request):
     
     return redirect('profile:edit_profile')
 
+@csrf_exempt
+def create_profile(request):
+    user = request.user
+
+    if hasattr(user, 'participant_profile') or hasattr(user, 'organizer_profile'):
+        return redirect('Homepage:show_main')
+
+    role = request.session.get('registration_role')
+
+    if not role:
+        messages.error(request, "Sesi habis, silakan pilih role kembali.")
+        return redirect('Homepage:show_main') 
+
+    if role == 'participant':
+        form = CreateParticipantForm(request.POST or None)
+
+        if request.method == 'POST' and form.is_valid():
+            Participant.objects.create(
+                user=user,
+                full_name=form.cleaned_data['full_name'],
+                location=form.cleaned_data['location'],
+                birth_date=form.cleaned_data['birth_date'],
+                username=user.username,
+                password=user.password,
+                about="-",
+                interests="-"
+            )
+
+            if 'registration_role' in request.session:
+                del request.session['registration_role']
+                
+            messages.success(request, "Profil Participant berhasil dibuat!")
+            return redirect('Homepage:show_main')
+        
+        return render(request, 'create_profile.html', {'form': form, 'role': 'participant'})
+
+    elif role == 'organizer':
+        form = CreateOrganizerForm(request.POST or None)
+
+        if request.method == 'POST' and form.is_valid():
+            Organizer.objects.create(
+                user=user,
+                organizer_name=form.cleaned_data['organizer_name'],
+                contact_email=form.cleaned_data['contact_email'],
+                username=user.username,
+                password=user.password,
+                contact_phone="-",
+                about="-"
+            )
+            
+            if 'registration_role' in request.session:
+                del request.session['registration_role']
+
+            messages.success(request, "Profil Organizer BERHASIL DIBUAT!")
+            return redirect('Homepage:show_main')
+
+        return render(request, 'create_profile.html', {'form': form, 'role': 'organizer'})
+
+    return redirect('Homepage:show_main')
+    
+@csrf_exempt
+def create_profile_flutter(request):
+    if request.method == 'POST':
+        try:
+            if not request.user.is_authenticated:
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "User not authenticated."
+                }, status=401)
+
+            user = request.user
+
+            if hasattr(user, 'participant_profile') or hasattr(user, 'organizer_profile'):
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Profile already exists for this user."
+                }, status=409)
+
+            data = json.loads(request.body)
+            role = data.get('role') 
+
+            if not role:
+                return JsonResponse({
+                    "status": "error", 
+                    "message": "Role is required."
+                }, status=400)
+
+            if role == 'participant':
+                full_name = data.get('full_name')
+                location = data.get('location')
+                birth_date = data.get('birth_date') 
+
+                if not full_name or not location or not birth_date:
+                    return JsonResponse({"status": "error", "message": "Full Name, Location, and Birth Date are required."}, status=400)
+
+                Participant.objects.create(
+                    user=user,
+                    full_name=full_name,
+                    location=location,
+                    birth_date=birth_date,
+                    username=user.username,
+                    password=user.password,
+                    about=data.get('about', "-"),
+                    interests=data.get('interests', "-")
+                )
+                
+                return JsonResponse({"status": "success", "message": "Participant Profile created successfully!"}, status=200)
+
+            elif role == 'organizer':
+                organizer_name = data.get('organizer_name')
+                contact_email = data.get('contact_email')
+
+                if not organizer_name or not contact_email:
+                    return JsonResponse({"status": "error", "message": "Organizer Name and Email are required."}, status=400)
+
+                Organizer.objects.create(
+                    user=user,
+                    organizer_name=organizer_name,
+                    contact_email=contact_email,
+                    username=user.username,
+                    password=user.password,
+                    contact_phone=data.get('contact_phone', "-"),
+                    about=data.get('about', "-")
+                )
+
+                return JsonResponse({"status": "success", "message": "Organizer Profile created successfully!"}, status=200)
+
+            else:
+                return JsonResponse({"status": "error", "message": "Invalid role specified."}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON format."}, status=400)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
 @csrf_exempt
 def show_xml_Organizer(request):
