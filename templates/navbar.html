@@ -43,7 +43,7 @@
           class="hover:text-white hover:font-bold transition-colors relative">
           Notifications
           {% if unread_notification_count > 0 %}
-            <span class="absolute -top-2 -right-4 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+            <span class="absolute -top-2 -right-4 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full notif-badge">
               {{ unread_notification_count }}
             </span>
           {% endif %}
@@ -158,11 +158,11 @@
         <a href="{% if user.is_authenticated %}{% url 'Notification:show_all' %}{% else %}{% url 'Authenticate:login' %}{% endif %}"
            class="block py-3 transition-colors text-[var(--color-main-300)] hover:text-[var(--color-main-400)] relative">
           Notifications
-          {% if unread_notification_count > 0 %}
-          <span class="absolute top-3 ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+            {% if unread_notification_count > 0 %}
+            <span class="absolute top-3 ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full notif-badge">
               {{ unread_notification_count }}
-          </span>
-          {% endif %}
+            </span>
+            {% endif %}
         </a>
       </div>
 

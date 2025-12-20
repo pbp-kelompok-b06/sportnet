@@ -7,48 +7,49 @@ from .models import ForumPost
 from .forms import ForumPostForm
 
 
-@login_and_profile_required
+@login_required
+@login_required
 def forum_page_view(request, event_id):
-    """
-    Menampilkan halaman forum untuk satu event.
-    Participant bisa posting.
-    Organizer bisa posting hanya untuk event miliknya.
-    """
     event = get_object_or_404(Event, id=event_id)
 
     participant = None
     organizer = None
-    poster_type = None  # buat tracking apakah participant atau organizer
 
-    # Cek tipe user
+    # === ROLE CHECK ===
     if hasattr(request.user, "participant_profile"):
         participant = request.user.participant_profile
-        poster_type = "participant"
+
     elif hasattr(request.user, "organizer_profile"):
         organizer = request.user.organizer_profile
-        poster_type = "organizer"
-    else:
-        return HttpResponseForbidden("User tidak terdaftar sebagai participant atau organizer.")
 
-    # Handle POST
+        # organizer hanya boleh forum di event miliknya
+        if event.organizer != organizer:
+            return HttpResponseForbidden("Organizer can only post in their own event.")
+
+        # SOLUSI UTAMA:
+        # organizer WAJIB punya participant_profile dummy
+        participant, _ = Participant.objects.get_or_create(
+            user=request.user,
+            defaults={
+                "full_name": organizer.organizer_name,
+                "location": "-",
+                "username": request.user.username,
+                "password": request.user.password,
+                "about": "Organizer account"
+            }
+        )
+
+    else:
+        return HttpResponseForbidden("Unauthorized user.")
+
+    # === HANDLE POST ===
     if request.method == "POST":
         form = ForumPostForm(request.POST)
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.event = event
+            new_post.participant = participant  # WAJIB, biar DB aman
 
-            if participant:
-                # Participant bisa post ke semua event
-                new_post.participant = participant
-            elif organizer:
-                # Organizer hanya boleh post kalau event miliknya
-                if event.organizer == organizer:
-                    new_post.organizer = organizer
-                else:
-                    return HttpResponseForbidden("Organizer can only post on their own event.")
-            else:
-                return HttpResponseForbidden("No access.")
-            
             parent_id = request.POST.get("parent_id")
             if parent_id:
                 parent_post = ForumPost.objects.filter(id=parent_id).first()
@@ -62,16 +63,13 @@ def forum_page_view(request, event_id):
 
     posts = ForumPost.objects.filter(event=event, parent=None).order_by("-created_at")
 
-    context = {
+    return render(request, "forum/forum_page.html", {
         "event": event,
         "posts": posts,
         "form": form,
         "participant": participant,
         "organizer": organizer,
-        "poster_type": poster_type,
-    }
-
-    return render(request, "forum/forum_page.html", context)
+    })
 
 @login_and_profile_required
 def edit_post_view(request, post_id):
