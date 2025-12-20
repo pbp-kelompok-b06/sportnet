@@ -157,13 +157,20 @@ USE_TZ = True
 
 # CORS_ALLOW_CREDENTIALS = True
 
-CSRF_COOKIE_SECURE = True
+# CSRF & SESSION CONFIG (SAFE)
 
-SESSION_COOKIE_SECURE = True
-
-CSRF_COOKIE_SAMESITE = 'None'
-
-SESSION_COOKIE_SAMESITE = 'None'
+if DEBUG:
+    # Local development (Flutter Web / localhost)
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = 'Lax'
+else:
+    # Production (HTTPS)
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SAMESITE = 'None'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
