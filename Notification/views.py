@@ -115,9 +115,32 @@ def mark_all_read(request):
 
     return JsonResponse({'status': 'success', 'updated': updated})
 
+@login_and_profile_required
 def delete_notif(request, notif_id):
     notif = get_object_or_404(Notif, pk=notif_id)
+    
+    # Ensure the logged-in user is the owner of the notification
+    try:
+        participant = request.user.participant_profile
+    except Exception:
+        if request.method == 'DELETE':
+            return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
+        else:
+            return redirect('Notification:show_all')
+    
+    if notif.user != participant:
+        if request.method == 'DELETE':
+            return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+        else:
+            return redirect('Notification:show_all')
+    
     notif.delete()
+    
+    # If DELETE request, return JSON response
+    if request.method == 'DELETE':
+        return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
+    
+    # Otherwise redirect (for backward compatibility)
     return redirect('Notification:show_all')
 
 def handleD_1():
