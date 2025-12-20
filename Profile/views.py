@@ -459,21 +459,6 @@ def create_profile_flutter(request):
                     "message": "Role is required."
                 }, status=400)
 
-            profile_picture = None
-            profile_picture_data = data.get("profile_picture", None)
-            
-            if profile_picture_data:
-                try:
-                    if ";base64," in profile_picture_data:
-                        format_img, imgstr = profile_picture_data.split(';base64,')
-                        ext = format_img.split('/')[-1] # ambil png/jpg/jpeg
-                        file_name = f"profile_{user.id}_{role}.{ext}"
-                        profile_picture = ContentFile(base64.b64decode(imgstr), name=file_name)
-                    else:
-                        profile_picture = ContentFile(base64.b64decode(profile_picture_data), name=f"profile_{user.id}.jpg")
-                except Exception as e:
-                    return JsonResponse({"status": "error", "message": f"Invalid image data: {str(e)}"}, status=400)
-
             if role == 'participant':
                 full_name = data.get('full_name')
                 location = data.get('location')
@@ -487,7 +472,6 @@ def create_profile_flutter(request):
                     full_name=full_name,
                     location=location,
                     birth_date=birth_date,
-                    profile_picture=profile_picture, 
                     username=user.username,
                     password=user.password,
                     about=data.get('about', "-"),
@@ -507,7 +491,6 @@ def create_profile_flutter(request):
                     user=user,
                     organizer_name=organizer_name,
                     contact_email=contact_email,
-                    profile_picture=profile_picture, 
                     username=user.username,
                     password=user.password,
                     contact_phone=data.get('contact_phone', "-"),
