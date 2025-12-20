@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from Event.models import Event
-from Authenticate.models import Participant, Organizer
+from Authenticate.models import Participant
 from .models import Review
 from .forms import ReviewForm
 
+# =========================
+# WEB VIEW (HTML)
+# =========================
 
 @login_required
 def review_page_view(request, event_id):
@@ -14,31 +18,16 @@ def review_page_view(request, event_id):
     reviews = Review.objects.filter(event=event).order_by("-created_at")
 
     participant = None
-    organizer = None
-    authen = False  # apakah user boleh bikin review
+    authen = False
 
-    # === ROLE CHECK ===
     if hasattr(request.user, "participant_profile"):
         participant = request.user.participant_profile
-
-        # participant hanya boleh 1 review per event
         if not Review.objects.filter(event=event, participant=participant).exists():
             authen = True
 
-    elif hasattr(request.user, "organizer_profile"):
-        organizer = request.user.organizer_profile
-        # organizer hanya boleh lihat, authen tetap False
-
-    else:
-        return HttpResponseForbidden("Unauthorized user.")
-
-    # === HANDLE CREATE REVIEW (PARTICIPANT ONLY) ===
     if request.method == "POST":
-        if not participant:
-            return HttpResponseForbidden("Only participants can create reviews.")
-
-        if not authen:
-            return HttpResponseForbidden("You have already reviewed this event.")
+        if not participant or not authen:
+            return HttpResponseForbidden("Not allowed")
 
         form = ReviewForm(request.POST)
         if form.is_valid():
@@ -47,30 +36,31 @@ def review_page_view(request, event_id):
             review.participant = participant
             review.save()
             return redirect("Review:review_page", event_id=event.id)
-
     else:
         form = ReviewForm()
 
-    return render(request, "review/review_page.html", {
-        "event": event,
-        "reviews": reviews,
-        "form": form,
-        "participant": participant,
-        "organizer": organizer,
-        "authen": authen,
-    })
+    return render(
+        request,
+        "review/review_page.html",
+        {
+            "event": event,
+            "reviews": reviews,
+            "form": form,
+            "participant": participant,
+            "authen": authen,
+        },
+    )
 
 
 @login_required
 def edit_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
-    # hanya participant pemilik review
     if not hasattr(request.user, "participant_profile"):
-        return HttpResponseForbidden("Only participants can edit reviews.")
+        return HttpResponseForbidden("Only participant can edit review")
 
     if review.participant.user != request.user:
-        return HttpResponseForbidden("You cannot edit this review.")
+        return HttpResponseForbidden("You cannot edit this review")
 
     if request.method == "POST":
         form = ReviewForm(request.POST, instance=review)
@@ -80,23 +70,94 @@ def edit_review_view(request, review_id):
     else:
         form = ReviewForm(instance=review)
 
-    return render(request, "review/edit_review.html", {
-        "form": form,
-        "review": review,
-    })
+    return render(
+        request,
+        "review/edit_review.html",
+        {
+            "form": form,
+            "review": review,
+        },
+    )
 
 
 @login_required
 def delete_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
-    # hanya participant pemilik review
     if not hasattr(request.user, "participant_profile"):
-        return HttpResponseForbidden("Only participants can delete reviews.")
+        return HttpResponseForbidden("Only participant can delete review")
 
     if review.participant.user != request.user:
-        return HttpResponseForbidden("You cannot delete this review.")
+        return HttpResponseForbidden("You cannot delete this review")
 
     event_id = review.event.id
     review.delete()
     return redirect("Review:review_page", event_id=event_id)
+
+
+# =========================
+# API (FLUTTER)
+# =========================
+
+@csrf_exempt
+@login_required
+def review_api_add(request, event_id):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Invalid method"}, status=405)
+
+    event = get_object_or_404(Event, id=event_id)
+
+    if not hasattr(request.user, "participant_profile"):
+        return JsonResponse(
+            {"success": False, "error": "Only participant allowed"},
+            status=403,
+        )
+
+    participant = request.user.participant_profile
+
+    if Review.objects.filter(event=event, participant=participant).exists():
+        return JsonResponse(
+            {"success": False, "error": "Already reviewed"},
+            status=400,
+        )
+
+    rating = request.POST.get("rating")
+    comment = request.POST.get("comment")
+
+    if not rating or not comment:
+        return JsonResponse(
+            {"success": False, "error": "Invalid data"},
+            status=400,
+        )
+
+    Review.objects.create(
+        event=event,
+        participant=participant,
+        rating=int(rating),
+        comment=comment,
+    )
+
+    return JsonResponse({"success": True})
+
+def review_api_list(request, event_id):
+    if request.method != "GET":
+        return JsonResponse(
+            {"success": False, "error": "Invalid method"},
+            status=405
+        )
+
+    event = get_object_or_404(Event, id=event_id)
+
+    reviews = Review.objects.filter(event=event).order_by("-created_at")
+
+    data = []
+    for review in reviews:
+        data.append({
+            "id": review.id,
+            "username": review.participant.username,
+            "rating": review.rating,
+            "comment": review.comment,
+            "created_at": review.created_at.strftime("%Y-%m-%d %H:%M"),
+        })
+
+    return JsonResponse(data, safe=False)
