@@ -60,12 +60,8 @@ def review_page_view(request, event_id):
         "authen": authen,
     })
 
-<<<<<<< feat/profile
-@login_and_profile_required
-=======
 
-@login_required
->>>>>>> master
+@login_and_profile_required
 def edit_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
@@ -89,12 +85,8 @@ def edit_review_view(request, review_id):
         "review": review,
     })
 
-<<<<<<< feat/profile
-@login_and_profile_required
-=======
 
-@login_required
->>>>>>> master
+@login_and_profile_required
 def delete_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
