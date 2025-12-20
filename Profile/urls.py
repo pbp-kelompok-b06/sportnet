@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/delete/', delete_account_flutter, name='delete_account_flutter'),
     path('api/edit/', edit_profile_api, name='edit_profile_api'),
     path('api/', profile_api, name='profile_api_me'),
+    path('api/create', create_profile_flutter, name='create_profile_flutter'),
     path('api/<str:username>/', profile_api, name='profile_api_user'),
     path('', profile_view, name='profile_view'),
     path('edit-profile/', edit_profile, name='edit_profile'),
