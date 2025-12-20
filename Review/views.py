@@ -12,7 +12,7 @@ from .forms import ReviewForm
 # WEB VIEW (HTML)
 # =========================
 
-@login_required
+@login_and_profile_required
 def review_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     reviews = Review.objects.filter(event=event).order_by("-created_at")
@@ -52,7 +52,7 @@ def review_page_view(request, event_id):
     )
 
 
-@login_required
+@login_and_profile_required
 def edit_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
@@ -80,7 +80,7 @@ def edit_review_view(request, review_id):
     )
 
 
-@login_required
+@login_and_profile_required
 def delete_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 

@@ -120,7 +120,7 @@ def edit_post_view(request, post_id):
     )
 
 
-@login_required
+@login_and_profile_required
 def delete_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
 

@@ -1,17 +1,17 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from django.http import JsonResponse
 from Event.models import Event
 from Authenticate.models import Organizer
 import json
 
-@login_required(login_url='authenticate/')
+@login_and_profile_required
 def show(request):
     if not hasattr(request.user, 'organizer_profile'):
-        return redirect('Homepage:show_homepage')
+        return redirect('Homepage:show_main')
     return render(request, 'dashboard.html')
 
-@login_required(login_url='authenticate/')
+@login_and_profile_required
 def get_organizer_events_json(request):
     try:
         organizer_profile = request.user.organizer_profile
@@ -39,7 +39,7 @@ def get_organizer_events_json(request):
     except Exception as e:
         return JsonResponse({'error': str(e), 'events': []}, status=500)
 
-@login_required(login_url='authenticate/')
+@login_and_profile_required
 def delete_event(request, event_id):
     if request.method == 'POST':
         event = get_object_or_404(Event, id=event_id)
