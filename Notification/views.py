@@ -277,3 +277,5 @@ def mark_read_all_flutter(request):
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+# Telah diperbaiki
