@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from django.http import HttpResponseForbidden
 from Event.models import Event
 from Authenticate.models import Participant, Organizer
@@ -7,7 +7,7 @@ from .models import ForumPost
 from .forms import ForumPostForm
 
 
-@login_required
+@login_and_profile_required
 def forum_page_view(request, event_id):
     """
     Menampilkan halaman forum untuk satu event.
@@ -73,7 +73,7 @@ def forum_page_view(request, event_id):
 
     return render(request, "forum/forum_page.html", context)
 
-@login_required
+@login_and_profile_required
 def edit_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
 
@@ -98,7 +98,7 @@ def edit_post_view(request, post_id):
         "post": post,
     })
 
-@login_required
+@login_and_profile_required
 def delete_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
 

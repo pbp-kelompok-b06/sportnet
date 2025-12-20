@@ -39,7 +39,7 @@ class ForumTests(TestCase):
 		# Buat forum post
 		post = ForumPost.objects.create(
 			event=event,
-			profile=participant,
+			participant=participant,
 			content='Ini adalah isi post forum untuk pengujian.'
 		)
 

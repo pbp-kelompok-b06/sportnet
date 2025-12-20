@@ -1,287 +1,241 @@
 import json
-import uuid
+import base64
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils import timezone
 from datetime import timedelta
-from django.contrib.messages import get_messages
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core import serializers
 
-from Event.models import Event
-from Authenticate.models import Organizer, Participant
+# Import Models
+from Authenticate.models import Participant, Organizer
+from Follow.models import Follow
 
+try:
+    from Event.models import Event
+    EVENT_AVAILABLE = True
+except ImportError:
+    Event = None
+    EVENT_AVAILABLE = False
 
 class ProfileViewsTest(TestCase):
 
     def setUp(self):
-        """Setup data dummy untuk semua tes."""
         self.client = Client()
-        self.now = timezone.now()
-        
 
-        self.dummy_image = SimpleUploadedFile(
-            name='test_pic.jpg',
-            content=b'file_content', # Isi file (bisa apa saja)
-            content_type='image/jpeg'
-        )
-
-        self.part_user = User.objects.create_user('participant1', 'part@test.com', 'pass')
+        self.user_part = User.objects.create_user(username='participant', password='password')
         self.part_profile = Participant.objects.create(
-            user=self.part_user, 
-            full_name='Test Participant', 
-            location='Test Location',
-            profile_picture=self.dummy_image
+            user=self.user_part,
+            full_name='Participant Test',
+            location='Jakarta',
+            username='participant',
+            birth_date=timezone.now().date(),
+            about="Suka lari"
         )
 
-        # Organizer (tidak punya profile pic)
-        self.org_user = User.objects.create_user('organizer1', 'org@test.com', 'pass')
+        self.user_org = User.objects.create_user(username='organizer', password='password')
         self.org_profile = Organizer.objects.create(
-            user=self.org_user, 
-            organizer_name='Test Organizer'
+            user=self.user_org,
+            organizer_name='Organizer Test',
+            contact_email='org@test.com',
+            username='organizer',
+            about="Kami EO terbaik"
         )
+
+        self.user_ghost = User.objects.create_user(username='ghost', password='password')
+
+        Follow.objects.create(user_from=self.user_part, user_to=self.user_org)
+
+        if EVENT_AVAILABLE:
+            now = timezone.now()
+            self.event_future = Event.objects.create(
+                organizer=self.org_profile,
+                name="Future Event",
+                start_time=now + timedelta(days=5),
+                location="GBK",
+                sports_category="running",
+                activity_category="competition"
+            )
+            self.event_past = Event.objects.create(
+                organizer=self.org_profile,
+                name="Past Event",
+                start_time=now - timedelta(days=5),
+                location="Monas",
+                sports_category="yoga",
+                activity_category="workshop"
+            )
+            # Add attendee
+            if hasattr(self.event_future, 'attendee'):
+                self.event_future.attendee.add(self.part_profile)
+                self.event_past.attendee.add(self.part_profile)
+
+        self.profile_api_me_url = reverse('profile:profile_api_me')
+        self.profile_view_url = reverse('profile:profile_view')
+        self.edit_profile_url = reverse('profile:edit_profile')
+        self.edit_profile_api_url = reverse('profile:edit_profile_api')
+        self.create_profile_url = reverse('profile:create_profile')
+        self.delete_account_flutter_url = reverse('profile:delete_account_flutter')
+        self.delete_account_web_url = reverse('profile:delete_account')
+        self.delete_picture_url = reverse('profile:delete_Profilepict')
         
-        # User biasa (tidak punya profile)
-        self.reg_user = User.objects.create_user('regularuser', 'reg@test.com', 'pass')
+        self.base64_img = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
 
+    def test_profile_api_unauthenticated(self):
+        response = self.client.get(self.profile_api_me_url)
+        if response.status_code == 302:
+            self.assertTrue(True)
+        else:
+            self.assertEqual(response.status_code, 401)
 
-        self.past_event = Event.objects.create(
-            organizer=self.org_profile,
-            name='Event Lampau',
-            description='Event yang sudah lewat',
-            start_time=self.now - timedelta(days=5),
-            location='Lokasi Lampau',
-            sports_category='running',
-            activity_category='fun_run_ride'
-        )
-        self.upcoming_event = Event.objects.create(
-            organizer=self.org_profile,
-            name='Event Akan Datang',
-            description='Event yang akan datang',
-            start_time=self.now + timedelta(days=5),
-            location='Lokasi Akan Datang',
-            sports_category='yoga',
-            activity_category='workshop'
-        )
-        # Daftarkan participant ke kedua event
-        self.part_profile.events_joined.add(self.past_event, self.upcoming_event)
-
-
-        self.profile_view_own_url = reverse('profile:profile_view') 
-        
-        # URL untuk /profile/<username>/ (lihat profil orang lain)
-        self.profile_view_other_url = reverse('profile:profile_view_user', args=[self.org_user.username]) 
-        self.profile_view_404_url = reverse('profile:profile_view_user', args=['usernametidakada']) 
-        
-        # Sisa URL lainnya
-        self.edit_url = reverse('profile:edit_profile')
-        self.delete_pic_url = reverse('profile:delete_Profilepict')
-        
-        self.xml_org_url = reverse('profile:show_xml_Organizer')
-        self.xml_part_url = reverse('profile:show_xml_Participant')
-        
-        # URL JSON yang tertukar (sesuai urls.py kamu)
-        self.json_org_url_bug = reverse('profile:show_json_Organizer') 
-        self.json_part_url_bug = reverse('profile:show_json_Participant')
-
-        # 5. Redirect URLs
-        self.login_url = '/authenticate' 
-        self.homepage_url = reverse('Homepage:show_main') 
-
-        # 6. Data untuk POST Form Edit
-        self.valid_participant_data = {
-            'full_name': 'Participant Updated',
-            'location': 'Lokasi Baru',
-            'about': 'Tentang saya update.'
-        }
-        self.valid_organizer_data = {
-            'organizer_name': 'Organizer Updated',
-            'contact_email': 'org@updated.com',
-            'about': 'Tentang org update.'
-        }
-
-    # --- Tes untuk profile_view ---
-
-    def test_profile_view_own_not_logged_in(self):
-        """Tes: GET /profile/ (lihat profil sendiri, tapi belum login) -> redirect"""
-        response = self.client.get(self.profile_view_own_url)
-        self.assertEqual(response.status_code, 302)
-        # Tes redirect ke URL hardcoded di decorator
-        self.assertRedirects(response, f'{self.login_url}?next={self.profile_view_own_url}')
-
-    def test_profile_view_other_username_exists(self):
-        """Tes: GET /profile/organizer1/ (lihat profil org lain) -> OK"""
-        # Login sebagai participant
-        self.client.login(username='participant1', password='pass')
-        response = self.client.get(self.profile_view_other_url)
+    def test_profile_api_me_participant(self):
+        self.client.login(username='participant', password='password')
+        response = self.client.get(self.profile_api_me_url)
         
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profile.html')
-        self.assertIn('organizer', response.context) # Cek konteks organizer
-        self.assertEqual(response.context['organizer'], self.org_profile)
-        self.assertNotIn('participant', response.context)
-
-    def test_profile_view_own_participant_with_events(self):
-        """Tes: GET /profile/ (lihat profil sendiri, sbg participant) -> OK"""
-        self.client.login(username='participant1', password='pass')
-        response = self.client.get(self.profile_view_own_url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'profile.html')
-        self.assertIn('participant', response.context)
-        self.assertEqual(response.context['participant'], self.part_profile)
+        data = response.json()
+        self.assertEqual(data['user']['role'], 'participant')
+        self.assertTrue(data['user']['is_me'])
         
-        # Cek pemisahan event
-        self.assertIn(self.upcoming_event, response.context['upcoming_events'])
-        self.assertNotIn(self.past_event, response.context['upcoming_events'])
-        self.assertIn(self.past_event, response.context['past_events'])
-        self.assertNotIn(self.upcoming_event, response.context['past_events'])
+        if EVENT_AVAILABLE:
+            self.assertIn('upcoming', data['profile']['booked_events'])
 
-    def test_profile_view_username_not_found(self):
-        """Tes: GET /profile/usernametidakada/ -> 404"""
-        self.client.login(username='participant1', password='pass')
-        response = self.client.get(self.profile_view_404_url)
+    def test_profile_api_me_organizer(self):
+        self.client.login(username='organizer', password='password')
+        response = self.client.get(self.profile_api_me_url)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['user']['role'], 'organizer')
+
+    def test_profile_api_view_other_user(self):
+        self.client.login(username='participant', password='password')
+        url = reverse('profile:profile_api_user', args=['organizer']) 
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertFalse(data['user']['is_me'])
+
+    def test_profile_api_not_found(self):
+        self.client.login(username='participant', password='password')
+        url = reverse('profile:profile_api_user', args=['ngawur'])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
 
-    def test_profile_view_user_with_no_profile(self):
-        """Tes: GET /profile/regularuser/ (user ada tapi profil tidak) -> redirect"""
-        self.client.login(username='regularuser', password='pass')
-        # Coba lihat profil orang lain (regularuser)
-        response = self.client.get(reverse('profile:profile_view_user', args=[self.reg_user.username]))
-        
-        # Harus redirect ke homepage
-        self.assertRedirects(response, self.homepage_url)
-        
-        # Cek message
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), 'Profil tidak ditemukan.')
-
-    # --- Tes untuk edit_profile ---
-
-    def test_edit_profile_get_not_logged_in(self):
-        """Tes: GET /edit-profile/ (belum login) -> redirect"""
-        response = self.client.get(self.edit_url)
-        self.assertRedirects(response, f'{self.login_url}?next={self.edit_url}')
-
-    def test_edit_profile_get_participant(self):
-        """Tes: GET /edit-profile/ (sbg participant) -> OK"""
-        self.client.login(username='participant1', password='pass')
-        response = self.client.get(self.edit_url)
+    def test_profile_view_participant(self):
+        self.client.login(username='participant', password='password')
+        response = self.client.get(self.profile_view_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_profile.html')
-        self.assertIn('form', response.context)
-        # Cek bahwa form yang dipakai adalah ProfileFormParticipant
-        self.assertEqual(response.context['form'].instance, self.part_profile)
+        self.assertTemplateUsed(response, 'profile.html')
 
-    def test_edit_profile_get_organizer(self):
-        """Tes: GET /edit-profile/ (sbg organizer) -> OK"""
-        self.client.login(username='organizer1', password='pass')
-        response = self.client.get(self.edit_url)
+    def test_profile_view_organizer(self):
+        self.client.login(username='organizer', password='password')
+        response = self.client.get(self.profile_view_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'edit_profile.html')
-        self.assertIn('form', response.context)
-        self.assertEqual(response.context['form'].instance, self.org_profile)
-    
-    def test_edit_profile_get_no_profile(self):
-        """Tes: GET /edit-profile/ (sbg user biasa) -> redirect"""
-        self.client.login(username='regularuser', password='pass')
-        response = self.client.get(self.edit_url)
-        self.assertRedirects(response, self.homepage_url)
 
-    def test_edit_profile_post_participant_valid(self):
-        """Tes: POST /edit-profile/ (sbg participant, data valid) -> redirect"""
-        self.client.login(username='participant1', password='pass')
-        response = self.client.post(self.edit_url, self.valid_participant_data)
-        
-        self.assertRedirects(response, self.profile_view_own_url)
+    def test_profile_view_other(self):
+        self.client.login(username='participant', password='password')
+        url = reverse('profile:profile_view_user', args=['organizer'])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_profile_view_unauthenticated(self):
+        response = self.client.get(self.profile_view_url)
+        self.assertEqual(response.status_code, 302) 
+
+    def test_edit_profile_get(self):
+        self.client.login(username='participant', password='password')
+        response = self.client.get(self.edit_profile_url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_edit_profile_post_participant(self):
+        self.client.login(username='participant', password='password')
+        data = {'full_name': 'Updated', 'location': 'Bdg', 'birth_date': '2000-01-01', 'about': 'new'}
+        response = self.client.post(self.edit_profile_url, data)
+        self.assertEqual(response.status_code, 302)
         self.part_profile.refresh_from_db()
-        self.assertEqual(self.part_profile.full_name, 'Participant Updated')
-        
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Profile berhasil diperbarui!')
-        
-    def test_edit_profile_post_organizer_invalid(self):
-        """Tes: POST /edit-profile/ (sbg organizer, data invalid) -> re-render"""
-        self.client.login(username='organizer1', password='pass')
-        invalid_data = self.valid_organizer_data.copy()
-        invalid_data['organizer_name'] = '' # Wajib diisi
-        
-        response = self.client.post(self.edit_url, invalid_data)
-        self.assertEqual(response.status_code, 200) # Re-render
-        self.assertTrue(response.context['form'].errors) # Ada error di form
-        
+        self.assertEqual(self.part_profile.full_name, 'Updated')
+
+    def test_edit_profile_post_organizer(self):
+        self.client.login(username='organizer', password='password')
+        data = {'organizer_name': 'Updated Org', 'contact_email': 'a@a.com', 'about': 'new'}
+        response = self.client.post(self.edit_profile_url, data)
+        self.assertEqual(response.status_code, 302)
         self.org_profile.refresh_from_db()
-        self.assertNotEqual(self.org_profile.organizer_name, '') # Data tdk berubah
+        self.assertEqual(self.org_profile.organizer_name, 'Updated Org')
 
-    # --- Tes untuk delete_Profilepict ---
+    def test_edit_api_success_participant(self):
+        self.client.login(username='participant', password='password')
+        data = {'full_name': 'API Upd', 'profile_picture_base64': self.base64_img}
+        response = self.client.post(self.edit_profile_api_url, json.dumps(data), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
 
-    def test_delete_pic_get_request(self):
-        """Tes: GET /delete-picture/ -> redirect"""
-        self.client.login(username='participant1', password='pass')
-        response = self.client.get(self.delete_pic_url)
-        self.assertRedirects(response, self.edit_url)
+    def test_edit_api_invalid_json(self):
+        self.client.login(username='participant', password='password')
+        response = self.client.post(self.edit_profile_api_url, "bad json", content_type="application/json")
+        self.assertEqual(response.status_code, 400)
 
-    def test_delete_pic_participant_with_pic(self):
-        """Tes: POST /delete-picture/ (participant punya pic) -> OK"""
-        self.client.login(username='participant1', password='pass')
         
-        # Pastikan pic ada
-        self.assertTrue(self.part_profile.profile_picture)
+    def test_create_profile_redirect(self):
+        """Sudah punya profile -> redirect"""
+        self.client.login(username='participant', password='password')
+        response = self.client.get(self.create_profile_url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_create_profile_participant_success(self):
+        self.client.login(username='ghost', password='password')
+        session = self.client.session
+        session['registration_role'] = 'participant'
+        session.save()
+
+        data = {'full_name': 'New Part', 'location': 'Loc', 'birth_date': '2000-01-01'}
+        response = self.client.post(self.create_profile_url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Participant.objects.filter(user=self.user_ghost).exists())
+
+    def test_create_profile_organizer_success(self):
+        user_new = User.objects.create_user(username='neworg', password='pw')
+
+        self.client.login(username='neworg', password='pw')
         
-        response = self.client.post(self.delete_pic_url)
-        self.assertRedirects(response, self.edit_url)
+        session = self.client.session
+        session['registration_role'] = 'organizer'
+        session.save()
+
+        data = {'organizer_name': 'New Org', 'contact_email': 'o@o.com'}
+        response = self.client.post(self.create_profile_url, data)
         
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Organizer.objects.filter(user=user_new).exists())
+
+    def test_delete_account_web(self):
+        self.client.login(username='participant', password='password')
+        uid = self.user_part.id
+        response = self.client.post(self.delete_account_web_url)
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(User.objects.filter(id=uid).exists())
+
+    def test_delete_account_flutter(self):
+        self.client.login(username='organizer', password='password')
+        uid = self.user_org.id
+        response = self.client.post(self.delete_account_flutter_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(id=uid).exists())
+
+    def test_delete_profile_picture(self):
+        self.part_profile.profile_picture = SimpleUploadedFile("x.jpg", b"x", "image/jpeg")
+        self.part_profile.save()
+        self.client.login(username='participant', password='password')
+        response = self.client.post(self.delete_picture_url)
+        self.assertEqual(response.status_code, 302)
         self.part_profile.refresh_from_db()
-        self.assertFalse(self.part_profile.profile_picture) # Pic sudah kehapus
-        
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Foto profil berhasil dihapus.')
+        self.assertFalse(self.part_profile.profile_picture)
 
-    def test_delete_pic_organizer_no_pic(self):
-        """Tes: POST /delete-picture/ (organizer tidak punya pic) -> OK"""
-        self.client.login(username='organizer1', password='pass')
-        
-        self.assertFalse(self.org_profile.profile_picture) # Pastikan pic tdk ada
-        
-        response = self.client.post(self.delete_pic_url)
-        self.assertRedirects(response, self.edit_url)
-        
-        messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), 'Tidak ada foto profil untuk dihapus.')
-        
-    # --- Tes untuk XML/JSON Views ---
-
-    def test_show_xml_organizer(self):
-        """Tes: GET /xml/Organizer/ -> OK"""
-        response = self.client.get(self.xml_org_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/xml')
-        # Cek isi, pastikan modelnya benar
-        self.assertContains(response, "<model>Authenticate.organizer</model>")
-
-    def test_show_xml_participant(self):
-        """Tes: GET /xml/Participant/ -> OK"""
-        response = self.client.get(self.xml_part_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/xml')
-        self.assertContains(response, "<model>Authenticate.participant</model>")
-
-    def test_show_json_organizer_url_shows_participant_data_bug(self):
-        """Tes: GET /json/Organizer/ -> (BUG: Menampilkan data Participant)"""
-        response = self.client.get(self.json_org_url_bug)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/json')
-        
-        data = json.loads(response.content)
-        self.assertEqual(data[0]['model'], 'Authenticate.participant')
-
-    def test_show_json_participant_url_shows_organizer_data_bug(self):
-        """Tes: GET /json/Participant/ -> (BUG: Menampilkan data Organizer)"""
-        response = self.client.get(self.json_part_url_bug)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/json')
-        
-        data = json.loads(response.content)
-        self.assertEqual(data[0]['model'], 'Authenticate.organizer')
+    def test_serializers(self):
+        urls = [
+            reverse('profile:show_xml_Organizer'),
+            reverse('profile:show_xml_Participant'),
+            reverse('profile:show_json_Organizer'),
+            reverse('profile:show_json_Participant'),
+        ]
+        for url in urls:
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)

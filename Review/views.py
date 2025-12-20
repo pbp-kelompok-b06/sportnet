@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from django.http import HttpResponseForbidden
 
 from Event.models import Event
@@ -10,7 +10,7 @@ from .models import Review
 from .forms import ReviewForm
 
 
-@login_required
+@login_and_profile_required
 def review_page_view(request, event_id):
     authen = True
     event = get_object_or_404(Event, id=event_id)
@@ -39,7 +39,7 @@ def review_page_view(request, event_id):
         "authen": authen,
     })
 
-@login_required
+@login_and_profile_required
 def edit_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
@@ -61,7 +61,7 @@ def edit_review_view(request, review_id):
         "review": review
     })
 
-@login_required
+@login_and_profile_required
 def delete_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 

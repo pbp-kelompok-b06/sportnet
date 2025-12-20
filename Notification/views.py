@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from Notification.models import Notifications as Notif
 from Event.models import Event
 from Authenticate.models import Participant
@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
 
-@login_required
+@login_and_profile_required
 def check_new_notifications(request):
     """Check for new notifications in the last 30 seconds"""
     try:
@@ -24,7 +24,7 @@ def check_new_notifications(request):
     except Exception:
         return JsonResponse({'hasNew': False})
 
-@login_required
+@login_and_profile_required
 def show_all(request):
     try:
         participant = request.user.participant_profile
@@ -79,7 +79,7 @@ def send_event_notification(request, event_id, title, message):
         }, status=500)
 
 
-@login_required
+@login_and_profile_required
 @require_POST
 def mark_notification_read(request, notif_id):
     
@@ -100,7 +100,7 @@ def mark_notification_read(request, notif_id):
     return JsonResponse({'status': 'success', 'message': 'Notification marked as read'})
 
 
-@login_required
+@login_and_profile_required
 @require_POST
 def mark_all_read(request):
     

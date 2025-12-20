@@ -1,7 +1,7 @@
 # views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from django.apps import apps
 from Authenticate.models import Organizer, Participant
 from .forms import EventForm
@@ -25,7 +25,7 @@ def is_organizer(user) -> bool:
     return Organizer.objects.filter(user=user).exists()
 
 def organizer_required(view_func):
-    @login_required(login_url='Authenticate:login')
+    @login_and_profile_required
     def _wrapped(request, *args, **kwargs):
         if not is_organizer(request.user):
             # Pilih salah satu:
@@ -101,7 +101,7 @@ def event_detail(request, event_id):
 
 Participant = apps.get_model('Authenticate', 'Participant')
 
-@login_required(login_url='Authenticate:login')
+@login_and_profile_required
 @require_POST
 def join_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)

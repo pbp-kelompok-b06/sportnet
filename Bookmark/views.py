@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
 from Event.models import Event
@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 
 
-@login_required
+@login_and_profile_required
 @csrf_exempt
 def toggle_bookmark(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -29,7 +29,7 @@ def toggle_bookmark(request, event_id):
 
     return JsonResponse({"status": status})
 
-@login_required
+@login_and_profile_required
 def show_bookmark(request):
     bookmarks = Bookmark.objects.filter(user=request.user).select_related("event")
     bookmarked_ids = [b.event.id for b in bookmarks]
@@ -38,7 +38,7 @@ def show_bookmark(request):
         "bookmarked_ids": bookmarked_ids,
     })
 
-@login_required
+@login_and_profile_required
 @csrf_exempt
 def update_note(request, event_id):
     if request.method != "POST":
