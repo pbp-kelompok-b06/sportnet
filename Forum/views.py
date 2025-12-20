@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import *
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 
@@ -28,7 +28,7 @@ def serialize_post(post):
 # =====================================================
 # WEB PAGE
 # =====================================================
-@login_required
+@hybrid_login_required
 def forum_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
@@ -98,7 +98,7 @@ def forum_page_view(request, event_id):
 # =====================================================
 # EDIT & DELETE (WAJIB ADA)
 # =====================================================
-@login_required
+@hybrid_login_required
 def edit_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
 
@@ -120,7 +120,7 @@ def edit_post_view(request, post_id):
     )
 
 
-@login_and_profile_required
+@hybrid_login_required
 def delete_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
 
@@ -136,7 +136,7 @@ def delete_post_view(request, post_id):
 # API — ADD POST / REPLY (FLUTTER)
 # =====================================================
 @csrf_exempt
-@login_required
+@hybrid_login_required
 def forum_api_add(request, event_id):
     if request.method != "POST":
         return JsonResponse(
@@ -197,6 +197,7 @@ def forum_api_add(request, event_id):
 # =====================================================
 # API — LIST POSTS (NESTED)
 # =====================================================
+@hybrid_login_required
 def forum_api_list(request, event_id):
     if request.method != "GET":
         return JsonResponse(

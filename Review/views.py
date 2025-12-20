@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import *
 from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -12,7 +12,7 @@ from .forms import ReviewForm
 # WEB VIEW (HTML)
 # =========================
 
-@login_and_profile_required
+@hybrid_login_required
 def review_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     reviews = Review.objects.filter(event=event).order_by("-created_at")
@@ -52,7 +52,7 @@ def review_page_view(request, event_id):
     )
 
 
-@login_and_profile_required
+@hybrid_login_required
 def edit_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
@@ -80,7 +80,7 @@ def edit_review_view(request, review_id):
     )
 
 
-@login_and_profile_required
+@hybrid_login_required
 def delete_review_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
 
@@ -100,7 +100,7 @@ def delete_review_view(request, review_id):
 # =========================
 
 @csrf_exempt
-@login_required
+@hybrid_login_required
 def review_api_add(request, event_id):
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Invalid method"}, status=405)
