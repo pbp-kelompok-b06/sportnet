@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Register - Choose Your Role</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="w-full min-h-screen bg-gradient-to-br from-orange-50 to-orange-200 pt-20">
+    <div class="flex-grow flex items-center justify-center p-4">
+        
+        <div class="w-full max-w-4xl bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden p-8 sm:p-12">
+
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-400">
+                    Join SportNet!
+                </h2>
+                <p class="mt-2 text-gray-500">How would you like to get started?</p>
+            </div>
+
+            <form method="POST" action="{% url 'Authenticate:register_role_selection' %}">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <button type="submit" name="role" value="participant" class="w-full text-left group block p-8 bg-white rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transform transition-all duration-300 ease-in-out cursor-pointer border border-transparent hover:border-orange-200">
+                        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-700 group-hover:text-orange-500 transition-colors">
+                            As a Participant
+                        </h3>
+                        <p class="mt-2 text-sm text-gray-400">
+                            Find and book amazing sport events, connect with other enthusiasts, and join the community.
+                        </p>
+                    </button>
+
+                    <button type="submit" name="role" value="organizer" class="w-full text-left group block p-8 bg-white rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transform transition-all duration-300 ease-in-out cursor-pointer border border-transparent hover:border-gray-300">
+                        <div class="flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-700 group-hover:text-gray-900 transition-colors">
+                            As an Organizer
+                        </h3>
+                        <p class="mt-2 text-sm text-gray-400">
+                            Create, manage, and promote your own sport events to a wide and active audience.
+                        </p>
+                    </button>
+
+                </div>
+            </form>
+            <p class="text-sm text-center mt-12 text-gray-400">
+                Already have an account? 
+                <a href="{% url 'Authenticate:login' %}" class="font-semibold text-orange-600 hover:underline">
+                    Sign In
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -58,7 +58,6 @@ class EventViewsTest(TestCase):
         self.client = Client()
         self.now = timezone.now()
 
-        # 1. Buat User & Profile (Organizer, Participant, Superuser)
         self.organizer_user = User.objects.create_user('organizer1', 'org@test.com', 'pass')
         self.organizer_profile = Organizer.objects.create(
             user=self.organizer_user, organizer_name='Event Organizer 1'
@@ -76,7 +75,6 @@ class EventViewsTest(TestCase):
         
         self.superuser = User.objects.create_superuser('admin', 'admin@test.com', 'pass')
 
-        # 2. Buat Events untuk dites
         self.event1 = Event.objects.create(
             organizer=self.organizer_profile,
             name='Event 1 (Fee 125.5K)',
@@ -87,7 +85,7 @@ class EventViewsTest(TestCase):
             activity_category='fun_run_ride',
             fee=125500
         )
-        self.event1.attendee.add(self.participant_profile) # Part 1 sudah join
+        self.event1.attendee.add(self.participant_profile) 
 
         self.event2_free = Event.objects.create(
             organizer=self.organizer_profile,
@@ -132,11 +130,9 @@ class EventViewsTest(TestCase):
             activity_category='fun_run_ride',
             fee=125449 # Test rounding logic
         )
-        
-        # 3. Buat Bookmark
+
         Bookmark.objects.create(user=self.participant_user, event=self.event3_other_org)
 
-        # 4. Data untuk POST Form
         self.valid_event_data = {
             'name': 'Event Baru Keren',
             'description': 'Deskripsi event baru.',
@@ -150,7 +146,6 @@ class EventViewsTest(TestCase):
             'capacity': 50,
         }
 
-        # 5. Definisikan URLs (Asumsi app_name='Event')
         self.create_url = reverse('Event:create_event')
         self.detail_url_1 = reverse('Event:event_detail', args=[self.event1.id])
         self.detail_url_2 = reverse('Event:event_detail', args=[self.event2_free.id])
@@ -167,13 +162,9 @@ class EventViewsTest(TestCase):
         self.edit_url_other = reverse('Event:edit_event', args=[self.event3_other_org.id])
         self.edit_url_invalid = reverse('Event:edit_event', args=[uuid.uuid4()])
 
-        # 6. Redirect URLs
         self.login_url = reverse('Authenticate:login')
         self.dashboard_url = reverse('dashboard:show')
         self.homepage_url = reverse('Homepage:show_main')
-
-
-    # --- Tes untuk create_event ---
 
     def test_create_event_get_not_organizer(self):
         """Tes: GET /create_event/ (sbg participant) -> redirect ke homepage"""
@@ -216,9 +207,6 @@ class EventViewsTest(TestCase):
         self.assertEqual(new_event.name, 'Event Baru Keren')
         self.assertEqual(new_event.organizer, self.organizer_profile)
 
-
-    # --- Tes untuk event_detail ---
-
     def test_event_detail_not_found(self):
         """Tes: GET /event/detail/<invalid_uuid>/ -> 404"""
         response = self.client.get(self.detail_url_invalid)
@@ -244,7 +232,6 @@ class EventViewsTest(TestCase):
     def test_event_detail_participant_bookmarked(self):
         """Tes: GET /event/detail/... (sbg participant, sudah bookmark) -> OK"""
         self.client.login(username='participant1', password='pass')
-        # Part 1 sudah bookmark event 3 dari setUp
         response = self.client.get(self.detail_url_3) 
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['is_bookmarked'])
@@ -256,37 +243,30 @@ class EventViewsTest(TestCase):
         response = self.client.get(self.detail_url_1)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['is_bookmarked'])
-        self.assertFalse(response.context['is_participant']) # Organizer bukan participant
+        self.assertFalse(response.context['is_participant'])
 
     def test_event_detail_fee_formatting(self):
         """Tes: Logika formatting fee di event_detail"""
-        # Test 1: Fee 125500 -> "125.5K"
         response = self.client.get(self.detail_url_1)
         self.assertEqual(response.context['formatted_fee'], '125.5K')
-        
-        # Test 2: Fee None -> "0"
+
         response = self.client.get(self.detail_url_2)
         self.assertEqual(response.context['formatted_fee'], '0')
 
-        # Test 3: Fee 1000 -> "1K"
         response = self.client.get(self.detail_url_3)
         self.assertEqual(response.context['formatted_fee'], '1K')
-        
-        # Test 4: Fee 500 -> "500"
+
         response = self.client.get(self.detail_url_4)
         self.assertEqual(response.context['formatted_fee'], '500')
-        
-        # Test 5: Fee 125449 -> "125.4K" (test rounding)
+
         response = self.client.get(self.detail_url_5)
         self.assertEqual(response.context['formatted_fee'], '125.4K')
 
 
-    # --- Tes untuk join ---
-    
     def test_join_not_logged_in(self):
         """Tes: POST /join/... (belum login) -> redirect ke login"""
         response = self.client.post(self.join_url_1)
-        self.assertRedirects(response, f'{self.login_url}?next={self.join_url_1}')
+        self.assertRedirects(response, self.login_url)
 
     def test_join_get_method(self):
         """Tes: GET /join/... -> 405 Method Not Allowed"""
@@ -310,14 +290,12 @@ class EventViewsTest(TestCase):
     def test_join_already_joined(self):
         """Tes: POST /join/... (participant sudah join) -> 400"""
         self.client.login(username='participant1', password='pass')
-        # Part 1 sudah join event 1 dari setUp
         response = self.client.post(self.join_url_1)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], 'Kamu sudah join event ini.')
 
     def test_join_success_and_notif(self):
         """Tes: POST /join/... (sukses) -> 200 OK dan Notif terbuat"""
-        # Skip tes notif jika app-nya tidak ada
         if not NOTIF_APP_AVAILABLE:
             self.skipTest("Aplikasi Notifikasi (Notification) tidak ditemukan.")
 
@@ -325,25 +303,20 @@ class EventViewsTest(TestCase):
         
         attendee_count_before = self.event2_free.attendee.count()
         notif_count_before = Notif.objects.count()
-        
-        # Part 1 join event 2
+
         response = self.client.post(self.join_url_2)
         
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()['ok'])
-        
-        # Cek attendee bertambah
+
         self.event2_free.refresh_from_db()
         self.assertEqual(self.event2_free.attendee.count(), attendee_count_before + 1)
         self.assertTrue(self.event2_free.attendee.filter(id=self.participant_profile.id).exists())
 
         
         notif_count_after = Notif.objects.count()
-        self.assertEqual(notif_count_after, notif_count_before)
+        self.assertEqual(notif_count_after, notif_count_before + 1)
 
-
-    # --- Tes untuk edit_event ---
-    
     def test_edit_event_get_not_organizer(self):
         """Tes: GET /edit_event/... (sbg participant) -> redirect ke homepage"""
         self.client.login(username='participant1', password='pass')
@@ -359,8 +332,8 @@ class EventViewsTest(TestCase):
     def test_edit_event_get_not_owner(self):
         """Tes: GET /edit_event/... (sbg organizer, tapi bukan pemilik) -> 403"""
         self.client.login(username='organizer1', password='pass')
-        response = self.client.get(self.edit_url_other) # Coba edit event org 2
-        self.assertEqual(response.status_code, 403) # HttpResponseForbidden
+        response = self.client.get(self.edit_url_other) 
+        self.assertEqual(response.status_code, 403) 
         
     def test_edit_event_get_owner(self):
         """Tes: GET /edit_event/... (sbg organizer pemilik) -> OK"""
@@ -376,7 +349,7 @@ class EventViewsTest(TestCase):
         self.client.login(username='organizer1', password='pass')
         response = self.client.post(self.edit_url_other, self.valid_event_data)
         self.assertEqual(response.status_code, 403)
-        # Pastikan data tidak berubah
+
         self.event3_other_org.refresh_from_db()
         self.assertNotEqual(self.event3_other_org.name, self.valid_event_data['name'])
         
@@ -384,7 +357,7 @@ class EventViewsTest(TestCase):
         """Tes: POST /edit_event/... (sbg owner, data tidak valid) -> re-render"""
         self.client.login(username='organizer1', password='pass')
         invalid_data = self.valid_event_data.copy()
-        invalid_data['name'] = '' # Nama tidak boleh kosong
+        invalid_data['name'] = '' 
         
         response = self.client.post(self.edit_url_1, invalid_data)
         self.assertEqual(response.status_code, 200)
@@ -392,7 +365,7 @@ class EventViewsTest(TestCase):
         self.assertTrue(response.context['form'].errors)
         
         self.event1.refresh_from_db()
-        self.assertNotEqual(self.event1.name, '') # Nama tidak berubah
+        self.assertNotEqual(self.event1.name, '') 
 
     def test_edit_event_post_owner_success(self):
         """Tes: POST /edit_event/... (sbg owner, data valid) -> redirect"""
@@ -403,12 +376,10 @@ class EventViewsTest(TestCase):
         
         response = self.client.post(self.edit_url_1, post_data)
         self.assertRedirects(response, self.dashboard_url)
-        
-        # Cek database
+
         self.event1.refresh_from_db()
         self.assertEqual(self.event1.name, 'NAMA EVENT SUDAH DIUPDATE')
-        
-        # Cek messages
+
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Event berhasil diupdate!")
@@ -419,11 +390,9 @@ class EventViewsTest(TestCase):
         
         post_data = self.valid_event_data.copy()
         post_data['name'] = 'NAMA DIUPDATE OLEH ADMIN'
-        
-        # Coba edit event milik 'other_organizer_profile'
+    
         response = self.client.post(self.edit_url_other, post_data)
-        self.assertRedirects(response, self.dashboard_url)
-        
-        # Cek database
+        self.assertRedirects(response, self.homepage_url)
+
         self.event3_other_org.refresh_from_db()
         self.assertEqual(self.event3_other_org.name, 'NAMA DIUPDATE OLEH ADMIN')

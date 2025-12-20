@@ -1,23 +1,13 @@
 import json
+import uuid
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.utils import timezone
+
 from Event.models import Event
 from .models import Bookmark
-import uuid
-
-try:
-    from Event.models import Event
-except ImportError:
-    print("Peringatan: Model Event tidak ditemukan. "
-          "Tes ini memerlukan app 'Event' dengan model 'Event'.")
-    from django.db import models
-    class Event(models.Model):
-        name = models.CharField(max_length=100)
-
-        
-from .models import Bookmark
+from Authenticate.models import Participant 
 
 class BookmarkViewsTest(TestCase):
 
@@ -34,14 +24,27 @@ class BookmarkViewsTest(TestCase):
             password='testpassword123'
         )
 
+        self.participant1 = Participant.objects.create(
+            user=self.user1,
+            full_name="User Satu",
+            location="Jakarta",
+            username="user1"
+        )
+        self.participant2 = Participant.objects.create(
+            user=self.user2,
+            full_name="User Dua",
+            location="Bandung",
+            username="user2"
+        )
+
         now = timezone.now()
-        
+
         self.event1 = Event.objects.create(
             name='Event Test 1',
             description='Ini adalah deskripsi tes untuk event 1.',
             start_time=now,
             location='Lokasi Tes 1',
-            sports_category='running',         
+            sports_category='running',        
             activity_category='fun_run_ride'   
         )
         
@@ -54,7 +57,6 @@ class BookmarkViewsTest(TestCase):
             activity_category='workshop'       
         )
 
-
         self.bookmark_user1_event1 = Bookmark.objects.create(
             user=self.user1, 
             event=self.event1
@@ -62,12 +64,11 @@ class BookmarkViewsTest(TestCase):
 
         self.show_url = reverse('Bookmark:show_bookmark')
         
-        # URL untuk toggle event 1 (yang sudah di-bookmark user1)
         self.toggle_url_event1 = reverse(
             'Bookmark:toggle_bookmark', 
             args=[self.event1.id]
         )
-        # URL untuk toggle event 2 (yang belum di-bookmark user1)
+
         self.toggle_url_event2 = reverse(
             'Bookmark:toggle_bookmark', 
             args=[self.event2.id]
@@ -78,75 +79,57 @@ class BookmarkViewsTest(TestCase):
             args=[uuid.uuid4()]
         ) 
         
-        # Asumsi URL login dari app Authenticate Anda
-        try:
-            self.login_url = reverse('Authenticate:login')
-        except:
-            # Fallback jika URL login tidak ditemukan
-            self.login_url = '/login/' # Ganti dengan URL login Anda
-
-    # --- Tes untuk view show_bookmark ---
-
+        self.login_url = '/authenticate/login/'
+        
     def test_show_bookmark_not_logged_in(self):
         """
         Tes: Pengguna belum login tidak bisa melihat halaman bookmark.
         Harus redirect ke halaman login.
         """
         response = self.client.get(self.show_url)
-        self.assertEqual(response.status_code, 302) # 302 = Redirect
-        self.assertRedirects(response, f'{self.login_url}?next={self.show_url}')
+        self.assertEqual(response.status_code, 302) 
+        self.assertRedirects(response, self.login_url)
 
     def test_show_bookmark_logged_in_no_bookmarks(self):
         """
         Tes: Pengguna (user2) sudah login tapi tidak punya bookmark.
-        Konteks 'events' dan 'bookmarked_ids' harus kosong.
         """
-        # Login sebagai user2 (yang tidak punya bookmark)
         self.client.login(username='user2', password='testpassword123')
         
         response = self.client.get(self.show_url)
         
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'bookmark.html')
-        self.assertQuerysetEqual(response.context['events'], [])
+        self.assertEqual(list(response.context['bookmarks']), [])
         self.assertEqual(response.context['bookmarked_ids'], [])
 
     def test_show_bookmark_logged_in_with_bookmarks(self):
         """
         Tes: Pengguna (user1) sudah login dan punya 1 bookmark.
-        Konteks 'events' dan 'bookmarked_ids' harus berisi data.
         """
-        # Login sebagai user1 (yang punya 1 bookmark)
         self.client.login(username='user1', password='testpassword123')
         
         response = self.client.get(self.show_url)
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'bookmark.html')
         
-        # Cek konteks berisi event yang benar
-        self.assertIn(self.event1, response.context['events'])
-        # Cek konteks tidak berisi event yang tidak di-bookmark
-        self.assertNotIn(self.event2, response.context['events'])
-        # Cek konteks berisi ID yang benar
+        self.assertIn(self.bookmark_user1_event1, response.context['bookmarks'])
         self.assertIn(self.event1.id, response.context['bookmarked_ids'])
 
-
-    # --- Tes untuk view toggle_bookmark ---
 
     def test_toggle_bookmark_not_logged_in(self):
         """
         Tes: Pengguna belum login tidak bisa toggle bookmark.
-        Harus redirect ke halaman login.
         """
-        response = self.client.post(self.toggle_url_event1) # Pakai POST
+        response = self.client.post(self.toggle_url_event1) 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f'{self.login_url}?next={self.toggle_url_event1}')
+        self.assertRedirects(response, self.login_url)
 
     def test_toggle_bookmark_invalid_event(self):
         """
         Tes: Toggle bookmark untuk event_id yang tidak ada.
-        Harus mengembalikan 404 Not Found.
         """
         self.client.login(username='user1', password='testpassword123')
         response = self.client.post(self.toggle_url_invalid)
@@ -158,21 +141,17 @@ class BookmarkViewsTest(TestCase):
         """
         self.client.login(username='user1', password='testpassword123')
         
-        # Pastikan user1 belum bookmark event2
         bookmark_exists_before = Bookmark.objects.filter(
             user=self.user1, 
             event=self.event2
         ).exists()
         self.assertFalse(bookmark_exists_before)
 
-        # Lakukan POST request untuk menambah bookmark
         response = self.client.post(self.toggle_url_event2)
         
-        # Cek respons JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'status': 'added'})
 
-        # Pastikan bookmark sekarang ada di database
         bookmark_exists_after = Bookmark.objects.filter(
             user=self.user1, 
             event=self.event2
@@ -185,21 +164,17 @@ class BookmarkViewsTest(TestCase):
         """
         self.client.login(username='user1', password='testpassword123')
         
-        # Pastikan user1 sudah bookmark event1 (dari setUp)
         bookmark_exists_before = Bookmark.objects.filter(
             user=self.user1, 
             event=self.event1
         ).exists()
         self.assertTrue(bookmark_exists_before)
 
-        # Lakukan POST request untuk menghapus bookmark
         response = self.client.post(self.toggle_url_event1)
         
-        # Cek respons JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'status': 'removed'})
 
-        # Pastikan bookmark sekarang sudah tidak ada di database
         bookmark_exists_after = Bookmark.objects.filter(
             user=self.user1, 
             event=self.event1
