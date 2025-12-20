@@ -169,7 +169,7 @@ def handleNow():
             
             print(f'Sent {total} reminder notifications for events on {now}')         
             
-@login_required
+@login_and_profile_required
 def notif_json(request):
     try:
         participant = request.user.participant_profile
