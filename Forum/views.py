@@ -7,8 +7,7 @@ from .models import ForumPost
 from .forms import ForumPostForm
 
 
-@login_required
-@login_required
+@login_and_profile_required
 def forum_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
 
