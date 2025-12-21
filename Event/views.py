@@ -223,7 +223,7 @@ def show_json(request):
         })
     return JsonResponse({'status':'success','events': event_list}, safe=False)
 
-def show_event_by_id_json(request):
+def show_event_by_id_json(request, event_id):
     event_id = request.GET.get('event_id')
     event = get_object_or_404(Event, id=event_id)
     event_data = {
