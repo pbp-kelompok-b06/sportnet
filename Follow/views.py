@@ -64,28 +64,6 @@ def unfollow_organizer(request, id_organizer):
 
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
-@hybrid_login_required
-def get_organizer_followers(request, username):
-    organizer_user = get_object_or_404(User, username=username)
-    if not hasattr(organizer_user, 'organizer_profile'):
-         return JsonResponse({"status": "error", "message": "User ini bukan Organizer"}, status=400)
-
-    followers_list = Follow.objects.filter(user_to=organizer_user)
-    
-    data = []
-    for follow in followers_list:
-        participant = follow.user_from
-
-        if hasattr(participant, 'participant_profile'):
-            profile = participant.participant_profile
-            data.append({
-                "user_id": participant.id,
-                "full_name": profile.full_name,
-                "username": participant.username,
-                "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
-            })
-
-    return JsonResponse({"status": "success", "data": data}, status=200)
 
 
 @hybrid_login_required
@@ -107,6 +85,29 @@ def get_participant_following(request, username):
                 "user_id": organizer.id,
                 "organizer_name": profile.organizer_name, 
                 "username": organizer.username,
+                "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
+            })
+
+    return JsonResponse({"status": "success", "data": data}, status=200)
+
+@hybrid_login_required
+def get_organizer_followers(request, username):
+    organizer_user = get_object_or_404(User, username=username)
+    if not hasattr(organizer_user, 'organizer_profile'):
+         return JsonResponse({"status": "error", "message": "User ini bukan Organizer"}, status=400)
+
+    followers_list = Follow.objects.filter(user_to=organizer_user)
+    
+    data = []
+    for follow in followers_list:
+        participant = follow.user_from
+
+        if hasattr(participant, 'participant_profile'):
+            profile = participant.participant_profile
+            data.append({
+                "user_id": participant.id,
+                "full_name": profile.full_name,
+                "username": participant.username,
                 "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
             })
 
