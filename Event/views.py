@@ -5,6 +5,8 @@ from Authenticate.decorators import login_and_profile_required
 from django.apps import apps
 from Authenticate.models import Organizer, Participant
 from .forms import EventForm
+import json
+from django.utils.dateparse import parse_datetime
 from .models import Event
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -201,6 +203,59 @@ def edit_event(request, event_id):
         "event": event,
     })
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
+
+@csrf_exempt
+@require_POST
+@csrf_exempt
+@require_POST
+def join_event_json(request, event_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "error", "message": "NOT_LOGGED_IN"},
+            status=401
+        )
+
+    # --- PERBAIKAN MULAI DARI SINI ---
+    # Import model Participant (pastikan path app-nya benar, misal 'Authenticate')
+    from Authenticate.models import Participant
+    
+    try:
+        # Cek apakah user ini terdaftar sebagai Participant
+        participant = Participant.objects.get(user=request.user)
+    except Participant.DoesNotExist:
+        # Jika tidak ketemu, berarti bukan participant (bisa jadi Organizer atau Admin)
+        return JsonResponse(
+            {"status": "error", "message": "ONLY_PARTICIPANT_CAN_BOOK"},
+            status=403
+        )
+    # --- PERBAIKAN SELESAI ---
+
+    event = get_object_or_404(Event, id=event_id)
+
+    # Cek apakah sudah join
+    if event.attendee.filter(id=participant.id).exists():
+        return JsonResponse(
+            {"status": "error", "message": "ALREADY_JOINED"},
+            status=409
+        )
+
+    # Join event
+    try:
+        event.attendee.add(participant)
+        return JsonResponse(
+            {"status": "success", "message": "JOINED"},
+            status=200
+        )
+    except Exception as e:
+        return JsonResponse(
+            {"status": "error", "message": str(e)},
+            status=500
+        )
+
 
 def show_json(request):
     events = Event.objects.all()
@@ -299,3 +354,45 @@ def get_event_attendees(request, event_id):
         })
         
     return JsonResponse({'status': 'success', 'data': data_list})
+
+@csrf_exempt
+@require_POST
+def create_event_flutter(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Harus login dulu."}, status=401)
+
+    if not is_organizer(request.user):
+        return JsonResponse({"status": "error", "message": "Kamu bukan organizer."}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        user = request.user
+        organizer = Organizer.objects.get(user=user)
+
+        # Handle Fee logic: Kalau kosong/tidak dikirim, anggap 0
+        fee_input = data.get("fee", "0")
+        if not fee_input: 
+            fee_input = "0"
+            
+        new_event = Event.objects.create(
+            organizer=organizer,
+            name=data["name"],
+            description=data["description"],
+            # Ambil thumbnail sebagai string URL sesuai form HTML
+            thumbnail=data.get("thumbnail", ""), 
+            location=data["location"],
+            address=data["address"],
+            start_time=parse_datetime(data["start_time"]),
+            end_time=parse_datetime(data["end_time"]),
+            sports_category=data["sports_category"],
+            activity_category=data["activity_category"],
+            fee=int(fee_input),
+            capacity=int(data["capacity"]),
+        )
+        
+        new_event.save()
+
+        return JsonResponse({"status": "success", "message": "Event berhasil dibuat!"}, status=200)
+
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)

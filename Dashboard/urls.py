@@ -11,4 +11,5 @@ urlpatterns = [
     path("api/pins/", api_list_pins, name="api_list_pins"),
     path("api/pins/toggle/<uuid:event_id>/", api_toggle_pin, name="api_toggle_pin"),
     path("api/pins/move/<uuid:event_id>/", api_move_pin, name="api_move_pin"),
+    path("api/organizer/events/", api_list_organizer_events, name="api_list_organizer_events"),
 ]
