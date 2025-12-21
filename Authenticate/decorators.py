@@ -1,3 +1,8 @@
+
+from django.contrib.auth.decorators import login_required
+
+def hybrid_login_required(view_func):
+    return login_required(view_func)
 from functools import wraps
 from django.http import JsonResponse
 from django.shortcuts import redirect

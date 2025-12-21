@@ -91,8 +91,8 @@ def update_note(request, event_id):
     return redirect("Bookmark:show_bookmark")
 
 
-@json_login_required
 @csrf_exempt
+@json_login_required
 def api_list_bookmarks(request):
     """
     GET: list semua bookmark user dalam bentuk JSON
@@ -126,8 +126,8 @@ def api_list_bookmarks(request):
 
     return JsonResponse({"bookmarks": data})
 
-@json_login_required
 @csrf_exempt
+@json_login_required
 def api_update_note(request, event_id):
     """
     POST: update note bookmark (JSON) untuk konsumsi Flutter.

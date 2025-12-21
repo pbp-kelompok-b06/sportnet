@@ -115,10 +115,23 @@ def mark_all_read(request):
 
     return JsonResponse({'status': 'success', 'updated': updated})
 
+@login_and_profile_required
+@require_POST
 def delete_notif(request, notif_id):
     notif = get_object_or_404(Notif, pk=notif_id)
+    
+    # Ensure the logged-in user is the owner of the notification
+    try:
+        participant = request.user.participant_profile
+    except Exception:
+        return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
+    
+    if notif.user != participant:
+        return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+    
     notif.delete()
-    return redirect('Notification:show_all')
+    
+    return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
 
 def handleD_1():
         now = timezone.now()
@@ -264,3 +277,5 @@ def mark_read_all_flutter(request):
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+# Telah diperbaiki
