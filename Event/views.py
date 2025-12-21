@@ -13,6 +13,7 @@ from Bookmark.models import Bookmark
 from Notification.models import Notifications
 from Follow.models import Follow
 from Authenticate.models import Participant
+from django.core.serializers import serialize
 
 
 # Ambil model Organizer dari app Authenticate tanpa hard import
@@ -222,3 +223,63 @@ def show_json(request):
 
         })
     return JsonResponse({'status':'success','events': event_list}, safe=False)
+
+def get_event_detail_json(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    organizer_obj = event.organizer
+    org_username = organizer_obj.user.username 
+    org_display_name = organizer_obj.organizer_name
+
+    org_pic = ""
+    if organizer_obj.profile_picture:
+        org_pic = organizer_obj.profile_picture.name 
+    total_attendees = event.attendee.count()
+
+    recent_attendees = event.attendee.all()[:3]
+    
+    attendees_avatars = []
+    for participant in recent_attendees:
+        if participant.profile_picture:
+            attendees_avatars.append(participant.profile_picture.name)
+        else:
+            attendees_avatars.append("")
+
+    is_joined = False
+
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'participant_profile'):
+            current_participant = request.user.participant_profile
+            # Cek apakah participant ini ada di list attendee event
+            if event.attendee.filter(id=current_participant.id).exists():
+                is_joined = True
+
+    item = {
+        'id': event.id,
+        'name': event.name,
+        'description': event.description,
+        'thumbnail': event.thumbnail,
+        'location': event.location,
+        'address': event.address,
+        'start_time': event.start_time,
+        'end_time': event.end_time,
+        'sports_category': event.sports_category,
+        'activity_category': event.activity_category,
+        'fee': event.fee,
+        'capacity': event.capacity,
+        
+        'organizer': {
+            'username': org_username,       # navigasi Flutter
+            'full_name': org_display_name,  
+            'profile_picture': org_pic    
+        },
+
+        'attendees': {
+            'count': total_attendees,      
+            'avatars': attendees_avatars    
+        },
+
+        'is_joined': is_joined,
+    }
+
+    return JsonResponse(item)
