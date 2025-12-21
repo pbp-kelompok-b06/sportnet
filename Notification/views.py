@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import login_and_profile_required
 from Notification.models import Notifications as Notif
 from Event.models import Event
 from Authenticate.models import Participant
@@ -11,7 +11,7 @@ from datetime import timedelta
 import json
 from django.views.decorators.csrf import csrf_exempt
 
-@login_required
+@login_and_profile_required
 def check_new_notifications(request):
     """Check for new notifications in the last 30 seconds"""
     try:
@@ -26,7 +26,7 @@ def check_new_notifications(request):
     except Exception:
         return JsonResponse({'hasNew': False})
 
-@login_required
+@login_and_profile_required
 def show_all(request):
     try:
         participant = request.user.participant_profile
@@ -81,7 +81,7 @@ def send_event_notification(request, event_id, title, message):
         }, status=500)
 
 
-@login_required
+@login_and_profile_required
 @require_POST
 def mark_notification_read(request, notif_id):
     
@@ -102,7 +102,7 @@ def mark_notification_read(request, notif_id):
     return JsonResponse({'status': 'success', 'message': 'Notification marked as read'})
 
 
-@login_required
+@login_and_profile_required
 @require_POST
 def mark_all_read(request):
     try:
@@ -115,10 +115,23 @@ def mark_all_read(request):
 
     return JsonResponse({'status': 'success', 'updated': updated})
 
+@login_and_profile_required
+@require_POST
 def delete_notif(request, notif_id):
     notif = get_object_or_404(Notif, pk=notif_id)
+    
+    # Ensure the logged-in user is the owner of the notification
+    try:
+        participant = request.user.participant_profile
+    except Exception:
+        return JsonResponse({'status': 'error', 'message': 'User has no participant profile'}, status=403)
+    
+    if notif.user != participant:
+        return JsonResponse({'status': 'error', 'message': 'Forbidden'}, status=403)
+    
     notif.delete()
-    return redirect('Notification:show_all')
+    
+    return JsonResponse({'status': 'success', 'message': 'Notification deleted'})
 
 def handleD_1():
         now = timezone.now()
@@ -169,7 +182,7 @@ def handleNow():
             
             print(f'Sent {total} reminder notifications for events on {now}')         
             
-@login_required
+@login_and_profile_required
 def notif_json(request):
     try:
         participant = request.user.participant_profile

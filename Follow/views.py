@@ -2,12 +2,12 @@ import json
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+from Authenticate.decorators import hybrid_login_required
 from django.contrib.auth.models import User
 from .models import Follow
 
 @csrf_exempt
-@login_required
+@hybrid_login_required
 def follow_organizer(request, id_organizer):
     if request.method == 'POST':
         try:
@@ -42,7 +42,7 @@ def follow_organizer(request, id_organizer):
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
 @csrf_exempt
-@login_required
+@hybrid_login_required
 def unfollow_organizer(request, id_organizer):
     if request.method in ['POST', 'DELETE']:
         target_user = get_object_or_404(User, pk=id_organizer)
@@ -64,7 +64,7 @@ def unfollow_organizer(request, id_organizer):
 
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
-@login_required
+@hybrid_login_required
 def show_following(request):
     following_list = Follow.objects.filter(user_from=request.user)
 
@@ -83,7 +83,7 @@ def show_following(request):
 
     return JsonResponse({"status": "success", "data": data}, status=200)
 
-@login_required
+@hybrid_login_required
 def show_followers(request):
     followers_list = Follow.objects.filter(user_to=request.user)
     data = []
@@ -100,7 +100,7 @@ def show_followers(request):
             })
     return JsonResponse({"status": "success", "data": data}, status=200)
 
-@login_required
+@hybrid_login_required
 def check_follow_status(request, id_organizer):
     is_following = Follow.objects.filter(
         user_from=request.user, 
