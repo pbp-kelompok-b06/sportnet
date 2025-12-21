@@ -54,7 +54,18 @@ def profile_api(request, username=None):
                         "id": event.id,
                         "name": event.name,
                         "start_time": event.start_time.strftime("%Y-%m-%d %H:%M"),
-                        "thumbnail": event.thumbnail if event.thumbnail else None, 
+                        "thumbnail": event.thumbnail if event.thumbnail else None,
+                        "location": event.location,
+                        "fee": event.fee, 
+                        "sports_category": event.get_sports_category_display(), 
+                        "activity_category": event.get_activity_category_display(),
+                        "capacity": event.capacity,
+                        "organizer": {
+                            "username": event.organizer.user.username,
+                            "full_name": event.organizer.organizer_name,
+                            "profile_picture": event.organizer.profile_picture.url if event.organizer.profile_picture else None
+                        },
+                        "attendees_count": event.attendee.count(), 
                     } for event in upcoming
                 ],
                 "past": [
@@ -63,6 +74,17 @@ def profile_api(request, username=None):
                         "name": event.name,
                         "start_time": event.start_time.strftime("%Y-%m-%d %H:%M"),
                         "thumbnail": event.thumbnail if event.thumbnail else None,
+                        "location": event.location, 
+                        "fee": event.fee, 
+                        "sports_category": event.get_sports_category_display(), 
+                        "activity_category": event.get_activity_category_display(),
+                        "capacity": event.capacity, 
+                        "organizer": { 
+                            "username": event.organizer.user.username,
+                            "full_name": event.organizer.organizer_name,
+                            "profile_picture": event.organizer.profile_picture.url if event.organizer.profile_picture else None
+                        },
+                        "attendees_count": event.attendee.count(),
                     } for event in past
                 ]
             }
@@ -105,10 +127,20 @@ def profile_api(request, username=None):
                 {
                     "id": event.id,
                     "name": event.name,
+                    "description": event.description,
                     "start_time": event.start_time.strftime("%Y-%m-%d %H:%M"),
                     "thumbnail": event.thumbnail if event.thumbnail else None, 
                     "location": event.location,
+                    "fee": event.fee,
+                    "capacity": event.capacity,
                     "sports_category": event.get_sports_category_display(), 
+                    "activity_category": event.get_activity_category_display(),
+                    "organizer": {
+                        "username": organizer_profile.user.username,
+                        "full_name": organizer_profile.organizer_name,
+                        "profile_picture": organizer_profile.profile_picture.url if organizer_profile.profile_picture else None
+                    },
+                    "attendees_count": event.attendee.count(),
                 } for event in my_events_query
             ]
 
