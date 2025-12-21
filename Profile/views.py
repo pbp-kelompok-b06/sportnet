@@ -57,6 +57,8 @@ def profile_api(request, username=None):
                         "thumbnail": event.thumbnail if event.thumbnail else None,
                         "location": event.location,
                         "fee": event.fee, 
+                        "sports_category": event.get_sports_category_display(), 
+                        "activity_category": event.get_activity_category_display(),
                         "capacity": event.capacity,
                         "organizer": {
                             "username": event.organizer.user.username,
@@ -74,6 +76,8 @@ def profile_api(request, username=None):
                         "thumbnail": event.thumbnail if event.thumbnail else None,
                         "location": event.location, 
                         "fee": event.fee, 
+                        "sports_category": event.get_sports_category_display(), 
+                        "activity_category": event.get_activity_category_display(),
                         "capacity": event.capacity, 
                         "organizer": { 
                             "username": event.organizer.user.username,
@@ -130,6 +134,7 @@ def profile_api(request, username=None):
                     "fee": event.fee,
                     "capacity": event.capacity,
                     "sports_category": event.get_sports_category_display(), 
+                    "activity_category": event.get_activity_category_display(),
                     "organizer": {
                         "username": organizer_profile.user.username,
                         "full_name": organizer_profile.organizer_name,
