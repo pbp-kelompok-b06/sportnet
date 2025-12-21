@@ -201,6 +201,64 @@ def edit_event(request, event_id):
         "event": event,
     })
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
+
+@csrf_exempt
+@require_POST
+def join_event_json(request, event_id):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"status": "error", "message": "NOT_LOGGED_IN"},
+            status=401
+        )
+
+    event = get_object_or_404(Event, id=event_id)
+
+    # Role check: sesuaikan kalau field role kamu beda
+    profile = getattr(request.user, "profile", None)
+    role = getattr(profile, "role", None)
+    if role != "participant":
+        return JsonResponse(
+            {"status": "error", "message": "ONLY_PARTICIPANT_CAN_BOOK"},
+            status=403
+        )
+
+    # Already joined check (coba beberapa pola umum)
+    already_joined = False
+    try:
+        # kalau participants M2M ke Profile dan profile punya user
+        already_joined = event.participants.filter(user=request.user).exists()
+    except Exception:
+        try:
+            # kalau participants M2M ke Profile
+            already_joined = event.participants.filter(id=profile.id).exists()
+        except Exception:
+            try:
+                # kalau participants M2M ke User
+                already_joined = event.participants.filter(id=request.user.id).exists()
+            except Exception:
+                already_joined = False
+
+    if already_joined:
+        return JsonResponse(
+            {"status": "error", "message": "ALREADY_JOINED"},
+            status=409
+        )
+
+    # Add participant (sesuaikan relasi: Profile atau User)
+    try:
+        event.participants.add(profile)
+    except Exception:
+        event.participants.add(request.user)
+
+    return JsonResponse(
+        {"status": "success", "message": "JOINED"},
+        status=200
+    )
+
 
 def show_json(request):
     events = Event.objects.all()
