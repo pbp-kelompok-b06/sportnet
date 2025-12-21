@@ -240,3 +240,35 @@ def api_move_pin(request, event_id):
         PinnedEvent.objects.filter(pk=target.pk).update(position=pin_pos)
 
     return JsonResponse({"status": "ok"})
+
+@csrf_exempt
+@json_organizer_required
+def api_list_organizer_events(request):
+    """
+    GET: list events milik organizer yang login (format JSON utk Flutter)
+    """
+    if request.method != "GET":
+        return JsonResponse({"detail": "Method not allowed"}, status=405)
+
+    organizer_profile = request.user.organizer_profile
+    events = organizer_profile.owned_events.all().order_by("-start_time")
+
+    data = []
+    for e in events:
+        data.append({
+            "id": str(e.id),
+            "name": e.name,
+            "description": getattr(e, "description", "") or "",
+            "thumbnail": e.thumbnail,
+            "location": e.location,
+            "address": e.address,
+            "start_time": e.start_time.isoformat() if e.start_time else None,
+            "end_time": e.end_time.isoformat() if e.end_time else None,
+            "sports_category": e.sports_category,
+            "activity_category": e.activity_category,
+            "fee": str(e.fee) if e.fee is not None else "Free",
+            "capacity": e.capacity,
+            "organizer": getattr(organizer_profile, "organizer_name", "") or "",
+        })
+
+    return JsonResponse({"events": data})
