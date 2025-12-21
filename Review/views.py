@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from Authenticate.decorators import *
+from Authenticate.decorators import hybrid_login_required
 from django.http import HttpResponseForbidden, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
