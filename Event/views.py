@@ -222,3 +222,23 @@ def show_json(request):
 
         })
     return JsonResponse({'status':'success','events': event_list}, safe=False)
+
+def show_event_by_id_json(request):
+    event_id = request.GET.get('event_id')
+    event = get_object_or_404(Event, id=event_id)
+    event_data = {
+        'id': event.id,
+        'name': event.name,
+        'description': event.description,
+        'thumbnail': event.thumbnail.url if event.thumbnail else '',
+        'location': event.location,
+        'address': event.address,
+        'start_time': event.start_time,
+        'end_time': event.end_time,
+        'sports_category': event.sports_category,
+        'activity_category': event.activity_category,
+        'fee': event.fee,
+        'capacity': event.capacity,
+        'organizer': event.organizer.user.username,
+    }
+    return JsonResponse({'status':'success','event': event_data}, safe=False)
