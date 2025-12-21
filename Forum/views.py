@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from Authenticate.decorators import *
+from Authenticate.decorators import hybrid_login_required
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
 
@@ -8,10 +8,7 @@ from Authenticate.models import Participant, Organizer
 from .models import ForumPost
 from .forms import ForumPostForm
 
-
-# =====================================================
-# HELPER — SERIALIZE POST + REPLIES (RECURSIVE)
-# =====================================================
+# HELPER AND SERIALIZE POST + REPLIES (RECURSIVE)
 def serialize_post(post):
     return {
         "id": post.id,
@@ -24,10 +21,7 @@ def serialize_post(post):
         ],
     }
 
-
-# =====================================================
 # WEB PAGE
-# =====================================================
 @hybrid_login_required
 def forum_page_view(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -94,10 +88,7 @@ def forum_page_view(request, event_id):
         },
     )
 
-
-# =====================================================
-# EDIT & DELETE (WAJIB ADA)
-# =====================================================
+# EDIT & DELETE
 @hybrid_login_required
 def edit_post_view(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
@@ -131,85 +122,63 @@ def delete_post_view(request, post_id):
     post.delete()
     return redirect("Forum:forum_page", event_id=event_id)
 
-
-# =====================================================
-# API — ADD POST / REPLY (FLUTTER)
-# =====================================================
+# API LIST (FLUTTER)
 @csrf_exempt
 @hybrid_login_required
 def forum_api_add(request, event_id):
     if request.method != "POST":
-        return JsonResponse(
-            {"success": False, "error": "Invalid method"}, status=405
-        )
+        return JsonResponse({"success": False}, status=405)
 
     event = get_object_or_404(Event, id=event_id)
-
-    if hasattr(request.user, "participant_profile"):
-        participant = request.user.participant_profile
-
-    elif hasattr(request.user, "organizer_profile"):
-        organizer = request.user.organizer_profile
-
-        if event.organizer != organizer:
-            return JsonResponse(
-                {"success": False, "error": "Organizer not allowed"}, status=403
-            )
-
-        participant, _ = Participant.objects.get_or_create(
-            user=request.user,
-            defaults={
-                "full_name": organizer.organizer_name,
-                "location": "-",
-                "username": request.user.username,
-                "password": request.user.password,
-                "about": "Organizer account",
-            },
-        )
-    else:
-        return JsonResponse(
-            {"success": False, "error": "Unauthorized"}, status=403
-        )
-
     content = request.POST.get("content")
-    parent_id = request.POST.get("parent_id")
 
     if not content:
+        return JsonResponse({"success": False, "error": "Empty content"}, status=400)
+
+    # ROLE RESOLUTION (INI KUNCI)
+    participant = getattr(request.user, "participant_profile", None)
+    organizer = getattr(request.user, "organizer_profile", None)
+
+    if not participant and not organizer:
         return JsonResponse(
-            {"success": False, "error": "Content empty"}, status=400
+            {"success": False, "error": "User has no role"},
+            status=403
         )
 
-    post = ForumPost.objects.create(
+    ForumPost.objects.create(
         event=event,
         participant=participant,
+        organizer=organizer,
         content=content,
     )
 
-    if parent_id:
-        parent = ForumPost.objects.filter(id=parent_id).first()
-        if parent:
-            post.parent = parent
-            post.save()
-
     return JsonResponse({"success": True})
 
-
-# =====================================================
-# API — LIST POSTS (NESTED)
-# =====================================================
 @hybrid_login_required
 def forum_api_list(request, event_id):
-    if request.method != "GET":
-        return JsonResponse(
-            {"success": False, "error": "Invalid method"}, status=405
-        )
-
     event = get_object_or_404(Event, id=event_id)
 
     posts = ForumPost.objects.filter(
-        event=event, parent=None
+        event=event,
+        parent__isnull=True
     ).order_by("-created_at")
 
-    data = [serialize_post(post) for post in posts]
+    data = []
+    for post in posts:
+        if post.participant:
+            username = post.participant.full_name
+        elif post.organizer:
+            username = f"{post.organizer.organizer_name} (Organizer)"
+        else:
+            username = "Anonymous"
 
-    return JsonResponse(data, safe=False)
+        data.append({
+            "id": post.id,
+            "username": username,
+            "content": post.content,
+            "created_at": post.created_at.isoformat(),
+        })
+
+    return JsonResponse({"data": data}, safe=False)
+
+
