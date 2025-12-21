@@ -246,10 +246,23 @@ def join_event_json(request, event_id):
     # Join event
     try:
         event.attendee.add(participant)
+        try:
+            from Notification.models import Notifications as Notif
+            Notif.objects.create(
+                user=participant,
+                title=f"Successfully Joined: {event.name}",
+                message=f"You have successfully joined the event'{event.name}'. See event details for more information.",
+                event=event
+            )
+        except Exception:
+            # if Notification app not available or any error, ignore to not block join
+            pass
+        
         return JsonResponse(
             {"status": "success", "message": "JOINED"},
             status=200
         )
+        
     except Exception as e:
         return JsonResponse(
             {"status": "error", "message": str(e)},
