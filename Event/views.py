@@ -224,20 +224,16 @@ def show_json(request):
         })
     return JsonResponse({'status':'success','events': event_list}, safe=False)
 
-def get_event_detail_json(request, event_id):
+def show_event_by_id_json(request):
+    event_id = request.GET.get('event_id')
     event = get_object_or_404(Event, id=event_id)
 
     organizer_obj = event.organizer
-    org_username = organizer_obj.user.username 
-    org_display_name = organizer_obj.organizer_name
-
     org_pic = ""
     if organizer_obj.profile_picture:
-        org_pic = organizer_obj.profile_picture.name 
-    total_attendees = event.attendee.count()
+        org_pic = organizer_obj.profile_picture.name
 
     recent_attendees = event.attendee.all()[:3]
-    
     attendees_avatars = []
     for participant in recent_attendees:
         if participant.profile_picture:
@@ -246,19 +242,17 @@ def get_event_detail_json(request, event_id):
             attendees_avatars.append("")
 
     is_joined = False
-
     if request.user.is_authenticated:
         if hasattr(request.user, 'participant_profile'):
             current_participant = request.user.participant_profile
-            # Cek apakah participant ini ada di list attendee event
             if event.attendee.filter(id=current_participant.id).exists():
                 is_joined = True
 
-    item = {
+    event_data = {
         'id': event.id,
         'name': event.name,
         'description': event.description,
-        'thumbnail': event.thumbnail,
+        'thumbnail': event.thumbnail if event.thumbnail else '', 
         'location': event.location,
         'address': event.address,
         'start_time': event.start_time,
@@ -267,19 +261,17 @@ def get_event_detail_json(request, event_id):
         'activity_category': event.activity_category,
         'fee': event.fee,
         'capacity': event.capacity,
-        
+
         'organizer': {
-            'username': org_username,       # navigasi Flutter
-            'full_name': org_display_name,  
-            'profile_picture': org_pic    
+            'username': organizer_obj.user.username,
+            'full_name': organizer_obj.organizer_name,
+            'profile_picture': org_pic
         },
-
         'attendees': {
-            'count': total_attendees,      
-            'avatars': attendees_avatars    
+            'count': event.attendee.count(),
+            'avatars': attendees_avatars
         },
-
-        'is_joined': is_joined,
+        'is_joined': is_joined
     }
-
-    return JsonResponse(item)
+    
+    return JsonResponse({'status':'success', 'event': event_data}, safe=False)
