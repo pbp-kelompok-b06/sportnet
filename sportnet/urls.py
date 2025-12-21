@@ -23,15 +23,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Homepage.urls')),
     path('authenticate/', include('Authenticate.urls')),
-    #path('booked-events/', include('BookedEvent.urls')),
     path('bookmark/', include('Bookmark.urls')),
     path('event/', include("Event.urls")),
     path('forum/', include("Forum.urls")),
     path('notification/', include('Notification.urls')),
     path('profile/', include('Profile.urls')),
-    # path('review/', include('Reviews.urls')),
     path('dashboard/', include("Dashboard.urls")),
     path('review/', include('Review.urls')),
+    path('follow/', include('Follow.urls')),
 ]
 
 if settings.DEBUG:

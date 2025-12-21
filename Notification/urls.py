@@ -1,5 +1,7 @@
 from django.urls import path
-from Notification.views import show_all, send_event_notification, mark_notification_read, mark_all_read, check_new_notifications
+from Notification.views import show_all,notif_json, send_event_notification, mark_notification_read, mark_all_read, check_new_notifications, delete_notif
+from Notification.views import delete_flutter_notif, mark_flutter_notification_read, mark_read_all_flutter
+
 
 app_name = 'Notification'
 
@@ -9,4 +11,10 @@ urlpatterns = [
     path('mark-as-read/<int:notif_id>/', mark_notification_read, name='mark_notification_read'),
     path('mark-all-read/', mark_all_read, name='mark_all_read'),
     path('check-new/', check_new_notifications, name='check_new_notifications'),
+    path('delete/<int:notif_id>/', delete_notif, name='delete_notif'),
+    path('json/', notif_json, name='notif_json'),
+    path('api/read/', mark_flutter_notification_read, name='mark_flutter_notification_read'),
+    path('api/delete/', delete_flutter_notif, name='delete_flutter_notif'),
+    path('api/read-all/', mark_read_all_flutter, name='mark_read_all_flutter'),
+
 ]

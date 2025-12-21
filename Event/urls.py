@@ -10,4 +10,6 @@ urlpatterns = [
     path("<uuid:event_id>/edit/", views.edit_event, name="edit_event"),
     path('event/api/<uuid:event_id>/join/', views.join_event_json, name='join_event_json'),
 
+    path("json/", views.show_json, name="show_json"),
+    path("json/<uuid:event_id>/", views.show_event_by_id_json, name="show_event_by_id_json"),
 ]

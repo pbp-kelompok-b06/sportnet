@@ -11,7 +11,7 @@ class ForumPostForm(forms.ModelForm):
 
         widgets = {
             'content': forms.TextInput(attrs={
-                'placeholder': 'Ketik pesan Anda...',
+                'placeholder': 'Write your message...',
                 'class': 'form-input-chat', 
                 'autocomplete': 'off',
             })

@@ -5,6 +5,9 @@ from Event.models import Event
 from django.db.models import Q
 from datetime import datetime
 from Bookmark.models import Bookmark
+from Notification.views import handleD_1, handleNow
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 
 # Fungsi pembantu untuk membuat objek event menjadi format dictionary yang rapi
 def serialize_event(card_event):
@@ -14,8 +17,7 @@ def serialize_event(card_event):
     date_str = event.start_time.strftime("%d %B %Y") if event.start_time else ""
     price_str = f"Rp {int(event.fee):,}".replace(",", ".") if event.fee is not None else "Gratis"
     
-    # NOTE: Ini adalah struktur data yang dikirim ke JavaScript.
-    # JavaScript di homepage.html mengharapkan field seperti 'name', 'date', dll.
+    # Ini adalah struktur data yang dikirim ke JavaScript.
     return {
         'id': str(event.id),
         'name': event.name,
@@ -45,7 +47,9 @@ def show_main(request):
 
     # Filter by sports category
     if category:
-        events = events.filter(sports_category=category)
+        events = events.filter(sports_category=category.strip())
+        print(f"Filtering by category: {category}")
+        print(f"Events count after category filter: {events.count()}")
 
     # Filter free events (fee is null or zero)
     if free == '1':
@@ -69,6 +73,10 @@ def show_main(request):
         'filter_category': category,
         'filter_free': free,
     }
+    
+    handleD_1()
+    handleNow()
+    
     return render(request, 'homepage.html', context)
 
 # Tampilan baru untuk menyediakan data event dalam JSON
@@ -80,3 +88,64 @@ def get_event_data_json(request):
     event_list = [serialize_event(event) for event in events]
 
     return JsonResponse(event_list, safe=False)
+
+def search_events_ajax(request):
+    q = request.GET.get('q', '').strip()
+    category = request.GET.get('category', '')
+    free = request.GET.get('free', '')
+
+    events = Event.objects.all().order_by('-start_time')
+
+    if q:
+        events = events.filter(
+            Q(name__icontains=q) |
+            Q(description__icontains=q) |
+            Q(location__icontains=q)
+        )
+
+    if category:
+        events = events.filter(sports_category=category.strip())
+
+    if free == '1':
+        events = events.filter(Q(fee__isnull=True) | Q(fee=0))
+
+    bookmarked_ids = []
+    if request.user.is_authenticated:
+        bookmarked_ids = list(
+            Bookmark.objects.filter(user=request.user)
+            .values_list("event_id", flat=True)
+        )
+
+    context = {
+        'events': events,
+        'bookmarked_ids': bookmarked_ids,
+    }
+
+    # If there are results, render the event grid partial; otherwise render no-events partial
+    if events.exists():
+        html = render_to_string('partials/event_grid.html', context, request=request)
+    else:
+        html = render_to_string('partials/no_events.html', context, request=request)
+
+    return HttpResponse(html)
+
+from django.views.decorators.http import require_GET
+import requests
+
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)

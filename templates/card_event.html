@@ -1,6 +1,6 @@
 {% load static %}
 
-<article class="event-card flex items-stretch w-full max-w-2xl transition-all duration-300">
+<article class="event-card hover:shadow-xl hover:scale-[1.05] flex items-stretch w-full max-w-2xl transition-all duration-300 h-[250px]">
   
   <!-- Left side (Image) -->
   <div class="w-2/5 relative">
@@ -23,26 +23,39 @@
     {% endif %}
   </div>
 
-  <!-- Right side (Content) -->
-  <div class="w-3/5 p-6 flex flex-col justify-between event-info relative z-10">
+  <!-- RIGHT CONTENT -->
+  <div class="w-3/5 p-6 flex flex-col justify-between relative">
+
+    <!-- TOP TEXT -->
     <div>
-      <h3 class="text-lg font-bold text-[var(--color-text-500)] mb-1">{{ event.name }}</h3>
+      <h3 class="text-lg font-bold text-[var(--color-text-500)] leading-tight mb-1 line-clamp-2">
+        {{ event.name }}
+      </h3>
+
       <p class="text-sm text-[var(--color-text-400)] mb-1">
         {{ event.start_time|date:"M j, Y" }} • {{ event.start_time|date:"H:i" }}
       </p>
-      <p class="text-sm text-[var(--color-text-400)] mb-3">{{ event.location }}</p>
-      <p class="text-[var(--color-text-300)] text-sm leading-snug mb-4 line-clamp-3">
-        {{ event.description|truncatechars:100 }}
+
+      <p class="text-sm text-[var(--color-text-400)] mb-2 line-clamp-1">
+        {{ event.location }}
+      </p>
+
+      <!-- DESCRIPTION AUTO TRUNCATE -->
+      <p class="text-[var(--color-text-300)] text-sm leading-snug line-clamp-2">
+        {{ event.description }}
       </p>
     </div>
 
-    <div class="flex justify-between items-center">
-      <a href="{% url 'Event:event_detail' event.id %}" class="btn btn-gradient flex items-center gap-2 shadow-[0_3px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.06)]">
+
+    <!-- BOTTOM BUTTONS -->
+    <div class="flex justify-between items-center mt-3">
+      <a href="{% url 'Event:event_detail' event.id %}"
+         class="btn btn-gradient px-4 py-2 text-sm shadow-[0_3px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_10px_rgba(0,0,0,0.06)]">
         Details →
       </a>
       
       <button 
-        class="bookmark-btn group relative {% if event.id in bookmarked_ids %}active{% endif %}"
+        class="bookmark-btn group relative {% if event.id in bookmarked_ids %}active{% endif %} hover:shadow-[0_4px_10px_rgba(0,0,0,0.06)]"
         data-event-id="{{ event.id }}"
         aria-label="Bookmark event"
       >
@@ -54,7 +67,6 @@
           <img src="{% static 'icons/bookmark-default.png' %}" alt="Bookmark icon" class="bookmark-icon" />
         {% endif %}
 
-        <span class="tooltip">Bookmark event</span>
       </button>
 
     </div>

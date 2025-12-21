@@ -1,42 +1,156 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
+from Authenticate.decorators import hybrid_login_required
+from django.http import HttpResponseForbidden, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from Event.models import Event
 from Authenticate.models import Participant
-
-# Import model & form HANYA untuk Review
 from .models import Review
 from .forms import ReviewForm
 
+# WEB VIEW (HTML)
+@hybrid_login_required
+def review_page_view(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    reviews = Review.objects.filter(event=event).order_by("-created_at")
 
-@login_required
-def add_review_view(request, event_id):
-    # Hanya izinkan method POST
-    if request.method != 'POST':
-        return HttpResponseForbidden("Metode tidak diizinkan")
+    participant = None
+    authen = False
 
-    # Ambil data Event dan Participant
-    try:
-        event = get_object_or_404(Event, id=event_id)
-        participant = get_object_or_404(Participant, user=request.user)
-    except Exception as e:
-        return render(request, 'review/error_dependency.html', {'error': str(e)})
+    if hasattr(request.user, "participant_profile"):
+        participant = request.user.participant_profile
+        if not Review.objects.filter(event=event, participant=participant).exists():
+            authen = True
 
-    # Cek apakah user sudah pernah memberikan review untuk event ini
-    if Review.objects.filter(event=event, participant=participant).exists():
-        print("Anda sudah pernah memberikan review untuk event ini.")
-        return redirect('event_detail', event_id=event.id)
+    if request.method == "POST":
+        if not participant or not authen:
+            return HttpResponseForbidden("Not allowed")
 
-    # Proses form yang dikirim
-    form = ReviewForm(request.POST)
-    if form.is_valid():
-        new_review = form.save(commit=False)
-        new_review.event = event
-        new_review.participant = participant
-        new_review.save()
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.event = event
+            review.participant = participant
+            review.save()
+            return redirect("Review:review_page", event_id=event.id)
     else:
-        print("Form review tidak valid:", form.errors)
+        form = ReviewForm()
 
-    # Kembalikan user ke halaman detail event
-    return redirect('event_detail', event_id=event.id)
+    return render(
+        request,
+        "review/review_page.html",
+        {
+            "event": event,
+            "reviews": reviews,
+            "form": form,
+            "participant": participant,
+            "authen": authen,
+        },
+    )
+
+
+@hybrid_login_required
+def edit_review_view(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    if not hasattr(request.user, "participant_profile"):
+        return HttpResponseForbidden("Only participant can edit review")
+
+    if review.participant.user != request.user:
+        return HttpResponseForbidden("You cannot edit this review")
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect("Review:review_page", event_id=review.event.id)
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(
+        request,
+        "review/edit_review.html",
+        {
+            "form": form,
+            "review": review,
+        },
+    )
+
+
+@hybrid_login_required
+def delete_review_view(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+
+    if not hasattr(request.user, "participant_profile"):
+        return HttpResponseForbidden("Only participant can delete review")
+
+    if review.participant.user != request.user:
+        return HttpResponseForbidden("You cannot delete this review")
+
+    event_id = review.event.id
+    review.delete()
+    return redirect("Review:review_page", event_id=event_id)
+
+# API (FLUTTER)
+@csrf_exempt
+@hybrid_login_required
+def review_api_add(request, event_id):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Invalid method"}, status=405)
+
+    event = get_object_or_404(Event, id=event_id)
+
+    if not hasattr(request.user, "participant_profile"):
+        return JsonResponse(
+            {"success": False, "error": "Only participant allowed"},
+            status=403,
+        )
+
+    participant = request.user.participant_profile
+
+    if Review.objects.filter(event=event, participant=participant).exists():
+        return JsonResponse(
+            {"success": False, "error": "Already reviewed"},
+            status=400,
+        )
+
+    rating = request.POST.get("rating")
+    comment = request.POST.get("comment")
+
+    if not rating or not comment:
+        return JsonResponse(
+            {"success": False, "error": "Invalid data"},
+            status=400,
+        )
+
+    Review.objects.create(
+        event=event,
+        participant=participant,
+        rating=int(rating),
+        comment=comment,
+    )
+
+    return JsonResponse({"success": True})
+
+def review_api_list(request, event_id):
+    if request.method != "GET":
+        return JsonResponse(
+            {"success": False, "error": "Invalid method"},
+            status=405
+        )
+
+    event = get_object_or_404(Event, id=event_id)
+
+    reviews = Review.objects.filter(event=event).order_by("-created_at")
+
+    data = []
+    for review in reviews:
+        data.append({
+            "id": review.id,
+            "username": review.participant.username,
+            "rating": review.rating,
+            "comment": review.comment,
+            "created_at": review.created_at.strftime("%Y-%m-%d %H:%M"),
+        })
+
+    return JsonResponse(data, safe=False)
