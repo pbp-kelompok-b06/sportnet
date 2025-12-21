@@ -172,13 +172,68 @@ def forum_api_list(request, event_id):
         else:
             username = "Anonymous"
 
+        is_owner = False
+        if post.participant and post.participant.user == request.user:
+            is_owner = True
+        elif post.organizer and post.organizer.user == request.user:
+            is_owner = True
+
         data.append({
             "id": post.id,
             "username": username,
             "content": post.content,
             "created_at": post.created_at.isoformat(),
+            "is_owner": is_owner,
         })
 
     return JsonResponse({"data": data}, safe=False)
+
+
+@csrf_exempt
+@hybrid_login_required
+def forum_api_edit(request, post_id):
+    if request.method != "POST":
+        return JsonResponse({"success": False}, status=405)
+
+    post = get_object_or_404(ForumPost, id=post_id)
+    
+    is_owner = False
+    if post.participant and post.participant.user == request.user:
+        is_owner = True
+    elif post.organizer and post.organizer.user == request.user:
+        is_owner = True
+        
+    if not is_owner:
+        return JsonResponse({"success": False, "error": "You cannot edit this post."}, status=403)
+
+    content = request.POST.get("content")
+    if not content:
+        return JsonResponse({"success": False, "error": "Empty content"}, status=400)
+        
+    post.content = content
+    post.save()
+    
+    return JsonResponse({"success": True})
+
+
+@csrf_exempt
+@hybrid_login_required
+def forum_api_delete(request, post_id):
+    if request.method != "POST":
+        return JsonResponse({"success": False}, status=405)
+
+    post = get_object_or_404(ForumPost, id=post_id)
+    
+    is_owner = False
+    if post.participant and post.participant.user == request.user:
+        is_owner = True
+    elif post.organizer and post.organizer.user == request.user:
+        is_owner = True
+        
+    if not is_owner:
+        return JsonResponse({"success": False, "error": "You cannot delete this post."}, status=403)
+        
+    post.delete()
+    return JsonResponse({"success": True})
 
 
