@@ -135,7 +135,7 @@ def forum_api_add(request, event_id):
     if not content:
         return JsonResponse({"success": False, "error": "Empty content"}, status=400)
 
-    # 🔥 ROLE RESOLUTION (INI KUNCI)
+    # ROLE RESOLUTION (INI KUNCI)
     participant = getattr(request.user, "participant_profile", None)
     organizer = getattr(request.user, "organizer_profile", None)
 
@@ -179,6 +179,6 @@ def forum_api_list(request, event_id):
             "created_at": post.created_at.isoformat(),
         })
 
-    return JsonResponse(data, safe=False)
+    return JsonResponse({"data": data}, safe=False)
 
 
