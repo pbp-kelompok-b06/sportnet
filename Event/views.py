@@ -397,3 +397,48 @@ def create_event_flutter(request):
 
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+
+@csrf_exempt
+@require_POST
+def delete_event_flutter(request, event_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Harus login dulu."}, status=401)
+
+    event = get_object_or_404(Event, id=event_id)
+
+    # Pastikan yang menghapus adalah owner-nya
+    if event.organizer.user != request.user:
+        return JsonResponse({"status": "error", "message": "Bukan pemilik event."}, status=403)
+
+    event.delete()
+    return JsonResponse({"status": "success", "message": "Event berhasil dihapus!"})
+
+@csrf_exempt
+@require_POST
+def edit_event_flutter(request, event_id): # Buat fungsi baru khusus edit
+    if not request.user.is_authenticated:
+        return JsonResponse({"status": "error", "message": "Harus login dulu."}, status=401)
+
+    event = get_object_or_404(Event, id=event_id)
+    if event.organizer.user != request.user:
+        return JsonResponse({"status": "error", "message": "Bukan pemilik event."}, status=403)
+
+    try:
+        data = json.loads(request.body)
+        event.name = data["name"]
+        event.description = data["description"]
+        event.thumbnail = data.get("thumbnail", "")
+        event.location = data["location"]
+        event.address = data["address"]
+        event.start_time = parse_datetime(data["start_time"])
+        event.end_time = parse_datetime(data["end_time"])
+        event.sports_category = data["sports_category"]
+        event.activity_category = data["activity_category"]
+        event.fee = int(data.get("fee", "0") or 0)
+        event.capacity = int(data["capacity"])
+        
+        event.save()
+        return JsonResponse({"status": "success", "message": "Event berhasil diupdate!"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
