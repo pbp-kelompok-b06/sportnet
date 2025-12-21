@@ -12,4 +12,5 @@ urlpatterns = [
     path('create-flutter/', views.create_event_flutter, name='create_event_flutter'),
     path("json/", views.show_json, name="show_json"),
     path("json/<uuid:event_id>/", views.show_event_by_id_json, name="show_event_by_id_json"),
+    path("json/<uuid:event_id>/attendees/", views.get_event_attendees, name="get_event_attendees"),
 ]

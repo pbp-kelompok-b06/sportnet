@@ -330,6 +330,30 @@ def show_event_by_id_json(request, event_id):
     
     return JsonResponse({'status':'success', 'event': event_data}, safe=False)
 
+def get_event_attendees(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    
+    all_participants = event.attendee.all()
+    
+    data_list = []
+    
+    for user in all_participants:
+        full_name = user.username
+        profile_picture = None
+        if hasattr(user, 'participant_profile'):
+            profile = user.participant_profile
+            full_name = profile.full_name if profile.full_name else user.username
+            
+            if profile.profile_picture:
+                profile_picture = profile.profile_picture.url
+        
+        data_list.append({
+            'username': user.username,
+            'full_name': full_name,
+            'profile_picture': profile_picture
+        })
+        
+    return JsonResponse({'status': 'success', 'data': data_list})
 
 @csrf_exempt
 @require_POST
