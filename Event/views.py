@@ -276,6 +276,7 @@ def show_json(request):
             'capacity': event.capacity,
             'organizer': event.organizer.user.username,
 
+            'attendees_count': event.attendee.count(),
         })
     return JsonResponse({'status':'success','events': event_list}, safe=False)
 
