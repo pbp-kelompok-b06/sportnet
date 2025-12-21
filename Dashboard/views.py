@@ -27,22 +27,22 @@ def get_organizer_events_json(request):
                 'id' : str(event.id),
                 'name' : event.name,
                 'thumbnail' : event.thumbnail,
-                'start_time' : event.start_time.strftime('%d %b %Y, %H:%M'),
-                'end_time' : event.end_time.strftime('%d %b %Y, %H:%M') if event.end_time else None,
+                # GANTI JADI .isoformat() DI BAWAH INI
+                'start_time' : event.start_time.isoformat() if event.start_time else None,
+                'end_time' : event.end_time.isoformat() if event.end_time else None,
                 'location' : event.location,
                 'address' : event.address,
                 "sports_category": event.get_sports_category_display(),
                 "activity_category": event.get_activity_category_display(),
-                'fee' : str(event.fee) if event.fee is not None else 'Free',
+                'fee' : str(event.fee) if event.fee is not None else '0',
                 'capacity' : event.capacity,
                 'attendee_count': event.attendee.count(),
-                'edit_url': f'/event/edit/{event.id}/',
             })
 
         return JsonResponse({'events' : event_list})
     except Exception as e:
         return JsonResponse({'error': str(e), 'events': []}, status=500)
-
+    
 @login_and_profile_required
 def delete_event(request, event_id):
     if request.method == 'POST':
