@@ -1,9 +1,8 @@
-<<<<<<< HEAD
+
 from django.contrib.auth.decorators import login_required
 
 def hybrid_login_required(view_func):
     return login_required(view_func)
-=======
 from functools import wraps
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -50,4 +49,3 @@ def hybrid_login_required(view_func):
         return view_func(request, *args, **kwargs)
     
     return _wrapped_view
->>>>>>> 3e8b32738cf4e149ec2487c5eaaef63738026c29
