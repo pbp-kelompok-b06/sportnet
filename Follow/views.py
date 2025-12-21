@@ -64,40 +64,53 @@ def unfollow_organizer(request, id_organizer):
 
     return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
+
+
 @hybrid_login_required
-def show_following(request):
-    following_list = Follow.objects.filter(user_from=request.user)
+def get_participant_following(request, username):
+    participant_user = get_object_or_404(User, username=username)
+
+    if not hasattr(participant_user, 'participant_profile'):
+         return JsonResponse({"status": "error", "message": "User ini bukan Participant"}, status=400)
+
+    following_list = Follow.objects.filter(user_from=participant_user)
 
     data = []
     for follow in following_list:
-        organizer_user = follow.user_to
+        organizer = follow.user_to
         
-        if hasattr(organizer_user, 'organizer_profile'):
-            profile = organizer_user.organizer_profile
+        if hasattr(organizer, 'organizer_profile'):
+            profile = organizer.organizer_profile
             data.append({
-                "user_id": organizer_user.id,
-                "organizer_name": profile.organizer_name,
-                "username": organizer_user.username,
+                "user_id": organizer.id,
+                "organizer_name": profile.organizer_name, 
+                "username": organizer.username,
                 "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
             })
 
     return JsonResponse({"status": "success", "data": data}, status=200)
 
 @hybrid_login_required
-def show_followers(request):
-    followers_list = Follow.objects.filter(user_to=request.user)
+def get_organizer_followers(request, username):
+    organizer_user = get_object_or_404(User, username=username)
+    if not hasattr(organizer_user, 'organizer_profile'):
+         return JsonResponse({"status": "error", "message": "User ini bukan Organizer"}, status=400)
+
+    followers_list = Follow.objects.filter(user_to=organizer_user)
+    
     data = []
     for follow in followers_list:
-        participant_user = follow.user_from
+        participant = follow.user_from
 
-        if hasattr(participant_user, 'participant_profile'):
-            profile = participant_user.participant_profile
+        if hasattr(participant, 'participant_profile'):
+            profile = participant.participant_profile
             data.append({
-                "user_id": participant_user.id,
+                "user_id": participant.id,
                 "full_name": profile.full_name,
-                "username": participant_user.username,
-                "profile_picture":profile.profile_picture.url if profile.profile_picture else None,
+                "username": participant.username,
+                "profile_picture": profile.profile_picture.url if profile.profile_picture else None,
             })
+
     return JsonResponse({"status": "success", "data": data}, status=200)
 
 @hybrid_login_required
