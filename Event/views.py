@@ -208,6 +208,8 @@ from django.shortcuts import get_object_or_404
 
 @csrf_exempt
 @require_POST
+@csrf_exempt
+@require_POST
 def join_event_json(request, event_id):
     if not request.user.is_authenticated:
         return JsonResponse(
@@ -215,49 +217,42 @@ def join_event_json(request, event_id):
             status=401
         )
 
-    event = get_object_or_404(Event, id=event_id)
-
-    # Role check: sesuaikan kalau field role kamu beda
-    profile = getattr(request.user, "profile", None)
-    role = getattr(profile, "role", None)
-    if role != "participant":
+    # --- PERBAIKAN MULAI DARI SINI ---
+    # Import model Participant (pastikan path app-nya benar, misal 'Authenticate')
+    from Authenticate.models import Participant
+    
+    try:
+        # Cek apakah user ini terdaftar sebagai Participant
+        participant = Participant.objects.get(user=request.user)
+    except Participant.DoesNotExist:
+        # Jika tidak ketemu, berarti bukan participant (bisa jadi Organizer atau Admin)
         return JsonResponse(
             {"status": "error", "message": "ONLY_PARTICIPANT_CAN_BOOK"},
             status=403
         )
+    # --- PERBAIKAN SELESAI ---
 
-    # Already joined check (coba beberapa pola umum)
-    already_joined = False
-    try:
-        # kalau participants M2M ke Profile dan profile punya user
-        already_joined = event.participants.filter(user=request.user).exists()
-    except Exception:
-        try:
-            # kalau participants M2M ke Profile
-            already_joined = event.participants.filter(id=profile.id).exists()
-        except Exception:
-            try:
-                # kalau participants M2M ke User
-                already_joined = event.participants.filter(id=request.user.id).exists()
-            except Exception:
-                already_joined = False
+    event = get_object_or_404(Event, id=event_id)
 
-    if already_joined:
+    # Cek apakah sudah join
+    if event.attendee.filter(id=participant.id).exists():
         return JsonResponse(
             {"status": "error", "message": "ALREADY_JOINED"},
             status=409
         )
 
-    # Add participant (sesuaikan relasi: Profile atau User)
+    # Join event
     try:
-        event.participants.add(profile)
-    except Exception:
-        event.participants.add(request.user)
-
-    return JsonResponse(
-        {"status": "success", "message": "JOINED"},
-        status=200
-    )
+        event.attendee.add(participant)
+        return JsonResponse(
+            {"status": "success", "message": "JOINED"},
+            status=200
+        )
+    except Exception as e:
+        return JsonResponse(
+            {"status": "error", "message": str(e)},
+            status=500
+        )
 
 
 def show_json(request):
